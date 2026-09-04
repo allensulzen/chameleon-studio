@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chameleon Studio — Compare effects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="icon" href="../assets/favicon.png">
+<style>
+  /* ---- page ---- */
+  .cmp { max-width: 1240px; margin: 0 auto; padding: 28px 28px 90px; }
+  .cmp-head { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; margin-bottom: 22px; }
+  .cmp-head h1 { font-family: var(--font-display); font-size: 54px; letter-spacing: .06em; font-weight: 400; line-height: .95; }
+  .cmp-head h1 em { font-style: normal; color: var(--acc-hi); }
+  .cmp-head p { color: var(--ink-2); font-size: 14px; max-width: 700px; margin: 12px 0 0; }
+  .cmp-stats { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+  .stat { padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); min-width: 96px; }
+  .stat b { display: block; font-family: var(--font-display); font-size: 28px; letter-spacing: .04em; line-height: 1; color: var(--acc-hi); }
+  .stat span { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+
+  /* ---- transport (sticky) ---- */
+  .transport {
+    position: sticky; top: 62px; z-index: 20;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: center;
+    padding: 12px 16px; margin-bottom: 26px;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: rgba(20,23,29,.86); backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: var(--shadow-1);
+  }
+  .transport .lbl { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .16em; color: var(--ink-3); text-transform: uppercase; }
+  .clips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .pill.on { background: var(--acc); color: var(--acc-ink); border-color: var(--acc); }
+  .now { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .now-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--panel-2); color: var(--ink); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+  .now-btn .ico { font-size: 18px; display: block; }
+  .now.live .now-btn { background: var(--acc); color: var(--acc-ink); border-color: transparent; box-shadow: 0 0 18px -4px var(--acc-glow); }
+  .now-text { min-width: 0; }
+  .now-name { font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .now-sub { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); }
+  .seek { height: 5px; margin-top: 6px; border-radius: 3px; background: var(--line); overflow: hidden; cursor: pointer; }
+  .seek i { display: block; height: 100%; width: 0; background: var(--acc); transition: width .12s linear; }
+  .transport .btn-sm .ico { font-size: 15px; }
+
+  /* ---- sets ---- */
+  .set { --ch: 178; margin-bottom: 30px; }
+  .set-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 12px; padding-left: 14px; border-left: 3px solid hsl(var(--ch) 80% 60%); }
+  .set-head h2 { font-family: var(--font-display); font-size: 30px; letter-spacing: .06em; font-weight: 400; line-height: 1; }
+  .set-head .fam { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: hsl(var(--ch) 80% 68%); }
+  .set-head .cnt { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); margin-left: auto; }
+  .variants { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+  .var {
+    position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: start;
+    padding: 14px 14px 12px; border-radius: 14px; border: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--panel), var(--bg-2)); cursor: pointer;
+    transition: border-color .15s, transform .12s, box-shadow .2s;
+  }
+  .var:hover { border-color: hsl(var(--ch) 60% 45%); transform: translateY(-1px); }
+  .var.playing { border-color: hsl(var(--ch) 85% 62%); box-shadow: 0 0 0 1px hsl(var(--ch) 85% 62% / .5) inset, 0 12px 30px -16px hsl(var(--ch) 90% 60% / .6); }
+  .var .btn-play { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-2); background: var(--panel-2); color: var(--ink); display: grid; place-items: center; cursor: pointer; transition: all .15s; }
+  .var .btn-play .ico { font-size: 18px; display: block; }
+  .var:hover .btn-play { border-color: hsl(var(--ch) 60% 45%); color: hsl(var(--ch) 90% 72%); }
+  .var.playing .btn-play { background: hsl(var(--ch) 85% 62%); color: var(--acc-ink); border-color: transparent; }
+  .var .body { min-width: 0; }
+  .var .top { display: flex; align-items: center; gap: 8px; }
+  .var .top .lic { margin-left: auto; }
+  .topbar-actions a.btn { text-decoration: none; }
+  .var .name { font-weight: 600; font-size: 14.5px; line-height: 1.2; min-width: 0; }
+  .var .origin { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
+  .var .origin b { color: var(--ink-2); font-weight: 500; }
+  .var .note { font-size: 12px; color: var(--ink-3); margin-top: 6px; }
+  .var .settings { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+  .var .settings span { padding: 2px 7px; border-radius: 5px; background: rgba(255,255,255,.04); border: 1px solid var(--line); }
+  .var .settings .gain { color: var(--ink-3); border-style: dashed; }
+  .var .tail { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); min-height: 18px; }
+  .var .tail:empty { display: none; }
+  .metrics { display: flex; gap: 12px; font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-3); flex-wrap: wrap; }
+  .metrics b { color: var(--ink-2); font-weight: 500; }
+  .lic { font-family: var(--font-mono); font-size: 10px; letter-spacing: .08em; padding: 3px 8px; border-radius: 5px; border: 1px solid var(--line-2); color: var(--ink-2); white-space: nowrap; }
+  .lic.ok { color: #86efac; border-color: #14532d; } .lic.gpl { color: #fcd34d; border-color: #78350f; } .lic.ours { color: hsl(var(--ch) 90% 72%); border-color: hsl(var(--ch) 60% 40%); }
+  .var .card-logo { margin-left: 0; flex-shrink: 0; }
+
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 30px 0 0; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-3); }
+  .legend .lic { margin: 0; }
+  @media (max-width: 860px) { .cmp { padding: 18px 14px 80px; } .cmp-head { grid-template-columns: 1fr; } .cmp-stats { justify-content: flex-start; } .transport { grid-template-columns: 1fr; top: 58px; } .cmp-head h1 { font-size: 42px; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="../">
+    <span class="logo brand-mark" role="img" aria-label="Chameleon"></span>
+    <span class="brand-name">Chameleon<span class="brand-thin">Studio</span></span>
+  </a>
+  <div class="topbar-status">
+    <span class="chip" id="chip-mode"><i class="dot ok"></i><span>Offline renders · dry DI · loudness-matched</span></span>
+  </div>
+  <div class="topbar-actions">
+    <a class="btn btn-ghost" href="../" id="btn-back"><span>Back to Studio</span></a>
+  </div>
+</header>
+
+<main class="cmp">
+  <div class="cmp-head">
+    <div>
+      <h1>Compare <em>similar effects</em></h1>
+      <p>Different takes on the same job — a Tube Screamer next to a Klon next to a RAT — rendered offline through one host on dry DI guitar and level-matched, so the loud one can't win by default. Press play on a card, then click another card to switch <strong>at the same position</strong> for a true A/B.</p>
+    </div>
+    <div class="cmp-stats" id="stats"></div>
+  </div>
+
+  <div class="transport">
+    <div class="clips"><span class="lbl">Clip</span><span id="clips"></span></div>
+    <div class="now" id="now">
+      <button class="now-btn" id="now-btn" title="Play / stop"></button>
+      <div class="now-text">
+        <div class="now-name" id="now-name">Nothing playing</div>
+        <div class="now-sub" id="now-sub">pick a card below</div>
+        <div class="seek" id="seek"><i></i></div>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="dry"><span>Dry DI reference</span></button>
+  </div>
+
+  <div id="sets"></div>
+
+  <div class="legend">
+    <span><span class="lic ours">MIT · Chameleon</span> written for this pedal</span>
+    <span><span class="lic ok">BSD / MIT / STK</span> permissive, ships anywhere</span>
+    <span><span class="lic gpl">GPL</span> fine for the pedal firmware (it's GPL too)</span>
+    <span>THD, even/odd and non-harmonic numbers come from a 220 Hz test tone through the same render.</span>
+  </div>
+</main>
+
+<script src="../js/icons.js"></script>
+<script>
+(async () => {
+  const R = await (await fetch('report.json')).json();
+  const $ = id => document.getElementById(id);
+  const FAM = { overdrive: ['dirt', 18], fuzz: ['dirt', 18], boost: ['dirt', 30], tremolo: ['mod', 268], chorus: ['mod', 268], flanger: ['mod', 280], phaser: ['mod', 255], 'tape-delay': ['time', 178], spring: ['reverb', 200], compressor: ['dynamics', 112], wah: ['filter', 44], octaver: ['pitch', 320] };
+  let clip = 'A', current = null; // {audio,row,label,sub}
+  const players = new Map();
+
+  $('now-btn').innerHTML = icon('tabler:player-play-filled');
+  $('dry').insertAdjacentHTML('afterbegin', icon('tabler:wave-sine'));
+  $('btn-back').insertAdjacentHTML('afterbegin', icon('tabler:arrow-left'));
+
+  const nVar = Object.values(R.sets).reduce((n, s) => n + s.variants.length, 0);
+  const nSrc = new Set(Object.values(R.sets).flatMap(s => s.variants.map(v => v.license))).size;
+  $('stats').innerHTML = `<div class="stat"><b>${Object.keys(R.sets).length}</b><span>categories</span></div><div class="stat"><b>${nVar}</b><span>effects</span></div><div class="stat"><b>${Object.keys(R.clips).length}</b><span>clips</span></div>`;
+
+  function audioFor(file) { if (!players.has(file)) { const a = new Audio('audio/' + file); a.preload = 'auto'; a.loop = true; players.set(file, a); } return players.get(file); }
+  function setNow(on, name, sub) {
+    $('now').classList.toggle('live', on);
+    $('now-btn').innerHTML = icon(on ? 'tabler:player-stop-filled' : 'tabler:player-play-filled');
+    $('now-name').textContent = name; $('now-sub').textContent = sub;
+  }
+  function stopAll() {
+    players.forEach(a => a.pause());
+    document.querySelectorAll('.var.playing').forEach(r => r.classList.remove('playing'));
+    const was = current; current = null;
+    setNow(false, was ? was.label : 'Nothing playing', was ? 'stopped · click any card to resume there' : 'pick a card below');
+  }
+  function play(file, row, label, sub) {
+    const a = audioFor(file);
+    if (current && current.audio === a) { stopAll(); return; }
+    const t = current ? current.audio.currentTime : (lastT || 0);
+    if (current) { current.audio.pause(); current.row && current.row.classList.remove('playing'); }
+    try { a.currentTime = t; } catch (e) {}
+    a.play(); current = { audio: a, row, label, sub }; if (row) row.classList.add('playing');
+    setNow(true, label, sub);
+  }
+  let lastT = 0;
+  (function tick() { if (current) { lastT = current.audio.currentTime; const d = current.audio.duration || 1; $('seek').firstElementChild.style.width = (100 * lastT / d) + '%'; } requestAnimationFrame(tick); })();
+  $('seek').addEventListener('click', e => { if (!current) return; const r = e.currentTarget.getBoundingClientRect(); current.audio.currentTime = (e.clientX - r.left) / r.width * (current.audio.duration || 0); });
+  $('now-btn').addEventListener('click', () => { if (current) stopAll(); else if (lastRow) lastRow.click(); });
+  let lastRow = null;
+
+  function licClass(l) { return l === 'ours' ? 'ours' : /GPL/.test(l) ? 'gpl' : 'ok'; }
+  function splitName(v) {
+    // "Ours — Dynamic Overdrive" / "Klon Centaur — faustlibraries ve.klonCentaur (WDF)"
+    const [a, b] = v.name.split(' — ');
+    if (v.license === 'ours') return { name: b || a, src: 'Chameleon original' };
+    return { name: a, src: b || '' };
+  }
+
+  function renderClips() { $('clips').innerHTML = Object.entries(R.clips).map(([k, v]) => `<button class="pill ${k === clip ? 'on' : ''}" data-clip="${k}">${v}</button>`).join(''); }
+  $('clips').addEventListener('click', e => { const b = e.target.closest('[data-clip]'); if (!b) return; clip = b.dataset.clip; stopAll(); lastT = 0; renderClips(); renderSets(); });
+  $('dry').addEventListener('click', () => play(`dry_${clip}.mp3`, null, 'Dry DI reference', R.clips[clip]));
+
+  function renderSets() {
+    const setsEl = $('sets'); setsEl.innerHTML = '';
+    for (const [sid, s] of Object.entries(R.sets)) {
+      if (!s.clips.includes(clip)) continue;
+      const [fam, hue] = FAM[sid] || ['utility', 220];
+      const set = document.createElement('section'); set.className = 'set'; set.style.setProperty('--ch', hue);
+      const live = s.variants.filter(v => v.renders[clip] && !v.renders[clip].error);
+      set.innerHTML = `<div class="set-head"><h2>${s.title}</h2><span class="fam">${fam}</span><span class="cnt">${live.length} takes</span></div><div class="variants"></div>`;
+      const vs = set.querySelector('.variants');
+      live.forEach(v => {
+        const r = v.renders[clip];
+        const { name, src } = splitName(v);
+        const m = v.sine ? `<div class="metrics"><span>THD <b>${v.sine.thd_pct}%</b></span><span>even/odd <b>${v.sine.even_odd_db > -60 ? v.sine.even_odd_db + ' dB' : 'odd only'}</b></span><span>non-harm <b>${v.sine.alias_db} dB</b></span></div>` : '';
+        const row = document.createElement('div'); row.className = 'var';
+        const settings = Object.entries(v.params).map(([k, x]) => `<span>${k} ${x}</span>`).join('') || '<span>defaults</span>';
+        const gain = `<span class="gain">match ${r.match_gain_db > 0 ? '+' : ''}${(+r.match_gain_db).toFixed(1)} dB</span>`;
+        row.innerHTML = `<button class="btn-play" aria-label="play">${icon('tabler:player-play-filled')}</button>
+          <div class="body">
+            <div class="top">${v.license === 'ours' ? '<span class="logo card-logo" title="Chameleon original"></span>' : ''}<div class="name">${name}</div><span class="lic ${licClass(v.license)}">${v.license === 'ours' ? 'MIT · Chameleon' : v.license}</span></div>
+            <div class="origin">${src ? `<b>${src}</b>` : ''}${v.note ? (src ? ' · ' : '') + v.note : ''}</div>
+            <div class="settings">${settings}${gain}</div>
+            ${m ? `<div class="tail">${m}</div>` : ''}
+          </div>`;
+        row.addEventListener('click', () => { lastRow = row; play(r.file, row, name, `${s.title} · ${src || 'Chameleon'} · ${R.clips[clip]}`); });
+        vs.appendChild(row);
+      });
+      setsEl.appendChild(set);
+    }
+  }
+  renderClips(); renderSets();
+  document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); if (current) stopAll(); else if (lastRow) lastRow.click(); } });
+})();
+</script>
+</body>
+</html>

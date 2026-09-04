@@ -1,0 +1,14 @@
+{
+  "name": "chameleon-studio",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Browser patch builder, Faust DSP library and WebUSB flasher for the Chameleon Daisy Seed 3 pedal",
+  "scripts": {
+    "build": "node tools/build-catalog.mjs",
+    "check": "node tools/build-catalog.mjs --check",
+    "render": "node tools/render-effect.mjs",
+    "start": "python3 server.py"
+  },
+  "engines": { "node": ">=18" }
+}

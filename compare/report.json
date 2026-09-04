@@ -1,0 +1,1140 @@
+{
+ "clips": {
+  "A": "Clean lead line (DI)",
+  "B": "Strummed chords (DI)",
+  "C": "Riff + chops (DI)"
+ },
+ "sets": {
+  "overdrive": {
+   "title": "Overdrive",
+   "clips": [
+    "A",
+    "B",
+    "C",
+    "S"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Dynamic Overdrive",
+     "binary": "ours/dynamic-overdrive",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "overdrive_0_A.mp3",
+       "raw_rms_db": -14.399999618530273,
+       "match_gain_db": -7.5,
+       "raw": "peak=0.461"
+      },
+      "B": {
+       "file": "overdrive_0_B.mp3",
+       "raw_rms_db": -19.200000762939453,
+       "match_gain_db": -2.299999952316284,
+       "raw": "peak=0.551"
+      },
+      "C": {
+       "file": "overdrive_0_C.mp3",
+       "raw_rms_db": -22.0,
+       "match_gain_db": 0.0,
+       "raw": "peak=0.541"
+      }
+     },
+     "sine": {
+      "thd_pct": 22.1,
+      "even_odd_db": -8.0,
+      "alias_db": -117.4
+     }
+    },
+    {
+     "name": "Klon Centaur \u2014 faustlibraries ve.klonCentaur (WDF)",
+     "binary": "lib_klon",
+     "sr": 48000,
+     "params": {
+      "Gain": 0.6,
+      "Treble": 0.5,
+      "Level": 0.8
+     },
+     "license": "BSD-3 (Chowdhury-DSP)",
+     "note": "full wave-digital-filter circuit model, in the standard library",
+     "renders": {
+      "A": {
+       "file": "overdrive_1_A.mp3",
+       "raw_rms_db": -13.100000381469727,
+       "match_gain_db": -8.699999809265137,
+       "raw": "peak=2.590"
+      },
+      "B": {
+       "file": "overdrive_1_B.mp3",
+       "raw_rms_db": -17.100000381469727,
+       "match_gain_db": -4.199999809265137,
+       "raw": "peak=2.590"
+      },
+      "C": {
+       "file": "overdrive_1_C.mp3",
+       "raw_rms_db": -19.600000381469727,
+       "match_gain_db": -1.7999999523162842,
+       "raw": "peak=2.590"
+      }
+     },
+     "sine": {
+      "thd_pct": 11.0,
+      "even_odd_db": -174.4,
+      "alias_db": -116.3
+     }
+    },
+    {
+     "name": "Tube Screamer TS-9 \u2014 guitarix ts9sim",
+     "binary": "gx_ts9",
+     "sr": 96000,
+     "params": {
+      "drive": 0.6,
+      "level": -4,
+      "tone": 400
+     },
+     "license": "GPL-2+",
+     "note": "Newton-solved diode clipper via C table",
+     "renders": {
+      "A": {
+       "file": "overdrive_2_A.mp3",
+       "raw_rms_db": -18.299999237060547,
+       "match_gain_db": -3.0999999046325684,
+       "raw": "peak=0.374"
+      },
+      "B": {
+       "file": "overdrive_2_B.mp3",
+       "raw_rms_db": -19.200000762939453,
+       "match_gain_db": -2.700000047683716,
+       "raw": "peak=0.400"
+      },
+      "C": {
+       "file": "overdrive_2_C.mp3",
+       "raw_rms_db": -20.700000762939453,
+       "match_gain_db": -1.2000000476837158,
+       "raw": "peak=0.348"
+      }
+     },
+     "sine": {
+      "thd_pct": 15.3,
+      "even_odd_db": -179.0,
+      "alias_db": -70.9
+     }
+    },
+    {
+     "name": "Boss DS-1 \u2014 guitarix DK circuit sim",
+     "binary": "gx_bossds1",
+     "sr": 96000,
+     "params": {
+      "drive": 0.5,
+      "Level": 3,
+      "Tone": 0.7
+     },
+     "license": "GPL-2+",
+     "note": "full state-space circuit solution",
+     "renders": {
+      "A": {
+       "file": "overdrive_3_A.mp3",
+       "raw_rms_db": -20.0,
+       "match_gain_db": -2.0,
+       "raw": "peak=0.330"
+      },
+      "B": {
+       "file": "overdrive_3_B.mp3",
+       "raw_rms_db": -23.200000762939453,
+       "match_gain_db": 1.7000000476837158,
+       "raw": "peak=0.411"
+      },
+      "C": {
+       "file": "overdrive_3_C.mp3",
+       "raw_rms_db": -26.899999618530273,
+       "match_gain_db": 4.900000095367432,
+       "raw": "peak=0.357"
+      }
+     },
+     "sine": {
+      "thd_pct": 7.8,
+      "even_odd_db": -8.4,
+      "alias_db": -80.7
+     }
+    },
+    {
+     "name": "ProCo RAT \u2014 guitarix aclipper",
+     "binary": "gx_aclipper",
+     "sr": 96000,
+     "params": {
+      "drive": 0.5,
+      "level": -2,
+      "tone": 0.5
+     },
+     "license": "GPL-2+",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "overdrive_4_A.mp3",
+       "raw_rms_db": -8.800000190734863,
+       "match_gain_db": -12.5,
+       "raw": "peak=0.633"
+      },
+      "B": {
+       "file": "overdrive_4_B.mp3",
+       "raw_rms_db": -9.699999809265137,
+       "match_gain_db": -12.300000190734863,
+       "raw": "peak=0.636"
+      },
+      "C": {
+       "file": "overdrive_4_C.mp3",
+       "raw_rms_db": -10.5,
+       "match_gain_db": -11.399999618530273,
+       "raw": "peak=0.635"
+      }
+     },
+     "sine": {
+      "thd_pct": 27.7,
+      "even_odd_db": -19.4,
+      "alias_db": -64.8
+     }
+    },
+    {
+     "name": "KPP Bluedream",
+     "binary": "kpp_bluedream",
+     "sr": 48000,
+     "params": {
+      "drive": 63,
+      "volume": 0.5
+     },
+     "license": "GPL-3",
+     "note": "hand-tuned waveshaper",
+     "renders": {
+      "A": {
+       "file": "overdrive_5_A.mp3",
+       "raw_rms_db": -26.100000381469727,
+       "match_gain_db": 4.5,
+       "raw": "peak=0.137"
+      },
+      "B": {
+       "file": "overdrive_5_B.mp3",
+       "raw_rms_db": -30.0,
+       "match_gain_db": 7.900000095367432,
+       "raw": "peak=0.131"
+      },
+      "C": {
+       "file": "overdrive_5_C.mp3",
+       "raw_rms_db": -32.29999923706055,
+       "match_gain_db": 10.100000381469727,
+       "raw": "peak=0.119"
+      }
+     },
+     "sine": {
+      "thd_pct": 13.6,
+      "even_odd_db": -171.5,
+      "alias_db": -77.8
+     }
+    }
+   ]
+  },
+  "fuzz": {
+   "title": "Fuzz",
+   "clips": [
+    "A",
+    "B",
+    "C",
+    "S"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Silicon Fuzz",
+     "binary": "ours/silicon-fuzz",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "fuzz_0_A.mp3",
+       "raw_rms_db": -8.199999809265137,
+       "match_gain_db": -13.0,
+       "raw": "peak=0.639"
+      },
+      "B": {
+       "file": "fuzz_0_B.mp3",
+       "raw_rms_db": -9.5,
+       "match_gain_db": -12.399999618530273,
+       "raw": "peak=0.645"
+      },
+      "C": {
+       "file": "fuzz_0_C.mp3",
+       "raw_rms_db": -10.399999618530273,
+       "match_gain_db": -11.5,
+       "raw": "peak=0.644"
+      }
+     },
+     "sine": {
+      "thd_pct": 41.5,
+      "even_odd_db": -28.9,
+      "alias_db": -52.5
+     }
+    },
+    {
+     "name": "Fuzz Face \u2014 guitarix DK circuit sim",
+     "binary": "gx_fuzzface",
+     "sr": 96000,
+     "params": {
+      "Fuzz": 0.8,
+      "Level": 0.6
+     },
+     "license": "GPL-2+",
+     "note": "transistor tables + state-space",
+     "renders": {
+      "A": {
+       "file": "fuzz_1_A.mp3",
+       "raw_rms_db": -16.0,
+       "match_gain_db": -5.800000190734863,
+       "raw": "peak=0.357"
+      },
+      "B": {
+       "file": "fuzz_1_B.mp3",
+       "raw_rms_db": -19.899999618530273,
+       "match_gain_db": -2.0,
+       "raw": "peak=0.328"
+      },
+      "C": {
+       "file": "fuzz_1_C.mp3",
+       "raw_rms_db": -22.399999618530273,
+       "match_gain_db": 0.4000000059604645,
+       "raw": "peak=0.323"
+      }
+     },
+     "sine": {
+      "thd_pct": 33.7,
+      "even_odd_db": -2.2,
+      "alias_db": -54.1
+     }
+    },
+    {
+     "name": "Big Muff Pi \u2014 guitarix DK circuit sim",
+     "binary": "gx_bmp",
+     "sr": 96000,
+     "params": {
+      "Sustain": 0.6,
+      "Tone": 0.5,
+      "Volume": 0.6
+     },
+     "license": "GPL-2+",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "fuzz_2_A.mp3",
+       "raw_rms_db": -17.799999237060547,
+       "match_gain_db": -4.300000190734863,
+       "raw": "peak=0.466"
+      },
+      "B": {
+       "file": "fuzz_2_B.mp3",
+       "raw_rms_db": -21.700000762939453,
+       "match_gain_db": 0.10000000149011612,
+       "raw": "peak=0.527"
+      },
+      "C": {
+       "file": "fuzz_2_C.mp3",
+       "raw_rms_db": -25.600000381469727,
+       "match_gain_db": 3.5999999046325684,
+       "raw": "peak=0.406"
+      }
+     },
+     "sine": {
+      "thd_pct": 5.8,
+      "even_odd_db": -170.5,
+      "alias_db": -85.5
+     }
+    },
+    {
+     "name": "KPP Fuzz",
+     "binary": "kpp_fuzz",
+     "sr": 48000,
+     "params": {
+      "fuzz": 60,
+      "volume": 0.5
+     },
+     "license": "GPL-3",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "fuzz_3_A.mp3",
+       "raw_rms_db": -15.100000381469727,
+       "match_gain_db": -7.099999904632568,
+       "raw": "peak=1.000"
+      },
+      "B": {
+       "file": "fuzz_3_B.mp3",
+       "raw_rms_db": -21.399999618530273,
+       "match_gain_db": 0.699999988079071,
+       "raw": "peak=1.000"
+      },
+      "C": {
+       "file": "fuzz_3_C.mp3",
+       "raw_rms_db": -25.700000762939453,
+       "match_gain_db": 4.099999904632568,
+       "raw": "peak=1.000"
+      }
+     },
+     "sine": {
+      "thd_pct": 0.0,
+      "even_odd_db": -26.6,
+      "alias_db": -118.3
+     }
+    }
+   ]
+  },
+  "boost": {
+   "title": "Clean boost / treble booster",
+   "clips": [
+    "A",
+    "B",
+    "C",
+    "S"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 JFET Boost",
+     "binary": "ours/clean-boost",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "boost_0_A.mp3",
+       "raw_rms_db": -17.899999618530273,
+       "match_gain_db": -4.199999809265137,
+       "raw": "peak=0.628"
+      },
+      "B": {
+       "file": "boost_0_B.mp3",
+       "raw_rms_db": -24.700000762939453,
+       "match_gain_db": 4.400000095367432,
+       "raw": "peak=0.851"
+      },
+      "C": {
+       "file": "boost_0_C.mp3",
+       "raw_rms_db": -29.0,
+       "match_gain_db": 7.599999904632568,
+       "raw": "peak=0.486"
+      }
+     },
+     "sine": {
+      "thd_pct": 0.5,
+      "even_odd_db": -147.0,
+      "alias_db": -118.3
+     }
+    },
+    {
+     "name": "Rangemaster \u2014 guitarix DK sim",
+     "binary": "gx_rangem",
+     "sr": 96000,
+     "params": {
+      "Boost": 0.6
+     },
+     "license": "GPL-2+",
+     "note": "germanium treble booster circuit",
+     "renders": {
+      "A": {
+       "file": "boost_1_A.mp3",
+       "raw_rms_db": -5.199999809265137,
+       "match_gain_db": -16.299999237060547,
+       "raw": "peak=5.420"
+      },
+      "B": {
+       "file": "boost_1_B.mp3",
+       "raw_rms_db": -12.399999618530273,
+       "match_gain_db": -4.099999904632568,
+       "raw": "peak=6.004"
+      },
+      "C": {
+       "file": "boost_1_C.mp3",
+       "raw_rms_db": -16.399999618530273,
+       "match_gain_db": -2.700000047683716,
+       "raw": "peak=6.467"
+      }
+     },
+     "sine": {
+      "thd_pct": 0.0,
+      "even_odd_db": -59.4,
+      "alias_db": -112.5
+     }
+    },
+    {
+     "name": "Screaming Bird \u2014 guitarix DK sim",
+     "binary": "gx_scream",
+     "sr": 96000,
+     "params": {
+      "Scream": 0.5
+     },
+     "license": "GPL-2+",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "boost_2_A.mp3",
+       "raw_rms_db": -15.399999618530273,
+       "match_gain_db": -7.0,
+       "raw": "peak=0.451"
+      },
+      "B": {
+       "file": "boost_2_B.mp3",
+       "raw_rms_db": -21.899999618530273,
+       "match_gain_db": 3.299999952316284,
+       "raw": "peak=0.451"
+      },
+      "C": {
+       "file": "boost_2_C.mp3",
+       "raw_rms_db": -24.799999237060547,
+       "match_gain_db": 4.5,
+       "raw": "peak=0.451"
+      }
+     },
+     "sine": {
+      "thd_pct": 0.0,
+      "even_odd_db": -54.6,
+      "alias_db": -114.9
+     }
+    }
+   ]
+  },
+  "tremolo": {
+   "title": "Tremolo",
+   "clips": [
+    "A",
+    "B"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Harmonic Tremolo",
+     "binary": "ours/harmonic-tremolo",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "tremolo_0_A.mp3",
+       "raw_rms_db": -23.299999237060547,
+       "match_gain_db": 1.100000023841858,
+       "raw": "peak=0.485"
+      },
+      "B": {
+       "file": "tremolo_0_B.mp3",
+       "raw_rms_db": -29.200000762939453,
+       "match_gain_db": 8.600000381469727,
+       "raw": "peak=0.409"
+      }
+     }
+    },
+    {
+     "name": "Vactrol (opto) tremolo \u2014 guitarix",
+     "binary": "gx_tremolo",
+     "sr": 48000,
+     "params": {
+      "freq": 4,
+      "depth": 0.75,
+      "SINE": 1
+     },
+     "license": "GPL-2+",
+     "note": "CdS photocell RC model",
+     "renders": {
+      "A": {
+       "file": "tremolo_1_A.mp3",
+       "raw_rms_db": -25.399999618530273,
+       "match_gain_db": 4.5,
+       "raw": "peak=0.412"
+      },
+      "B": {
+       "file": "tremolo_1_B.mp3",
+       "raw_rms_db": -32.5,
+       "match_gain_db": 12.5,
+       "raw": "peak=0.380"
+      }
+     }
+    }
+   ]
+  },
+  "tape-delay": {
+   "title": "Tape / tube delay",
+   "clips": [
+    "A",
+    "C"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Tape Delay",
+     "binary": "ours/tape-delay",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "tape-delay_0_A.mp3",
+       "raw_rms_db": -23.600000381469727,
+       "match_gain_db": 1.600000023841858,
+       "raw": "peak=0.419"
+      },
+      "C": {
+       "file": "tape-delay_0_C.mp3",
+       "raw_rms_db": -34.099998474121094,
+       "match_gain_db": 12.300000190734863,
+       "raw": "peak=0.265"
+      }
+     }
+    },
+    {
+     "name": "Watkins Copicat \u2014 guitarix gxechocat",
+     "binary": "gx_echocat",
+     "sr": 96000,
+     "params": {
+      "Head2": 1,
+      "Sustain": 0.45,
+      "BPM": 140,
+      "Output": 1.0,
+      "AUDIO_IN": 0.5
+     },
+     "license": "GPL-2+",
+     "note": "multi-head tape echo with valve stages",
+     "renders": {
+      "A": {
+       "file": "tape-delay_1_A.mp3",
+       "raw_rms_db": -20.399999618530273,
+       "match_gain_db": -1.7999999523162842,
+       "raw": "peak=0.523"
+      },
+      "C": {
+       "file": "tape-delay_1_C.mp3",
+       "raw_rms_db": -30.600000381469727,
+       "match_gain_db": 8.899999618530273,
+       "raw": "peak=0.286"
+      }
+     }
+    },
+    {
+     "name": "Tube delay \u2014 guitarix gxtubedelay",
+     "binary": "gx_tubedelay",
+     "sr": 96000,
+     "params": {
+      "de.delay": 420,
+      "feedback": 0.5,
+      "level": 0.5,
+      "Drive": 0.5
+     },
+     "license": "GPL-2+",
+     "note": "12AX7 stages around a digital delay",
+     "renders": {
+      "A": {
+       "file": "tape-delay_2_A.mp3",
+       "raw_rms_db": -8.0,
+       "match_gain_db": -14.100000381469727,
+       "raw": "peak=1.744"
+      },
+      "C": {
+       "file": "tape-delay_2_C.mp3",
+       "raw_rms_db": -16.899999618530273,
+       "match_gain_db": -5.0,
+       "raw": "peak=1.027"
+      }
+     }
+    }
+   ]
+  },
+  "spring": {
+   "title": "Spring reverb",
+   "clips": [
+    "A",
+    "B"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Spring Reverb (dispersive allpass model)",
+     "binary": "ours/spring-reverb",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "spring_0_A.mp3",
+       "raw_rms_db": -20.299999237060547,
+       "match_gain_db": -1.5,
+       "raw": "peak=0.517"
+      },
+      "B": {
+       "file": "spring_0_B.mp3",
+       "raw_rms_db": -27.700000762939453,
+       "match_gain_db": 7.099999904632568,
+       "raw": "peak=0.394"
+      }
+     }
+    },
+    {
+     "name": "re.springreverb \u2014 faustlibraries",
+     "binary": "lib_spring",
+     "sr": 48000,
+     "params": {
+      "Dwell": 0.5,
+      "Blend": 0.5,
+      "Tone": 0.5
+     },
+     "license": "STK-4.3 (MIT-like)",
+     "note": "Hadamard FDN \"spring-inspired\"",
+     "renders": {
+      "A": {
+       "file": "spring_1_A.mp3",
+       "raw_rms_db": -20.899999618530273,
+       "match_gain_db": -1.2999999523162842,
+       "raw": "peak=0.554"
+      },
+      "B": {
+       "file": "spring_1_B.mp3",
+       "raw_rms_db": -26.799999237060547,
+       "match_gain_db": 5.900000095367432,
+       "raw": "peak=0.531"
+      }
+     }
+    }
+   ]
+  },
+  "chorus": {
+   "title": "Chorus",
+   "clips": [
+    "A",
+    "B"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 BBD Chorus",
+     "binary": "ours/bbd-chorus",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "chorus_0_A.mp3",
+       "raw_rms_db": -22.899999618530273,
+       "match_gain_db": 0.699999988079071,
+       "raw": "peak=0.456"
+      },
+      "B": {
+       "file": "chorus_0_B.mp3",
+       "raw_rms_db": -29.0,
+       "match_gain_db": 8.199999809265137,
+       "raw": "peak=0.393"
+      }
+     }
+    },
+    {
+     "name": "Chorus \u2014 guitarix (Graef)",
+     "binary": "gx_chorus",
+     "sr": 48000,
+     "params": {
+      "freq": 1.2,
+      "level": 0.5
+     },
+     "license": "GPL-2+",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "chorus_1_A.mp3",
+       "raw_rms_db": -20.200000762939453,
+       "match_gain_db": -1.899999976158142,
+       "raw": "peak=0.730"
+      },
+      "B": {
+       "file": "chorus_1_B.mp3",
+       "raw_rms_db": -26.299999237060547,
+       "match_gain_db": 5.300000190734863,
+       "raw": "peak=0.541"
+      }
+     }
+    }
+   ]
+  },
+  "flanger": {
+   "title": "Flanger",
+   "clips": [
+    "A",
+    "B"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Jet Flanger",
+     "binary": "ours/analog-flanger",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "flanger_0_A.mp3",
+       "raw_rms_db": -22.399999618530273,
+       "match_gain_db": 0.20000000298023224,
+       "raw": "peak=0.505"
+      },
+      "B": {
+       "file": "flanger_0_B.mp3",
+       "raw_rms_db": -28.5,
+       "match_gain_db": 7.900000095367432,
+       "raw": "peak=0.345"
+      }
+     }
+    },
+    {
+     "name": "Flanger GX \u2014 guitarix",
+     "binary": "gx_flanger",
+     "sr": 48000,
+     "params": {
+      "freq": 0.4
+     },
+     "license": "GPL-2+",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "flanger_1_A.mp3",
+       "raw_rms_db": -23.799999237060547,
+       "match_gain_db": 2.4000000953674316,
+       "raw": "peak=0.536"
+      },
+      "B": {
+       "file": "flanger_1_B.mp3",
+       "raw_rms_db": -30.0,
+       "match_gain_db": 9.300000190734863,
+       "raw": "peak=0.350"
+      }
+     }
+    }
+   ]
+  },
+  "phaser": {
+   "title": "Phaser",
+   "clips": [
+    "A",
+    "B"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Multi-Stage Phaser",
+     "binary": "ours/multi-phaser",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "phaser_0_A.mp3",
+       "raw_rms_db": -20.5,
+       "match_gain_db": -1.2999999523162842,
+       "raw": "peak=0.584"
+      },
+      "B": {
+       "file": "phaser_0_B.mp3",
+       "raw_rms_db": -26.0,
+       "match_gain_db": 5.199999809265137,
+       "raw": "peak=0.593"
+      }
+     }
+    },
+    {
+     "name": "Phaser \u2014 guitarix (JOS phaser2)",
+     "binary": "gx_phaser",
+     "sr": 48000,
+     "params": {
+      "Speed": 1.5
+     },
+     "license": "GPL-2+",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "phaser_1_A.mp3",
+       "raw_rms_db": -19.700000762939453,
+       "match_gain_db": -2.4000000953674316,
+       "raw": "peak=0.651"
+      },
+      "B": {
+       "file": "phaser_1_B.mp3",
+       "raw_rms_db": -24.799999237060547,
+       "match_gain_db": 3.799999952316284,
+       "raw": "peak=0.682"
+      }
+     }
+    }
+   ]
+  },
+  "compressor": {
+   "title": "Compressor / sustain",
+   "clips": [
+    "A",
+    "B"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Infinite Sustain Compressor",
+     "binary": "ours/infinite-compressor",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "compressor_0_A.mp3",
+       "raw_rms_db": -15.800000190734863,
+       "match_gain_db": -5.599999904632568,
+       "raw": "peak=0.925"
+      },
+      "B": {
+       "file": "compressor_0_B.mp3",
+       "raw_rms_db": -16.799999237060547,
+       "match_gain_db": -5.099999904632568,
+       "raw": "peak=0.913"
+      }
+     }
+    },
+    {
+     "name": "Compressor \u2014 guitarix",
+     "binary": "gx_compressor",
+     "sr": 48000,
+     "params": {
+      "ratio": 8,
+      "threshold": -30,
+      "attack": 0.01,
+      "release": 0.3,
+      "knee": 3
+     },
+     "license": "GPL-2+",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "compressor_1_A.mp3",
+       "raw_rms_db": -29.399999618530273,
+       "match_gain_db": 8.699999809265137,
+       "raw": "peak=0.500"
+      },
+      "B": {
+       "file": "compressor_1_B.mp3",
+       "raw_rms_db": -32.20000076293945,
+       "match_gain_db": 10.5,
+       "raw": "peak=0.424"
+      }
+     }
+    },
+    {
+     "name": "1176 (ratio 4) \u2014 faustlibraries co.limiter_1176_R4",
+     "binary": "lib_1176",
+     "sr": 48000,
+     "params": {
+      "Drive": 4,
+      "Level": 0.6
+     },
+     "license": "LGPL-2.1+",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "compressor_2_A.mp3",
+       "raw_rms_db": -18.5,
+       "match_gain_db": -3.4000000953674316,
+       "raw": "peak=1.134"
+      },
+      "B": {
+       "file": "compressor_2_B.mp3",
+       "raw_rms_db": -22.700000762939453,
+       "match_gain_db": 0.800000011920929,
+       "raw": "peak=0.719"
+      }
+     }
+    },
+    {
+     "name": "Sustainer pedal circuit \u2014 guitarix susta",
+     "binary": "gx_susta",
+     "sr": 96000,
+     "params": {
+      "Sustain": 0.6,
+      "Volume": 0.5
+     },
+     "license": "GPL-2+",
+     "note": "transistor compressor pedal sim",
+     "renders": {
+      "A": {
+       "file": "compressor_3_A.mp3",
+       "raw_rms_db": -25.100000381469727,
+       "match_gain_db": 3.0999999046325684,
+       "raw": "peak=0.336"
+      },
+      "B": {
+       "file": "compressor_3_B.mp3",
+       "raw_rms_db": -28.799999237060547,
+       "match_gain_db": 8.5,
+       "raw": "peak=0.298"
+      }
+     }
+    }
+   ]
+  },
+  "wah": {
+   "title": "Auto-wah / envelope filter",
+   "clips": [
+    "A",
+    "C"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Auto-Wah",
+     "binary": "ours/auto-wah",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "wah_0_A.mp3",
+       "raw_rms_db": -22.0,
+       "match_gain_db": 2.0,
+       "raw": "peak=0.797"
+      },
+      "C": {
+       "file": "wah_0_C.mp3",
+       "raw_rms_db": -32.29999923706055,
+       "match_gain_db": 11.699999809265137,
+       "raw": "peak=0.502"
+      }
+     }
+    },
+    {
+     "name": "Auto-wah \u2014 guitarix (crybaby + envelope)",
+     "binary": "gx_autowah",
+     "sr": 48000,
+     "params": {
+      "level": 0.5
+     },
+     "license": "GPL-2+",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "wah_1_A.mp3",
+       "raw_rms_db": -12.600000381469727,
+       "match_gain_db": -8.300000190734863,
+       "raw": "peak=1.129"
+      },
+      "C": {
+       "file": "wah_1_C.mp3",
+       "raw_rms_db": -23.899999618530273,
+       "match_gain_db": 2.4000000953674316,
+       "raw": "peak=0.543"
+      }
+     }
+    },
+    {
+     "name": "ve.autowah \u2014 faustlibraries",
+     "binary": "lib_autowah",
+     "sr": 48000,
+     "params": {
+      "Level": 1
+     },
+     "license": "STK-4.3",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "wah_2_A.mp3",
+       "raw_rms_db": -9.899999618530273,
+       "match_gain_db": -12.199999809265137,
+       "raw": "peak=1.577"
+      },
+      "C": {
+       "file": "wah_2_C.mp3",
+       "raw_rms_db": -20.200000762939453,
+       "match_gain_db": -1.5,
+       "raw": "peak=0.810"
+      }
+     }
+    }
+   ]
+  },
+  "octaver": {
+   "title": "Octaver",
+   "clips": [
+    "A",
+    "B"
+   ],
+   "variants": [
+    {
+     "name": "Ours \u2014 Pitch Octaver (delay-line shifter)",
+     "binary": "ours/pitch-octaver",
+     "sr": 48000,
+     "params": {},
+     "license": "ours",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "octaver_0_A.mp3",
+       "raw_rms_db": -23.0,
+       "match_gain_db": 0.800000011920929,
+       "raw": "peak=0.482"
+      },
+      "B": {
+       "file": "octaver_0_B.mp3",
+       "raw_rms_db": -29.200000762939453,
+       "match_gain_db": 8.5,
+       "raw": "peak=0.436"
+      }
+     }
+    },
+    {
+     "name": "Boss OC-2 \u2014 guitarix",
+     "binary": "gx_oc2",
+     "sr": 48000,
+     "params": {
+      "DIRECT": 0.5,
+      "OCTAVE_1": 0.8,
+      "OCTAVE_2": 0.0
+     },
+     "license": "GPL-2+",
+     "note": "analog flip-flop divider style",
+     "renders": {
+      "A": {
+       "file": "octaver_1_A.mp3",
+       "raw_rms_db": -13.0,
+       "match_gain_db": -9.199999809265137,
+       "raw": "peak=1.515"
+      },
+      "B": {
+       "file": "octaver_1_B.mp3",
+       "raw_rms_db": -19.299999237060547,
+       "match_gain_db": -1.5,
+       "raw": "peak=1.106"
+      }
+     }
+    },
+    {
+     "name": "KPP Octaver",
+     "binary": "kpp_octaver",
+     "sr": 48000,
+     "params": {
+      "dry": 30,
+      "octave1": 30
+     },
+     "license": "GPL-3",
+     "note": "",
+     "renders": {
+      "A": {
+       "file": "octaver_2_A.mp3",
+       "raw_rms_db": -14.399999618530273,
+       "match_gain_db": -7.699999809265137,
+       "raw": "peak=1.184"
+      },
+      "B": {
+       "file": "octaver_2_B.mp3",
+       "raw_rms_db": -19.299999237060547,
+       "match_gain_db": -1.899999976158142,
+       "raw": "peak=1.024"
+      }
+     }
+    }
+   ]
+  }
+ }
+}

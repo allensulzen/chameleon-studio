@@ -1,0 +1,7 @@
+node_modules
+.DS_Store
+*.log
+.vercel
+tools/compare/host
+tools/compare/wrap
+_to_delete

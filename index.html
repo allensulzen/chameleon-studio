@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chameleon Studio — Daisy Seed 3 Pedal Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/favicon.png">
+</head>
+<body>
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar">
+    <a class="brand" href="#">
+      <span class="logo brand-mark" role="img" aria-label="Chameleon"></span>
+      <span class="brand-name">Chameleon<span class="brand-thin">Studio</span></span>
+    </a>
+
+    <div class="topbar-status">
+      <span class="chip" id="chip-engine"><i class="dot"></i><span>Loading Faust…</span></span>
+      <button class="chip chip-btn" id="chip-device" title="Daisy Seed over WebUSB — click to pair"><i class="dot"></i><span>No pedal connected</span></button>
+    </div>
+
+    <div class="topbar-actions">
+      <a class="btn btn-ghost" href="compare/" title="A/B similar effects on dry DI guitar, loudness-matched" data-icon="tabler:arrows-diff"><span>Compare</span></a>
+      <button class="btn btn-ghost" id="btn-open-code" title="View and export the generated libDaisy firmware" data-icon="tabler:code"><span>Firmware</span></button>
+      <button class="btn btn-accent" id="btn-open-flash" title="Flash the Daisy Seed over WebUSB" data-icon="tabler:bolt"><span>Flash Pedal</span></button>
+    </div>
+  </header>
+
+  <main class="stage">
+
+    <!-- ============ HERO: PEDAL + CONTROL DECK ============ -->
+    <section class="hero">
+
+      <!-- The pedal -->
+      <div class="pedal-wrap">
+        <div class="pedal" id="pedal">
+          <div class="pedal-jack pedal-jack-in" title="Instrument in"><span></span></div>
+          <div class="pedal-jack pedal-jack-out" title="Output"><span></span></div>
+          <div class="pedal-dc" title="9V DC"></div>
+
+          <div class="pedal-face">
+            <div class="pedal-print">
+              <span class="logo pedal-print-logo" aria-hidden="true"></span>
+              <span class="pedal-print-brand">CHAMELEON</span>
+              <span class="pedal-print-sub">MULTI-FX &middot; DAISY SEED 3 &middot; 480 MHz</span>
+            </div>
+
+            <div class="lcd">
+              <canvas class="lcd-scope" id="lcd-scope" width="360" height="110"></canvas>
+              <div class="lcd-text">
+                <span class="lcd-slot" id="pedal-lcd-slot">PATCH A</span>
+                <span class="lcd-name" id="pedal-lcd-name">—</span>
+              </div>
+              <div class="lcd-state" id="pedal-lcd-state">ACTIVE</div>
+              <div class="lcd-chain" id="pedal-lcd-chain"></div>
+            </div>
+
+            <div class="knob-row">
+              <div class="knob-unit">
+                <span class="knob-owner" id="knob-1-owner">—</span>
+                <div class="knob" id="knob-1" tabindex="0" role="slider" aria-label="Pot 1"><div class="knob-ring"></div><div class="knob-cap"><i class="knob-pointer"></i></div></div>
+                <span class="knob-label" id="knob-1-label">POT 1</span>
+                <span class="knob-val" id="knob-1-val">—</span>
+              </div>
+              <div class="knob-unit">
+                <span class="knob-owner" id="knob-2-owner">—</span>
+                <div class="knob" id="knob-2" tabindex="0" role="slider" aria-label="Pot 2"><div class="knob-ring"></div><div class="knob-cap"><i class="knob-pointer"></i></div></div>
+                <span class="knob-label" id="knob-2-label">POT 2</span>
+                <span class="knob-val" id="knob-2-val">—</span>
+              </div>
+              <div class="knob-unit">
+                <span class="knob-owner" id="knob-3-owner">—</span>
+                <div class="knob" id="knob-3" tabindex="0" role="slider" aria-label="Pot 3"><div class="knob-ring"></div><div class="knob-cap"><i class="knob-pointer"></i></div></div>
+                <span class="knob-label" id="knob-3-label">POT 3</span>
+                <span class="knob-val" id="knob-3-val">—</span>
+              </div>
+            </div>
+
+            <div class="pedal-effect-print" id="pedal-effect-print">PATCH A</div>
+
+            <div class="led-row">
+              <span class="led" id="pedal-led"></span>
+              <span class="led-caption" id="pedal-status-text">ON</span>
+            </div>
+
+            <button class="footswitch" id="pedal-footswitch" title="Tap: bypass · Hold: next patch" aria-label="Footswitch"><span></span></button>
+            <div class="pedal-hint">TAP &rarr; BYPASS &nbsp;&nbsp; HOLD &rarr; NEXT PATCH</div>
+          </div>
+          <div class="pedal-screws"><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+
+      <!-- Control deck -->
+      <div class="deck">
+
+        <div class="deck-block">
+          <div class="deck-head deck-head-row">
+            <div>
+              <h2>Patches</h2>
+              <span class="deck-caption">The pedal holds four patches; hold the footswitch to cycle. Each patch is a chain of up to 7 effects with 3 of their parameters on the physical pots.</span>
+            </div>
+            <div class="patch-actions">
+              <button class="btn btn-ghost btn-sm" id="btn-export-patch" data-icon="tabler:download" title="Download all patches as JSON"><span>Export</span></button>
+              <label class="btn btn-ghost btn-sm" data-icon="tabler:upload" title="Load patches from JSON"><span>Import</span><input type="file" id="file-import-patch" accept="application/json" hidden></label>
+            </div>
+          </div>
+          <div class="banks" id="banks"></div>
+        </div>
+
+        <div class="deck-block">
+          <div class="deck-head deck-head-row">
+            <div>
+              <h2>Signal chain</h2>
+              <span class="deck-caption" id="chain-caption">Series, in → out. Drag to reorder, click to edit, power button to bypass one stage. Drag effects here from the library.</span>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="btn-clear-chain" data-icon="tabler:trash"><span>Clear</span></button>
+          </div>
+          <div class="chain" id="chain"></div>
+        </div>
+
+        <div class="deck-block effect-info" id="effect-info"></div>
+
+        <div class="deck-block">
+          <div class="deck-head">
+            <h2>Audition</h2>
+            <span class="deck-caption" id="preview-engine-status">Loading Faust compiler…</span>
+          </div>
+          <div class="audition">
+            <button class="play" id="btn-play-audio" aria-label="Play / stop preview">
+              <span class="ico-play" data-icon="tabler:player-play-filled"></span>
+              <span class="ico-stop" data-icon="tabler:player-stop-filled"></span>
+            </button>
+            <div class="sources" id="audio-sources" role="radiogroup" aria-label="Preview source">
+              <button class="src" data-src="di-lead" title="Dry DI, single notes with rests — best for delays and reverbs">DI lead line</button>
+              <button class="src" data-src="di-chords" title="Dry DI strummed chords">DI chords</button>
+              <button class="src" data-src="di-riff" title="Dry DI riff with muted chops — best for drives">DI riff</button>
+              <button class="src" data-src="di-full-take" title="Dry DI, the full 16 s take">DI full take</button>
+              <button class="src" data-src="guitar-heavy" title="Already amped and distorted — not dry">Amped riff</button>
+              <button class="src" data-src="drums-analog">Analog drum machine</button>
+              <button class="src" data-src="drums-lofi">Lo-fi groove</button>
+              <button class="src" data-src="drums-break">Amen break</button>
+            </div>
+            <div class="meter" id="meter" aria-hidden="true"><i></i></div>
+          </div>
+          <div class="kbd-hints"><kbd>Space</kbd> play <kbd>B</kbd> bypass <kbd>1</kbd>–<kbd>4</kbd> patch <kbd>⇧</kbd>+drag fine &middot; double-click a knob to reset &middot; <kbd>Del</kbd> remove selected stage</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LIBRARY ============ -->
+    <section class="library" id="library">
+      <div class="library-bar">
+        <div class="library-title">
+          <h2>Effect library</h2>
+          <span class="count" id="library-count"></span>
+        </div>
+        <div class="filters" id="filters">
+          <button class="pill active" data-filter="all">All</button>
+          <button class="pill" data-filter="guitar">Guitar</button>
+          <button class="pill" data-filter="drum">Drum machine</button>
+          <span class="pill-sep"></span>
+          <button class="pill pill-dirt" data-filter="dirt">Dirt</button>
+          <button class="pill pill-amp" data-filter="amp">Amp &amp; tube</button>
+          <button class="pill pill-time" data-filter="time">Delay</button>
+          <button class="pill pill-reverb" data-filter="reverb">Reverb</button>
+          <button class="pill pill-mod" data-filter="mod">Modulation</button>
+          <button class="pill pill-dynamics" data-filter="dynamics">Dynamics</button>
+          <button class="pill pill-filter" data-filter="filter">Filter</button>
+          <button class="pill pill-eq" data-filter="eq">EQ &amp; tone</button>
+          <button class="pill pill-pitch" data-filter="pitch">Pitch</button>
+          <button class="pill pill-utility" data-filter="utility">Utility</button>
+          <span class="pill-sep"></span>
+          <select class="select-source" id="source-filter" title="Filter by source"><option value="">All sources</option></select>
+        </div>
+        <label class="search">
+          <span data-icon="tabler:search"></span>
+          <input type="search" id="search-effects" placeholder="Search — tape, muff, wah, 12AX7…" autocomplete="off">
+        </label>
+      </div>
+      <div class="cards" id="effect-cards"></div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <span>Chameleon Studio &middot; Faust DSP &middot; Electro-Smith Daisy Seed 3</span>
+    <span class="logo foot-logo" aria-hidden="true"></span>
+    <span>The preview compiles <code>dsp/*.dsp</code> in your browser — what you hear is what goes on the pedal. Icons: <a href="https://tabler.io/icons">Tabler</a> via Iconify.</span>
+  </footer>
+
+  <div class="toast" id="toast" aria-live="polite"></div>
+
+  <!-- ============ MODALS ============ -->
+  <div class="modal" id="flash-modal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-head"><h3>Flash pedal over WebUSB</h3><button class="close-modal" aria-label="Close" data-icon="tabler:x"></button></div>
+      <div class="modal-body">
+        <ol class="steps">
+          <li>Connect the pedal with a <strong>USB-C data cable</strong>.</li>
+          <li>Enter DFU mode: hold <strong>BOOT</strong>, tap <strong>RESET</strong>, release <strong>BOOT</strong>.</li>
+          <li>Click connect and pick <strong>STM32 BOOTLOADER</strong> / <strong>DFU in FS Mode</strong>.</li>
+        </ol>
+        <div class="progress"><div class="progress-bar" id="flash-progress"></div></div>
+        <div class="log" id="flash-status-text">Ready to connect.</div>
+        <p class="note">No compiled firmware exists yet — the studio will refuse to write anything to the device until the Faust → Daisy build produces a real <code>.bin</code>. See the README, “Firmware pipeline”.</p>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost close-modal">Cancel</button><button class="btn btn-accent" id="btn-start-flash">Connect &amp; flash</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="code-modal" aria-hidden="true">
+    <div class="modal-box modal-wide">
+      <div class="modal-head"><h3>Generated firmware</h3><button class="close-modal" aria-label="Close" data-icon="tabler:x"></button></div>
+      <div class="modal-body">
+        <p class="note">Control-surface skeleton for libDaisy: the four patches, their chains and pot assignments, with every stage's Faust source embedded. The DSP is compiled from those sources with <code>faust2daisy</code>.</p>
+        <pre class="code" id="code-content"></pre>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost" id="btn-copy-code">Copy</button><button class="btn btn-accent" id="btn-download-code">Download .cpp</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="dsp-modal" aria-hidden="true">
+    <div class="modal-box modal-wide">
+      <div class="modal-head"><h3 id="dsp-modal-title">Faust source</h3><button class="close-modal" aria-label="Close" data-icon="tabler:x"></button></div>
+      <div class="modal-body"><p class="note" id="dsp-modal-meta"></p><pre class="code" id="dsp-code"></pre></div>
+      <div class="modal-foot"><button class="btn btn-ghost" id="btn-copy-dsp">Copy</button><button class="btn btn-accent" id="btn-download-dsp">Download .dsp</button></div>
+    </div>
+  </div>
+
+  <script src="js/icons.js"></script>
+  <script type="module" src="js/faust-engine.js"></script>
+  <script src="js/effects-data.js"></script>
+  <script src="js/webdfu.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

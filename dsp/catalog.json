@@ -1,0 +1,252 @@
+{
+  "tape-delay": {
+    "name": "Tape Delay",
+    "category": "guitar",
+    "subCategory": "time",
+    "tag": "Guitar",
+    "shortDesc": "Warm analog tape echo with flutter and high-frequency roll-off.",
+    "description": "Tape echo model: wow and flutter on the delay time, saturated repeats, and a dark, band-limited feedback path. Past ~85% the Feedback knob pushes the loop into self-oscillation like a real tape echo."
+  },
+  "dattorro-plate": {
+    "name": "Dattorro Plate Reverb",
+    "category": "guitar",
+    "subCategory": "time",
+    "tag": "Guitar",
+    "shortDesc": "Rich spatial diffusion based on the legendary Dattorro plate topology.",
+    "description": "True Dattorro plate topology: input diffusion allpasses feeding a figure-eight tank of cross-coupled delay lines with damping. Decay runs from a tight 0.2 s slap to a 25 s wash."
+  },
+  "bbd-chorus": {
+    "name": "BBD Stereo Chorus",
+    "category": "guitar",
+    "subCategory": "mod",
+    "tag": "Guitar",
+    "shortDesc": "Lush bucket-brigade analog chorus and pitch vibrato.",
+    "description": "Recreates the warm, dimensional swirl of dual bucket-brigade delay lines with anti-phase sinusoidal LFO modulation."
+  },
+  "harmonic-tremolo": {
+    "name": "Harmonic Tremolo",
+    "category": "guitar",
+    "subCategory": "mod",
+    "tag": "Guitar",
+    "shortDesc": "Vintage brownface dual-band phase-split tremolo.",
+    "description": "Splits the signal into high-pass and low-pass crossover bands, modulating them 180 degrees out of phase for a hypnotic, Doppler-like pulse."
+  },
+  "dynamic-overdrive": {
+    "name": "Dynamic Overdrive",
+    "category": "guitar",
+    "subCategory": "dirt",
+    "tag": "Guitar",
+    "shortDesc": "Asymmetric soft-clipping tube-style drive with pick dynamics.",
+    "description": "Touch-sensitive tube saturation utilizing polynomial hyperbolic tangent waveshaping, pre-emphasis mid-boost, and post-drive cabinet smoothing."
+  },
+  "klon-centaur": {
+    "name": "Klon Centaur",
+    "source": "faustlibraries",
+    "license": "BSD-3-Clause",
+    "category": "guitar",
+    "subCategory": "dirt",
+    "tag": "Guitar",
+    "shortDesc": "Full circuit model of the Klon Centaur: transparent, touch-sensitive overdrive.",
+    "description": "Wave-digital-filter model of the real Centaur circuit (gain pot, germanium diode clipper, tone network) from the Faust standard library (ve.klonCentaur, Jatin Chowdhury's ChowCentaur port) \u2014 BSD licensed, so it ships cleanly. Chameleon only wraps it with three knobs."
+  },
+  "infinite-compressor": {
+    "name": "Infinite Sustain Compressor",
+    "category": "guitar",
+    "subCategory": "dynamics",
+    "tag": "Guitar",
+    "shortDesc": "High-ratio leveling amplifier for endless singing sustain.",
+    "description": "Squashes harsh picking spikes and continuously ramps up automatic makeup gain as notes fade, holding guitar sustain flat for 15+ seconds."
+  },
+  "multi-phaser": {
+    "name": "Multi-Stage Phaser",
+    "category": "guitar",
+    "subCategory": "mod",
+    "tag": "Guitar",
+    "shortDesc": "Cascaded all-pass phase shifter with feedback.",
+    "description": "Generates shifting spectral notches across 4 to 8 allpass filter stages. Moves smoothly from vintage Phase 90 sweeps to chewy, resonant vortexes."
+  },
+  "silicon-fuzz": {
+    "name": "Silicon Fuzz & Wavefolder",
+    "category": "guitar",
+    "subCategory": "dirt",
+    "tag": "Guitar",
+    "shortDesc": "Hard-clipping gated fuzz with wavefolding bite.",
+    "description": "High-gain silicon fuzz with a bias control that shifts the clipping symmetry (even harmonics) and starves quiet signals through a gate, plus a touch of wavefolding on the peaks."
+  },
+  "auto-wah": {
+    "name": "Auto-Wah / Envelope Filter",
+    "category": "guitar",
+    "subCategory": "filter",
+    "tag": "Guitar",
+    "shortDesc": "Dynamic resonant band-pass filter tracking pick attack.",
+    "description": "Vintage Q-Tron envelope follower that tracks your picking velocity to sweep a resonant 2nd-order state-variable bandpass filter."
+  },
+  "pitch-octaver": {
+    "name": "Dual Pitch Octaver",
+    "category": "guitar",
+    "subCategory": "mod",
+    "tag": "Guitar",
+    "shortDesc": "Polyphonic sub-octave and upper octave harmonic generator.",
+    "description": "Creates thick multi-octave guitar sounds with clean tracking. Generates a deep -1 octave sub tone and a shimmering +1 octave upper tone."
+  },
+  "analog-flanger": {
+    "name": "Jet Flanger",
+    "category": "guitar",
+    "subCategory": "mod",
+    "tag": "Guitar",
+    "shortDesc": "Resonant comb filter with jet-plane through-zero sweep.",
+    "description": "Short modulated delay lines coupled with aggressive inverted feedback create massive comb filter hollow sweeps and jet airplane passes."
+  },
+  "spring-reverb": {
+    "name": "Spring Reverb Tank",
+    "category": "guitar",
+    "subCategory": "time",
+    "tag": "Guitar",
+    "shortDesc": "Physical model of dual-spring mechanical reverb bounce.",
+    "description": "Spring tank model: a drive stage into a chain of dispersive allpass sections (the \"boing\") feeding two spring lines of different lengths with dark feedback."
+  },
+  "clean-boost": {
+    "name": "JFET Preamp Boost",
+    "category": "guitar",
+    "subCategory": "dirt",
+    "tag": "Guitar",
+    "shortDesc": "Discrete Class-A JFET boost with tilt-EQ saturation.",
+    "description": "Pushes tube amp front ends into natural breakup while adding harmonic sheen. Center knob tilts between low-end fatness and treble sparkle."
+  },
+  "reverse-delay": {
+    "name": "Reverse Delay",
+    "category": "guitar",
+    "subCategory": "time",
+    "tag": "Guitar",
+    "shortDesc": "Backwards buffer playback for psychedelic textures.",
+    "description": "Two backwards-running read heads half a window apart, crossfaded so the reversed audio has no seams, with a filtered feedback path."
+  },
+  "lofi-bitcrush": {
+    "name": "Lo-Fi Bitcrusher",
+    "category": "guitar",
+    "subCategory": "dirt",
+    "tag": "Guitar",
+    "shortDesc": "Sample rate decimation and dynamic bit reduction.",
+    "description": "Sample-and-hold decimation at the target rate plus bit-depth quantisation, blended against the dry signal."
+  },
+  "drum-pumping-comp": {
+    "name": "Pumping VCA Drum Compressor",
+    "category": "drum",
+    "subCategory": "dynamics",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Aggressive sidechain-style pumping compressor for dance beats.",
+    "description": "Designed specifically for analog drum machines. Clamps down heavily on kick transients and breathes out with exaggerated, musical pumping."
+  },
+  "gated-snare-reverb": {
+    "name": "80s Gated Snare Reverb",
+    "category": "drum",
+    "subCategory": "time",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Explosive non-linear gated reverb tail that cuts off abruptly.",
+    "description": "Big room (Freeverb) keyed from the kick/snare band of the dry input; the gate slams shut a set hold time after each hit."
+  },
+  "resonant-dj-filter": {
+    "name": "Resonant DJ Dual Filter",
+    "category": "drum",
+    "subCategory": "filter",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "High-resonance Low-Pass (turn left) and High-Pass (turn right) sweep.",
+    "description": "One knob, centre is clean: sweep left for a resonant low-pass down to 60 Hz, right for a resonant high-pass up to 8 kHz. Exponential sweep, analog-style saturation at high resonance."
+  },
+  "tape-saturation-drum": {
+    "name": "Analog Tape Saturator",
+    "category": "drum",
+    "subCategory": "dirt",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Fat analog tape drive that glues kicks and rounds harsh cymbals.",
+    "description": "Harmonic saturation tuned for analog drum machines. Tames piercing metallic cymbals on the DrumBrute/Volca and fattens low-end kick body."
+  },
+  "beat-repeater": {
+    "name": "Beat Repeater / Stutter",
+    "category": "drum",
+    "subCategory": "time",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Buffer stutter: grabs a slice and repeats it N times in tempo-sized subdivisions.",
+    "description": "Captures a slice of the incoming beat and plays it back N times before grabbing a fresh one. Short slices give glitchy rolls; long slices give bar-level loops."
+  },
+  "sub-resonator": {
+    "name": "808 Sub-Bass Resonator",
+    "category": "drum",
+    "subCategory": "filter",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Triggers a massive 40-60Hz sine boom on drum transients.",
+    "description": "A tuned 2-pole resonator excited only by the low band of the input, with Q derived from the Decay knob so the boom rings for the time you set."
+  },
+  "drum-slammer": {
+    "name": "Drum Slammer Peak Limiter",
+    "category": "drum",
+    "subCategory": "dynamics",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Brickwall peak limiter maximizing perceived drum loudness.",
+    "description": "Over-the-top peak limiter and clipper. Crushes drum dynamics to create that explosive, in-your-face room sound without digital overs."
+  },
+  "ring-mod-percussion": {
+    "name": "Metallic Ring Modulator",
+    "category": "drum",
+    "subCategory": "mod",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Frequency multiplication for robotic, metallic drum timbres.",
+    "description": "Multiplies drum hits with a carrier sine/square wave to create clanging cowbells, futuristic laser toms, and dissonant industrial hi-hats."
+  },
+  "transient-shaper": {
+    "name": "Drum Transient Shaper",
+    "category": "drum",
+    "subCategory": "dynamics",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Independent attack click boost and sustain body control.",
+    "description": "Compares a fast and a slow envelope follower; attacks are boosted or cut where the fast envelope leads, sustain where it lags."
+  },
+  "stereo-pingpong-beat": {
+    "name": "Multi-Tap Beat Delay",
+    "category": "drum",
+    "subCategory": "time",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Rhythmic straight + dotted-eighth two-tap delay with filtered feedback.",
+    "description": "Two rhythmic taps (straight and dotted) with a dark filtered feedback path. The pedal has one output jack, so this replaces the stereo ping-pong idea with a mono multi-tap pattern that gives the same syncopation."
+  },
+  "wavefolder-dirt": {
+    "name": "Buchla Drum Wavefolder",
+    "category": "drum",
+    "subCategory": "dirt",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Non-linear wavefolding for aggressive industrial drum harmonics.",
+    "description": "Instead of clipping waveforms, wavefolders fold high-level peaks backwards towards zero, turning simple analog kicks into aggressive techno monsters."
+  },
+  "comb-resonator": {
+    "name": "Comb Filter Resonator",
+    "category": "drum",
+    "subCategory": "filter",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Pitched resonant comb filter turning drum bursts into synth notes.",
+    "description": "Highly tuned feedback comb filter that rings at precise musical pitches when excited by noisy snare cracks or sharp rimshots."
+  },
+  "freq-shifter": {
+    "name": "Bode Frequency Shifter",
+    "category": "drum",
+    "subCategory": "mod",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Linear frequency shifting for dissonant alien percussion.",
+    "description": "Single-sideband frequency shifter built on a Hilbert allpass pair: every partial moves by the same number of Hz, wrecking harmonic relationships for bell-like, inharmonic percussion."
+  },
+  "bbd-drum-delay": {
+    "name": "Dark BBD Percussion Delay",
+    "category": "drum",
+    "subCategory": "time",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Dark, saturated analog bucket-brigade delay for drums.",
+    "description": "Filtered repeats that sit neatly behind drum grooves without cluttering the mix. Features progressive high-cut filtering on successive echoes."
+  },
+  "expander-gate": {
+    "name": "Drum Expander / Noise Gate",
+    "category": "drum",
+    "subCategory": "dynamics",
+    "tag": "DrumBrute / Volca",
+    "shortDesc": "Fast downward expander cutting background hiss and hum.",
+    "description": "Downward expander with a 4:1 slope below threshold and a range control so hiss can be reduced rather than hard-muted."
+  }
+}

@@ -1,0 +1,1115 @@
+{
+  "gx-gxamp": {
+    "name": "Amp: 12AX7 three-stage",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three cascaded 12AX7 triode stages; the classic guitarix high-gain preamp voice.",
+    "description": "Three 12AX7 triode stages run through the guitarix tube tables with 6.5 kHz inter-stage low-pass filters, fed by the drive/wet-dry distortion block. Pregain sets how hard the first two stages are hit, Gain the third; the standard bright, saturating 12AX7 preamp."
+  },
+  "gx-gxamp2": {
+    "name": "Amp: 6V6 three-stage",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three 6V6 stages driven like a preamp; rounder, softer clip than the 12AX7 amps.",
+    "description": "Three stages through the 6V6 tube table with inter-stage low-pass filters, preceded by the drive/wet-dry distortion block. Sounds softer and more compressed than the 12AX7 version; Pregain and Gain set the per-stage drive."
+  },
+  "gx-gxamp3": {
+    "name": "Amp: 12AU7 three-stage",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three low-mu 12AU7 stages; cleaner headroom with a gentle, late breakup.",
+    "description": "Three 12AU7 triode stages through tube tables with inter-stage low-pass filters and extra make-up gain, preceded by the drive/wet-dry distortion block. The low-gain 12AU7 stays clean longer, making this the most headroom-friendly of the gxamp set."
+  },
+  "gx-gxamp4": {
+    "name": "Amp: 12AU7 pre → 6V6 master",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "12AU7 three-stage preamp into a single-ended 6V6 master stage.",
+    "description": "Three 12AU7 triode stages (130 V tube table) feed a paralleled pair of 6V6 tube-table stages acting as a single-ended power stage, with the drive/wet-dry distortion block in between. Pregain drives the preamp, Gain pushes the 6V6 output for power-amp style compression."
+  },
+  "gx-gxamp5": {
+    "name": "Amp: 12AX7 pre → 6V6 master",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Classic 12AX7 preamp into a 6V6 master stage; tweed-style crunch.",
+    "description": "Three 12AX7 triode stages feed a paralleled pair of 6V6 tube-table stages that act as a single-ended power stage, with the drive/wet-dry distortion block in between. Pregain sets preamp drive and Gain how hard the 6V6 output is pushed."
+  },
+  "gx-gxamp6": {
+    "name": "Amp: 6DJ8 pre → 6V6 push-pull",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "6DJ8 preamp with local feedback into an asymmetric push-pull 6V6 output.",
+    "description": "Three 6DJ8 stages with inter-stage feedback loops feed a push-pull pair of 6V6 tube-table stages with asymmetric clipping limits, plus the drive/wet-dry block. Pregain drives the preamp and Gain the push-pull output."
+  },
+  "gx-gxamp7": {
+    "name": "Amp: 12AX7 pre → 6V6 push-pull",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "12AX7 preamp with feedback into a push-pull 6V6 output; the fullest gxamp voice.",
+    "description": "Three 12AX7 triode stages with inter-stage feedback loops feed a push-pull pair of 6V6 tube-table stages with asymmetric clipping, with the drive/wet-dry distortion block in the chain. Pregain sets preamp drive and Gain the output-stage push."
+  },
+  "gx-gxamp8": {
+    "name": "Amp: 12AU7 pre → 6V6 push-pull",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Clean-leaning 12AU7 preamp into a push-pull 6V6 output stage.",
+    "description": "Three 12AU7 stages (130 V table) with inter-stage feedback loops feed a push-pull pair of 6V6 tube-table stages with asymmetric clipping, plus the drive/wet-dry block. A lower-gain front end with power-amp style saturation at the back."
+  },
+  "gx-gxamp9": {
+    "name": "Amp: 12AX7 with feedback",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three 12AX7 stages with negative feedback around them; tighter than the plain version.",
+    "description": "Three 12AX7 triode stages through tube tables, with negative feedback wrapped around the first two stages and an envelope-following level tracker in front. Feedback tightens the response and lowers the effective gain compared with the plain 12AX7 amp."
+  },
+  "gx-gxamp10": {
+    "name": "Amp: 6DJ8 three-stage",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three 6DJ8 stages ending in a paralleled pair; smooth, mid-gain tube crunch.",
+    "description": "Two 6DJ8 triode stages followed by a paralleled 6DJ8 pair, all through 130 V tube tables with inter-stage low-pass filters, preceded by the drive/wet-dry distortion block. The 6DJ8 gives a smoother, less fizzy breakup than the 12AX7 amps."
+  },
+  "gx-gxamp11": {
+    "name": "Amp: 12AU7 with feedback",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three 12AU7 stages with inter-stage negative feedback; very clean, compressed edge.",
+    "description": "Three 12AU7 stages through 130 V tube tables with negative feedback around the first two stages and an envelope-following level tracker in front. The lowest-gain of the feedback amps: mostly clean with a soft edge when pushed."
+  },
+  "gx-gxamp12": {
+    "name": "Amp: 6DJ8 pre → 6V6 master",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "6DJ8 three-stage preamp into a single-ended 6V6 master stage.",
+    "description": "Three 6DJ8 triode stages (130 V table) feed a paralleled pair of 6V6 tube-table stages acting as a single-ended power stage, with the drive/wet-dry block between them. Smooth preamp character with output-stage compression from the 6V6."
+  },
+  "gx-gxamp13": {
+    "name": "Amp: 6DJ8 with feedback",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three 6DJ8 stages with inter-stage negative feedback; smooth and controlled.",
+    "description": "Three 6DJ8 stages through 130 V tube tables with negative feedback around the first two stages and an envelope-following level tracker in front. Feedback trims the gain and evens out the response for a controlled, smooth crunch."
+  },
+  "gx-gxamp14": {
+    "name": "Amp: 12AT7 three-stage",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three 12AT7 stages; medium gain between the 12AX7 and 12AU7 amps.",
+    "description": "Three 12AT7 triode stages through tube tables with inter-stage low-pass filters, preceded by the drive/wet-dry distortion block. The 12AT7 sits between the 12AX7 and 12AU7 in gain, giving a punchy mid-gain preamp voice."
+  },
+  "gx-gxamp15": {
+    "name": "Amp: 12AT7 pre → 6V6 master",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "12AT7 preamp into a single-ended 6V6 master stage.",
+    "description": "Three 12AT7 triode stages feed a paralleled pair of 6V6 tube-table stages acting as a single-ended power stage, with the drive/wet-dry block between them. Mid-gain preamp bite with 6V6 output compression as Gain is raised."
+  },
+  "gx-gxamp16": {
+    "name": "Amp: 12AT7 pre → 6V6 push-pull",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "12AT7 preamp with feedback into a push-pull 6V6 output.",
+    "description": "Three 12AT7 stages with inter-stage feedback loops feed a push-pull pair of 6V6 tube-table stages with asymmetric clipping, plus the drive/wet-dry block. Mid-gain preamp with power-amp style push-pull saturation."
+  },
+  "gx-gxamp17": {
+    "name": "Amp: 12AT7 with feedback",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three 12AT7 stages with inter-stage negative feedback; tight mid-gain crunch.",
+    "description": "Three 12AT7 stages through tube tables with negative feedback around the first two stages and an envelope-following level tracker in front. Feedback tightens the response for a firmer, more controlled mid-gain sound."
+  },
+  "gx-gxamp18": {
+    "name": "Amp: 6C16 three-stage",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Three stages through the 6C16 tube table; a hotter, more aggressive preamp.",
+    "description": "Three triode stages through the 6C16 tube table with inter-stage low-pass filters, preceded by the drive/wet-dry distortion block. Runs hotter than the 12AX7 set; Pregain and Gain set the per-stage drive."
+  },
+  "gx-alembic-mono": {
+    "name": "Alembic F-2B Preamp (tone stage)",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Linear DK model of the Alembic F-2B studio preamp's Fender-style tone stack.",
+    "description": "DK circuit simulation from the schematic of the Alembic F-2B preamp, reduced to its Bass/Middle/Treble tone stack and Volume as a 5th-order filter whose coefficients follow the pot positions. Purely linear: no tube clipping, just the F-2B's voicing."
+  },
+  "gx-gx-alembic": {
+    "name": "Alembic F-2B Preamp (tone stage, padded)",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Same linear Alembic F-2B tone-stack model as Alembic Preamp with a fixed output pad.",
+    "description": "Identical DK circuit simulation of the Alembic F-2B tone stack and volume, differing only by a fixed -26 dB output scale. Linear filter only, no tube stages."
+  },
+  "gx-gx-studiopre": {
+    "name": "Alembic F-2B Studio Preamp",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Full Alembic F-2B: two 12AX7 sections, Bright/Normal, tone stack and master.",
+    "description": "DK circuit simulation from the schematic of the Alembic F-2B studio preamp (two 12AX7 sections with a Fender-style tone stack), with Bright and Normal channel clip tables, an output stage table and a five-band split. A clean, warm tube preamp with Bass/Middle/Treble, Volume and Master."
+  },
+  "gx-gxmetal-amp": {
+    "name": "Metal Amp: 12AY7 pre → EL34 push-pull",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "High-gain head: 12AY7 preamp stages, tone control and an EL34 push-pull power stage.",
+    "description": "Three 12AY7 triode stages through tube tables feed a tone control and a push-pull EL34 power stage modelled with the plate-loaded tubestageP table, driven by a distortion block. Pregain, Gain and Tone shape a saturated hi-gain voice."
+  },
+  "gx-gxmetal-head": {
+    "name": "Metal Head: 12AX7 pre → 6L6 push-pull",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "High-gain 12AX7 head into a 6L6GC push-pull power stage; tight modern distortion.",
+    "description": "Three 12AX7 triode stages through tube tables feed a paralleled 6L6GC push-pull power stage modelled with the plate-loaded tubestageP table, driven by a distortion block. Pregain and Gain stack up gain for a tight, saturated metal head."
+  },
+  "gx-gx-ampmodul": {
+    "name": "Post-Amp Tube Stage (6V6)",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "6V6 tube-table stages with adjustable feedback and wet/dry; a tube 'power amp' post block.",
+    "description": "Runs the signal through two 6V6 tube-table stages (Tube1 and Tube2 gains) inside two adjustable feedback loops, with a wet/dry balance. Designed as a post-amp block for adding power-stage grit and compression after a preamp."
+  },
+  "gx-preamp": {
+    "name": "Polynomial Preamp",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Simple polynomial-waveshaper preamp with atan normalisation; soft drive.",
+    "description": "Two cascaded low-order polynomial nonlinearities with a 3-sample moving-average filter on each side and an atan-normalised output; the drive control sets how hard the atan stage is hit. A simple soft-drive preamp, not a circuit model."
+  },
+  "gx-gx-bigchump": {
+    "name": "Redeye Big Chump",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Redeye Big Chump small tube amp: two DK preamp stages into a power stage.",
+    "description": "DK circuit simulation from the Redeye Chump schematics: two preamp stages and a power stage from the redeye library, each a pot-dependent filter followed by a clip table, run in a five-band split. Small-amp tube warmth with Gain and Tone; the feedback switch is noted in the source as not yet working."
+  },
+  "gx-gx-chump": {
+    "name": "Redeye Chump",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Redeye Chump small tube amp with selectable power-amp feedback; sweet low-watt breakup.",
+    "description": "DK circuit simulation from the Redeye Chump schematic: a preamp stage with Gain and Tone into a power stage, each a pot-dependent filter followed by a clip table, with a switch between feedback and no-feedback power-amp models. Low-wattage tube breakup that stays touch sensitive."
+  },
+  "gx-gx-vibrochump": {
+    "name": "Redeye Vibro Chump",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Redeye Chump amp with vactrol tremolo and a presence-style power-stage feedback loop.",
+    "description": "DK circuit simulation of the Redeye Chump preamp and power stage, with a feedback loop around the power tube that acts as a presence control and a built-in vactrol (LDR) tremolo with Speed and Intensity. A small tube amp with amp-style tremolo."
+  },
+  "gx-reso-tube": {
+    "name": "Resonant Tube",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Tube-style clipper feeding a short resonant delay; fuzzy, ringing overtones.",
+    "description": "A polynomial tube-style nonlinearity into a short feedback comb resonator (Vibrato sets the delay, Resonance the feedback) with symmetric clipping, mixed with the dry signal. Adds ringing, resonant harmonics rather than modelling a specific circuit."
+  },
+  "gx-tube": {
+    "name": "Fuzzy Tube",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Single 'fuzzy tube' polynomial waveshaper; simple, gritty tube-ish drive.",
+    "description": "One stage of guitarix's fuzzy_tube polynomial waveshaper with fixed curve parameters; the Fuzzy control sets the amount. A simple gritty drive, not a circuit model."
+  },
+  "gx-tube3": {
+    "name": "Valve Stage (Bendiksen ×2, gain)",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Two Bendiksen triode-model stages with gain, Q and dist controls; ported from swh Valve.",
+    "description": "Two inverting passes through the Bendiksen valve model from Steve Harris's swh-plugins Valve, with an inter-stage gain control. Dist sets distortion amount and Q the asymmetry, giving a soft triode-style saturation."
+  },
+  "gx-valve": {
+    "name": "Valve Stage (Bendiksen ×2)",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Two Bendiksen triode-model stages back to back; soft valve saturation.",
+    "description": "Two inverting passes through the Bendiksen valve model from Steve Harris's swh-plugins Valve. Dist controls the distortion amount and Q the bias/asymmetry, giving a soft, even-harmonic valve saturation."
+  },
+  "gx-gx-w20": {
+    "name": "Westbury W-20",
+    "family": "amp",
+    "category": "guitar",
+    "shortDesc": "Westbury W-20 12AX7 preamp with Gain and Level; clean-to-crunch tube preamp.",
+    "description": "DK circuit simulation from the schematic of the Westbury W-20 preamp: two 12AX7 stages as pot-dependent filters with clip tables, run in a five-band split. A straightforward Gain/Level tube preamp for clean to crunchy tones."
+  },
+  "gx-axface": {
+    "name": "Ax Face",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Fuzz Face-style transistor fuzz with Attack, Smooth and Level.",
+    "description": "DK circuit simulation from the schematic of the Ax Face fuzz: a pot-dependent state-space filter followed by two transistor-stage tables. Attack sets the fuzz amount and Smooth softens the edge for a vintage two-transistor fuzz."
+  },
+  "gx-bfuzz": {
+    "name": "Bass Fuzz",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Bass fuzz pedal with Drive, Thickness and wet/dry blend to keep the low end.",
+    "description": "DK circuit simulation from the schematic of a bass fuzz pedal with a transistor clipper stage, plus a wet/dry control so the clean low end can be blended back in. Thickness shapes the body of the fuzz."
+  },
+  "gx-bigmuff": {
+    "name": "Big Muff Tone Stage",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Only the Big Muff Pi tone control: low-pass and high-pass blended by one knob.",
+    "description": "Models just the Big Muff Pi passive tone stack as a 408 Hz low-pass and a 1.86 kHz high-pass mixed by the Tone knob. No distortion; the source notes it lacks the real unit's 1 kHz dip."
+  },
+  "gx-bmfp": {
+    "name": "Big Muff Fuzz (polynomial)",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Old hand-written Big Muff-style fuzz using polynomial waveshapers and a tone control.",
+    "description": "An early hand-written Big Muff-style fuzz: cascaded polynomial waveshapers with Drive, followed by a tone control and output level. Not a circuit model; the newer Big Muff Pi entry is the accurate one."
+  },
+  "gx-bmp": {
+    "name": "Big Muff Pi",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Electro-Harmonix Big Muff Pi: thick, sustaining four-transistor fuzz; Sustain and Tone.",
+    "description": "DK circuit simulation from the Big Muff Pi schematic: pot-dependent state-space filters with a symmetric diode clip stage, at 96 kHz. Sustain drives the clipping stages for the Big Muff's wall of thick, singing fuzz; Tone scoops between bass and treble."
+  },
+  "gx-bossds1": {
+    "name": "Boss DS-1",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Boss DS-1 Distortion: transistor boost into an op-amp hard clipper with the DS-1 tone.",
+    "description": "DK circuit simulation from the Boss DS-1 schematic: input buffer, transistor gain stage, op-amp asymmetric hard-clipping stage and the DS-1 active tone control as pot-dependent filters, at 96 kHz. Tight, buzzy rock distortion with Tone, Drive and Level."
+  },
+  "gx-buffb": {
+    "name": "Transistor Buffer Boost",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Single-transistor buffer/booster; clean level lift with a slight tonal change.",
+    "description": "DK circuit simulation from the transistor buffer schematic: a linear pot-dependent filter for Volume and Intensity. A clean boost with the mild colouring of a discrete transistor buffer."
+  },
+  "gx-buzz": {
+    "name": "Buzz Box",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Baldwin-Burns Buzzaround-style transistor fuzz with a wet/dry blend.",
+    "description": "DK circuit simulation from the schematic of a Buzzaround-style fuzz box with a transistor clipper stage and a wet/dry blend. A raspy, sputtery 1960s fuzz with Level."
+  },
+  "gx-coverd": {
+    "name": "Colorsound Overdriver",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Colorsound Overdriver: transistor booster/overdrive with Bass and Treble.",
+    "description": "DK circuit simulation from the schematic of the Colorsound Overdriver as a pot-dependent linear filter (Volume, Bass, Treble) with a wet/dry blend. In this port it acts as a coloured booster with the Overdriver's tone controls."
+  },
+  "gx-drive": {
+    "name": "Fuzzy Tube Drive",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Fuzzy-tube polynomial waveshaper with a hotter curve than the Tube stage; gritty drive.",
+    "description": "One pass through guitarix's fuzzy_tube polynomial waveshaper with a more aggressive fixed curve than the Tube stage; Drive sets the amount. A simple, gritty drive rather than a circuit model."
+  },
+  "gx-eldist": {
+    "name": "Electra Distortion",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Electra one-transistor distortion: single gain stage with asymmetric diode clipping.",
+    "description": "DK circuit simulation from the schematic of the Electra distortion circuit: a transistor gain stage as a pot-dependent filter with an asymmetric clip table, at 96 kHz. A raw, touch-sensitive single-knob (Drive) distortion."
+  },
+  "gx-ffreak": {
+    "name": "Fat Furry Freak",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Extreme bass fuzz with Fuzz, Tone, Gate and Level; huge and gated.",
+    "description": "DK circuit simulation from the Fat Freak schematic: pot-dependent filters with clipping stages and an atan-shaped gate. An over-the-top bass fuzz whose Gate control chokes the decay for sputtery, velcro-style textures."
+  },
+  "gx-foxeylady": {
+    "name": "Foxey Lady",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Guild Foxey Lady (Tone Bender-style) three-transistor fuzz with Fuzz and Level.",
+    "description": "DK circuit simulation from the Foxey Lady schematic: pot-dependent state-space filters followed by three transistor-stage tables. A thick, saturated three-transistor fuzz in the Tone Bender family."
+  },
+  "gx-fuzzface": {
+    "name": "Fuzz Face (JH-1)",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Dallas Arbiter Fuzz Face (JH-1): warm two-transistor fuzz that cleans up with volume.",
+    "description": "DK circuit simulation from the Fuzz Face JH-1 schematic: a 5th-order state-space filter whose coefficients follow the Fuzz and Level pots, followed by transistor-stage tables. Classic Hendrix-style fuzz with Fuzz and Level."
+  },
+  "gx-fuzzfacefm": {
+    "name": "Fuzz Face (Fuller Mods)",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Fuzz Face with Mike Fuller's mods, adding a Drive control for finer gain range.",
+    "description": "DK circuit simulation from the Fuzz Face Fuller-mods schematic: pot-dependent state-space filters with transistor-stage tables, with an added Drive control. A more controllable Fuzz Face with Fuzz, Drive and Level."
+  },
+  "gx-fuzzfacerm": {
+    "name": "Fuzz Face (Roger Mayer)",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Roger Mayer's Fuzz Face variant; smoother, more refined fuzz with Fuzz and Level.",
+    "description": "DK circuit simulation from the Roger Mayer Fuzz Face schematic: pot-dependent state-space filters followed by two transistor-stage tables. A smoother, more polished take on the Fuzz Face circuit."
+  },
+  "gx-fumaster": {
+    "name": "Vintage Fuzz Master",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Vintage Fuzz Master three-transistor fuzz with Tone, Volume and a wet/dry blend.",
+    "description": "DK circuit simulation from the Vintage Fuzz Master schematic: pot-dependent filters followed by three transistor-stage tables, plus a wet/dry blend. A gnarly 1960s-style fuzz with a Tone control."
+  },
+  "gx-hogsfoot": {
+    "name": "Hogs Foot Bass Booster",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Electro-Harmonix Hog's Foot bass booster; low-end lift with a wet/dry blend.",
+    "description": "DK circuit simulation from the Hog's Foot schematic as a pot-dependent linear filter with Volume and a wet/dry blend. A simple transistor bass booster for adding weight to the low end."
+  },
+  "gx-hornet": {
+    "name": "Hornet",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Electro-Harmonix Hornet-style fuzz with Volume, Sustain and Fuzz.",
+    "description": "DK circuit simulation from the Hornet schematic: pot-dependent filters with clipping stages. A compact, sustaining fuzz with separate Sustain and Fuzz controls."
+  },
+  "gx-lpbboost": {
+    "name": "LPB-1 Linear Power Booster",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Electro-Harmonix LPB-1 one-transistor clean boost with a single Boost knob.",
+    "description": "DK circuit simulation from the LPB-1 schematic as a pot-dependent linear filter. A near-transparent single-transistor boost for pushing an amp harder."
+  },
+  "gx-muff": {
+    "name": "Muff (transistor-stage Big Muff)",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Big Muff-style fuzz built from three transistor-stage tables with a Tone control.",
+    "description": "DK circuit simulation from the Muff schematic: pot-dependent filters followed by three transistor-stage tables and the Muff tone control. A variant Big Muff model that uses the transistor library rather than diode clip tables."
+  },
+  "gx-gx-distortion": {
+    "name": "Multi-Band Distortion (guitarix)",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Guitarix's original four-band distortion with per-band drive/gain, resonator and wet/dry.",
+    "description": "Splits the signal at three adjustable crossover frequencies and applies separate drive and gain per band, with an optional resonator and a wet/dry blend. The original guitarix distortion block; an algorithmic design rather than a pedal model."
+  },
+  "gx-mbclipper": {
+    "name": "Multi-Band Clipper",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Five-band clipper with independent Drive and Gain per band.",
+    "description": "Splits the input into five bands at four adjustable crossovers and hard-clips each band with its own Drive and Gain. Useful for controlled, band-limited distortion without low-end mud."
+  },
+  "gx-mbd": {
+    "name": "Multi-Band Distortion",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Five-band distortion with per-band Drive and DC Offset for asymmetric clipping.",
+    "description": "Splits the input into five bands at four adjustable crossovers and distorts each with its own Drive and Offset (bias for asymmetry), then a master Gain. Lets bass stay clean while highs saturate."
+  },
+  "gx-mxrdist": {
+    "name": "MXR Distortion+",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "MXR Distortion+: op-amp gain into germanium-style diode clipping; crunchy, mid-forward.",
+    "description": "Hand-written model of the MXR Distortion+ with input and output filters as pot-dependent filters and a diode clipper approximation, at 96 kHz. Drive and Volume give the classic crunchy, slightly nasal 1970s distortion."
+  },
+  "gx-overdrive": {
+    "name": "Overdrive (rational waveshaper)",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Simple rational-function overdrive with drive-compensated level and wet/dry.",
+    "description": "A single rational waveshaper x(|x|+d)/(x²+(d-1)|x|+1) with automatic level compensation and a wet/dry blend. Smooth, generic overdrive; not a circuit model."
+  },
+  "gx-rangem": {
+    "name": "Dallas Rangemaster",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Dallas Rangemaster germanium treble booster; cuts lows and drives an amp's front end.",
+    "description": "DK circuit simulation from the Rangemaster schematic as a pot-dependent linear filter with a wet/dry blend. Boost adds the Rangemaster's bright, bass-shy push that sharpens an overdriven amp."
+  },
+  "gx-aclipper": {
+    "name": "ProCo RAT",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "ProCo RAT-style op-amp distortion with asymmetric hard clipping, tone and level.",
+    "description": "Op-amp gain-stage model into an asymmetric hard-clip table with a tone low-pass and level, at 96 kHz. Delivers the RAT's aggressive, saturated crunch from Drive, Tone and Level."
+  },
+  "gx-ruin": {
+    "name": "Devi Ever Ruiner",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Devi Ever Ruiner / Dark Boost: nasty, splattery fuzz with Intensity and Level.",
+    "description": "DK circuit simulation from the Ruiner schematic: pot-dependent filters with a symmetric clip table, at 96 kHz. Intensity pushes it from a dark boost into an unhinged, splattery fuzz."
+  },
+  "gx-scream": {
+    "name": "Screaming Bird",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Electro-Harmonix Screaming Bird treble booster; bright single-transistor boost.",
+    "description": "DK circuit simulation from the Screaming Bird schematic: a transistor stage as a pot-dependent filter with clipping. The Scream knob adds a piercing, bass-cut treble boost."
+  },
+  "gx-softclip": {
+    "name": "Soft Clip",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Symmetric soft clipper with a residual blend; gentle, generic saturation.",
+    "description": "Symmetric clipping at a threshold set by the Fuzz control, with a third of the clipped-off residual mixed back in. A basic saturation stage rather than a pedal model."
+  },
+  "gx-mole": {
+    "name": "EHX Mole Bass Booster",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Electro-Harmonix Mole bass booster; single-knob low-end boost with wet/dry.",
+    "description": "DK circuit simulation from the Mole schematic as a pot-dependent linear filter with a wet/dry blend. Boost lifts the low end for a fatter tone."
+  },
+  "gx-ts9sim": {
+    "name": "Ibanez TS9 Tube Screamer",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Ibanez TS-9 Tube Screamer: mid-hump op-amp overdrive with Drive, Tone, Level.",
+    "description": "Circuit model of the Ibanez TS-9 from the schematic (Kenéz analysis): the clipping stage's bilinear filter from the real R/C values with a Newton-solved diode nonlinearity via a C foreign function, then the tone low-pass and level, at 96 kHz. The classic smooth, mid-forward overdrive."
+  },
+  "gx-compressor": {
+    "name": "Compressor",
+    "family": "dynamics",
+    "category": "guitar",
+    "shortDesc": "Albert Graef's compressor/limiter with ratio, threshold, knee, attack and release.",
+    "description": "Feed-forward compressor with an envelope detector and a soft knee; Ratio, Threshold, Knee, Attack and Release. A clean, general-purpose compressor for evening out picking dynamics."
+  },
+  "gx-expander": {
+    "name": "Expander",
+    "family": "dynamics",
+    "category": "guitar",
+    "shortDesc": "Downward expander that attenuates signals below the threshold; gentle noise reduction.",
+    "description": "The compressor in reverse: applies Ratio to attenuate levels below Threshold with a soft Knee, Attack and Release. Use it as a subtle gate to tame hum and hiss between phrases."
+  },
+  "gx-mbc": {
+    "name": "Multi-Band Compressor",
+    "family": "dynamics",
+    "category": "guitar",
+    "shortDesc": "Five-band compressor with per-band ratio, threshold, makeup, attack, release and mode.",
+    "description": "Splits the signal at four adjustable crossovers and compresses each band independently with Ratio, Makeup, Threshold, Attack, Release and a per-band Mode. Controls dynamics per frequency range without pumping the whole signal."
+  },
+  "gx-mbcs": {
+    "name": "Multi-Band Compressor (stereo)",
+    "family": "dynamics",
+    "category": "guitar",
+    "shortDesc": "Stereo version of the five-band compressor with linked per-band controls.",
+    "description": "Stereo build of the five-band compressor: four adjustable crossovers, per-band Ratio, Makeup, Threshold, Attack, Release and Mode. Same processing as the mono version but with a stereo detector path."
+  },
+  "gx-susta": {
+    "name": "Sustainer",
+    "family": "dynamics",
+    "category": "guitar",
+    "shortDesc": "Transistor sustainer/compressor pedal circuit; squashy, long sustain with a fuzzy edge.",
+    "description": "DK circuit simulation from the Sustainer schematic: pot-dependent filters followed by three transistor-stage tables. Sustain and Volume give a squashed, compressor-like sustain that breaks into light fuzz when pushed."
+  },
+  "gx-tonecontroll": {
+    "name": "3-Band Tone Control",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Three-band crossover EQ with Bass/Middle/Treble gains and a 'sharper' compression stage.",
+    "description": "Splits the signal into bass, mid and treble bands with a filterbank at 600 Hz and 2.4 kHz, applies per-band gain, then a compressor whose Sharper control tightens the result. A simple active three-band tone shaper."
+  },
+  "gx-tonestack-ac15": {
+    "name": "Tone Stack — Vox AC15",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with the Vox AC15's component values.",
+    "description": "Symbolic third-order transfer function of the classic passive amp tone stack (after Yeh / CAPS), with R and C values from the Vox AC15. Bass, Middle and Treble interact the way they do on the real amp."
+  },
+  "gx-tonestack-ac30": {
+    "name": "Tone Stack — Vox AC30",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Vox AC30 component values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Vox AC30 ('59/'86). Interactive Bass, Middle and Treble with the AC30's chimey top end."
+  },
+  "gx-tonestack-ampeg": {
+    "name": "Tone Stack — Ampeg VL-501",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Ampeg VL-501 component values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Ampeg VL-501. Interactive three-band tone control."
+  },
+  "gx-astrofuzz": {
+    "name": "Astrotone Fuzz",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Sam Ash Astrotone-style two-transistor fuzz with Tone, Volume and Attack.",
+    "description": "DK circuit simulation from the Astrotone schematic: pot-dependent filters followed by two transistor-stage tables. A smooth, vintage two-transistor fuzz where Attack sets the fuzz amount and Tone tilts the voicing."
+  },
+  "gx-bassboom": {
+    "name": "Bass Boom",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Sub-bass enhancer that generates harmonics from the band below 110 Hz.",
+    "description": "Splits off the band below 110 Hz, runs it through a distortion stage to generate sub-bass harmonics (Drive), and mixes it back in with the rest of the signal (Gain). Adds weight and audibility to bass rather than colouring the whole signal."
+  },
+  "gx-bassbooster": {
+    "name": "Bass Booster",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Second-order low shelf boost at 120 Hz with a single Level control.",
+    "description": "A DAFX-style second-order low-shelving filter fixed at 120 Hz; Level sets the boost in dB. A clean low-end lift with no distortion."
+  },
+  "gx-tonestack-bassman": {
+    "name": "Tone Stack — Fender Bassman",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with '59 Bassman 5F6-A values; the archetypal stack.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the 1959 Fender Bassman 5F6-A. The stack most tweed and Marshall circuits descend from; interactive Bass, Middle and Treble."
+  },
+  "gx-cabinet-impulse-former": {
+    "name": "Cabinet Impulse Former",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Bass/treble shelving and level shaper meant to sit after a cabinet impulse.",
+    "description": "A bass and treble shelving tone control with a Level trim, designed in guitarix to re-shape the response of a convolution cabinet. On its own it is a simple two-band shelf EQ."
+  },
+  "gx-cstb": {
+    "name": "Colorsound Tone Bender",
+    "family": "dirt",
+    "category": "guitar",
+    "shortDesc": "Colorsound Tone Bender two-transistor fuzz with Attack, Level and wet/dry.",
+    "description": "DK circuit simulation from the Colorsound Tone Bender schematic: pot-dependent filters followed by two transistor-stage tables, with a wet/dry blend. Attack sets the fuzz for a raw, sustaining British fuzz."
+  },
+  "gx-tonestack-default": {
+    "name": "Tone Stack — Default (shelving)",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Guitarix's 'default' tone stack: Bass/Middle/Treble mapped onto shelving/peak filters.",
+    "description": "Not a passive stack model: maps the Bass, Middle and Treble knobs onto low-shelf, mid-peak and high-shelf filters from the Tone module. A neutral, non-interactive three-band EQ."
+  },
+  "gx-tonestack-fender-deville": {
+    "name": "Tone Stack — Fender Hot Rod DeVille",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Fender Hot Rod DeVille values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Fender Hot Rod DeVille. Interactive three-band tone control with a modern Fender voicing."
+  },
+  "gx-tonestack-engl": {
+    "name": "Tone Stack — Engl",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Engl component values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from an Engl amplifier. Interactive three-band tone control with a tight, modern voicing."
+  },
+  "gx-eq": {
+    "name": "10-Band Parametric EQ",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Ten octave-spaced peaking filters (31 Hz–16 kHz) with per-band gain and Q.",
+    "description": "Ten cascaded peaking filters at octave centres from 31.25 Hz to 16 kHz, each with its own gain (-50 to +10 dB) and Q. A graphic-style EQ with adjustable bandwidth per band."
+  },
+  "gx-tonestack-fender-default": {
+    "name": "Tone Stack — Fender",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with generic Fender blackface values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with typical Fender blackface R and C values. Interactive Bass, Middle and Treble with the scooped Fender character."
+  },
+  "gx-tonestack-gibsen": {
+    "name": "Tone Stack — Gibson GS-12 Reverb Rocket",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Gibson GS-12 Reverb Rocket values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Gibson GS-12 Reverb Rocket. Interactive three-band tone control."
+  },
+  "gx-graphiceq": {
+    "name": "11-Band Graphic EQ",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Eleven-band graphic equaliser with slider gains from sub-bass to air.",
+    "description": "A filterbank graphic EQ with eleven fixed bands and a gain slider per band. Straightforward broad tone shaping."
+  },
+  "gx-hfb": {
+    "name": "HF Brightener",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Transistor high-frequency brightener with Volume and Intensity.",
+    "description": "DK circuit simulation from the High Frequency Brightener schematic as a pot-dependent linear filter. Intensity adds sparkle and presence without distortion."
+  },
+  "gx-tonestack-crunch": {
+    "name": "Tone Stack — Hughes & Kettner",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Hughes & Kettner crunch-channel values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from a Hughes & Kettner crunch channel. Interactive three-band tone control."
+  },
+  "gx-tonestack-ibanez": {
+    "name": "Tone Stack — Ibanez GX20",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Ibanez GX20 values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Ibanez GX20. Interactive three-band tone control."
+  },
+  "gx-tonestack-jcm2000": {
+    "name": "Tone Stack — Marshall JCM2000",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Marshall JCM2000 lead-channel values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Marshall JCM2000 lead channel. Interactive three-band tone control with a modern Marshall voicing."
+  },
+  "gx-tonestack-jcm800": {
+    "name": "Tone Stack — Marshall JCM800",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Marshall JCM800 2203 values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Marshall JCM800 Lead 100 (2203). Interactive three-band tone control with the classic Marshall mid push."
+  },
+  "gx-tonestack-jtm45": {
+    "name": "Tone Stack — Marshall JTM45",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Marshall JTM45 values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Marshall JTM45. Interactive three-band tone control, close to the Bassman it was copied from."
+  },
+  "gx-low-high-pass": {
+    "name": "Low/High Pass Filter",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Adjustable low-cut and high-cut filters plus band-limiting speaker-style pass filters.",
+    "description": "A pair of adjustable high-pass and low-pass filters (low freq / high freq) followed by fixed band-limiting filters used in guitarix for speaker emulation. Trims rumble and fizz from a signal chain."
+  },
+  "gx-tonestack-mlead": {
+    "name": "Tone Stack — Marshall Major Lead",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with '67 Marshall Major Lead 200 values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the 1967 Marshall Major Lead 200. Interactive three-band tone control."
+  },
+  "gx-tonestack-m2199": {
+    "name": "Tone Stack — Marshall M2199",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Marshall M2199 solid-state values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Marshall M2199 30 W solid-state amp. Interactive three-band tone control."
+  },
+  "gx-tonestack-mesa": {
+    "name": "Tone Stack — Mesa Boogie Mark",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Mesa Boogie Mark values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Mesa Boogie Mark series. Interactive three-band tone control with the Boogie's mid focus."
+  },
+  "gx-tonestack-sovtek": {
+    "name": "Tone Stack — Sovtek MIG 100H",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Sovtek MIG 100H values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Sovtek MIG 100H. Interactive three-band tone control."
+  },
+  "gx-tonestack-peavey": {
+    "name": "Tone Stack — Peavey C20",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Peavey C20 values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Peavey C20. Interactive three-band tone control."
+  },
+  "gx-preamp-impulse-former": {
+    "name": "Preamp Impulse Former",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Bass/treble shelving and level trim meant to sit after a preamp impulse.",
+    "description": "A bass and treble shelving tone control with a finer Level trim, designed in guitarix to re-shape a convolution preamp response. On its own it is a simple two-band shelf EQ."
+  },
+  "gx-presence-level": {
+    "name": "Presence Level",
+    "family": "utility",
+    "category": "guitar",
+    "shortDesc": "Single-knob gain trim (flagged FIXME upstream); no frequency shaping.",
+    "description": "Applies a gain of Level × 10^(-0.1·Level), a plain level trim despite the name; the source marks it FIXME. No presence filtering is performed."
+  },
+  "gx-tonestack-princeton": {
+    "name": "Tone Stack — Fender Princeton",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with '64 Fender Princeton AA1164 values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the 1964 Fender Princeton AA1164. Interactive three-band tone control with a small-Fender voicing."
+  },
+  "gx-tonestack-ampeg-rev": {
+    "name": "Tone Stack — Ampeg Reverberocket",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Ampeg Reverberocket values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Ampeg Reverberocket. Interactive three-band tone control."
+  },
+  "gx-tonestack-roland": {
+    "name": "Tone Stack — Roland Cube 60",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Roland Cube 60 values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Roland Cube 60. Interactive three-band tone control."
+  },
+  "gx-selecteq": {
+    "name": "10-Band Scalable EQ",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Ten fully parametric peaking bands with adjustable centre frequency, gain and Q.",
+    "description": "Ten cascaded peaking filters, each with adjustable centre frequency (20 Hz–20 kHz), gain (-50 to +10 dB) and Q. The parametric sibling of the 10-band EQ."
+  },
+  "gx-tonestack-soldano": {
+    "name": "Tone Stack — Soldano SLO-100",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Soldano SLO-100 values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Soldano SLO-100. Interactive three-band tone control with a tight hi-gain voicing."
+  },
+  "gx-gxtilttone": {
+    "name": "Tilt Tone Pro",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Tilt-style tone control with Body and Drive and a soft clip stage; EQ with a little grit.",
+    "description": "DK circuit simulation from the tilt-tone schematic: a 4th-order pot-dependent filter (Body, Tone, Drive) with input and output clip tables and a Level stage. Tone tilts the spectrum, lifting highs while cutting lows or vice versa, with mild saturation from Drive."
+  },
+  "gx-tone": {
+    "name": "Tone (Bass/Mid/Treble shelves)",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Three-band shelving/peak tone control from the RBJ Audio EQ Cookbook, ±20 dB.",
+    "description": "Low shelf, mid peak and high shelf filters at fixed frequencies (RBJ Audio EQ Cookbook) with Bass, Middle and Treble gains of ±20 dB. A clean, non-interactive three-band tone control."
+  },
+  "gx-tonestack": {
+    "name": "Tone Stack — Bassman (base module)",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "The tone-stack base module fixed to Bassman 5F6-A values; same as the Bassman entry.",
+    "description": "The shared passive tone-stack component (symbolic third-order transfer function) with its selector hard-set to the 1959 Fender Bassman 5F6-A values. Functionally identical to the Fender Bassman tone stack."
+  },
+  "gx-tonestack-bm": {
+    "name": "Tone Stack — Bassman (single Tone knob)",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Bassman passive tone stack driven by one Tone knob that moves all three bands.",
+    "description": "The Bassman 5F6-A passive tone stack model with a single Tone control linked to Bass, Middle and Treble at once. A one-knob variant for simple pedal layouts."
+  },
+  "gx-highbooster": {
+    "name": "Treble Boost",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "First-order high-pass boost above 1.5 kHz, 0–20 dB.",
+    "description": "Adds a first-order high-passed copy of the signal above 1.5 kHz scaled by Level (0–20 dB). A clean, simple treble lift."
+  },
+  "gx-tonestack-groove": {
+    "name": "Tone Stack — Groove Tubes Trio Preamp",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Trio Preamp values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Trio Preamp. Interactive three-band tone control."
+  },
+  "gx-tonestack-bogner": {
+    "name": "Tone Stack — Bogner Triple Giant",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Bogner Triple Giant preamp values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Bogner Triple Giant preamp. Interactive three-band tone control."
+  },
+  "gx-autowah": {
+    "name": "Auto Wah (Cry Baby)",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Envelope-following auto-wah built on the Cry Baby biquad fit; touch-controlled quack.",
+    "description": "Uses the Cry Baby wah biquad approximation (Julius Smith's fit of the Dunlop circuit) swept by an envelope follower instead of a pedal, with Wah range, Level and wet/dry. Picking dynamics open and close the filter."
+  },
+  "gx-colwah": {
+    "name": "Colorsound Wah",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Colorsound inductorless wah with Wah position, frequency, mode and wet/dry.",
+    "description": "DK circuit simulation from the Colorsound Wah schematic as a pot-dependent filter with a mode switch and wet/dry. A vocal, mid-forward British wah."
+  },
+  "gx-dallaswah": {
+    "name": "Dallas Arbiter Wah",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Dallas Arbiter wah pedal with Wah position, frequency, mode and wet/dry.",
+    "description": "DK circuit simulation from the Dallas Wah schematic as a pot-dependent filter with a mode switch and wet/dry. A 1960s-style wah with a throaty sweep."
+  },
+  "gx-dunwah": {
+    "name": "Dunlop Wah (fitted)",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Dunlop-style wah as two biquads fitted to the circuit response; one Wah control.",
+    "description": "Two cascaded biquads whose coefficients were fitted to the Dunlop wah circuit response by guitarix's dunwah scripts, swept by a single Wah control. A lightweight wah model."
+  },
+  "gx-foxwah": {
+    "name": "Foxx Wah",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Foxx wah pedal with Wah position, frequency, mode and wet/dry.",
+    "description": "DK circuit simulation from the Foxx Wah schematic as a pot-dependent filter with a mode switch and wet/dry. A wide, fuzzy-era wah sweep."
+  },
+  "gx-gcb-95": {
+    "name": "Dunlop GCB-95 Cry Baby",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Full linear model of the Dunlop GCB-95 Cry Baby circuit with a hot-potz sweep.",
+    "description": "Linear circuit simulation of the GCB-95 Cry Baby (inductor plus transistor stages) as a 4th-order filter whose coefficients follow the pedal pot, generated from the schematic. Hotpotz sets the sweep position and Volume the output."
+  },
+  "gx-jenwah": {
+    "name": "Jen Wah",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Jen Cry Baby wah with Wah position, frequency, mode and wet/dry.",
+    "description": "DK circuit simulation from the Jen Wah schematic as a pot-dependent filter with a mode switch and wet/dry. The Italian-made Cry Baby voice."
+  },
+  "gx-maestrowah": {
+    "name": "Maestro Boomerang Wah",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Maestro Boomerang EG-1 wah with Wah position, frequency, mode and wet/dry.",
+    "description": "DK circuit simulation from the Maestro Boomerang schematic as a pot-dependent filter with a mode switch and wet/dry. A deep, vocal wah sweep."
+  },
+  "gx-crybaby": {
+    "name": "Cry Baby Wah (manual)",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Manual Cry Baby wah from the JOS biquad fit, with Wah, Level and wet/dry.",
+    "description": "Julius Smith's biquad approximation of the Dunlop Cry Baby wah, swept manually by the Wah control, with Level and wet/dry. A light, reliable wah for expression-pedal control."
+  },
+  "gx-moog": {
+    "name": "Moog Ladder Filter",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Moog-style ladder low-pass with cutoff and resonance.",
+    "description": "A Moog ladder low-pass filter (moogvcf) with Q (resonance) and cutoff frequency controls. Synth-style filtering for guitar."
+  },
+  "gx-multifilter": {
+    "name": "10-Band Multi Filter",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Ten octave-spaced peaking filters with per-band gain and Q; same as the 10-Band EQ.",
+    "description": "Ten cascaded peaking filters at octave centres from 31.25 Hz to 16 kHz with per-band gain and Q. Identical processing to the 10-Band Parametric EQ."
+  },
+  "gx-rolandwah": {
+    "name": "Roland Double Beat",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Roland AW-10 Double Beat fuzz-wah with an LFO-driven wah and transistor fuzz.",
+    "description": "DK circuit simulation from the Roland Wah schematic combined with a transistor fuzz stage (two transistor-stage tables); the wah is swept by an LFO set in BPM. Fuzz, Wah and wet/dry recreate the Double Beat's fuzz-wah combo."
+  },
+  "gx-selwah": {
+    "name": "Selmer Wah",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Selmer wah pedal with Wah position, frequency, mode and wet/dry.",
+    "description": "DK circuit simulation from the Selmer Wah schematic as a pot-dependent filter with a mode switch and wet/dry. A British 1960s wah voice."
+  },
+  "gx-voxwah": {
+    "name": "Vox V847 Wah",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "Vox V847 wah with Wah position, frequency, mode and wet/dry.",
+    "description": "DK circuit simulation from the Vox V847 schematic as a pot-dependent filter with a mode switch and wet/dry. The classic Vox wah sweep."
+  },
+  "gx-chorus": {
+    "name": "Chorus",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Albert Graef's chorus with level, rate, delay and depth; summed to mono here.",
+    "description": "Table-LFO modulated delay-line chorus with Level, Freq, Delay and Depth; originally stereo with a per-channel phase offset, wrapped to mono for the pedal. A classic clean digital chorus."
+  },
+  "gx-chorus-mono": {
+    "name": "Chorus Mono",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Simplified mono chorus with level, rate and wet/dry.",
+    "description": "Mono version of the Graef chorus with fixed delay and depth, exposing only Level, Freq and wet/dry. A quick, set-and-forget chorus."
+  },
+  "gx-flanger": {
+    "name": "Flanger",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Faust library stereo flanger (delay, offset, rate, depth, feedback) summed to mono.",
+    "description": "Wrapper around the Faust library flanger with flange delay, delay offset, LFO rate, depth, feedback gain and level; originally stereo with sine/cosine LFOs, wrapped to mono for the pedal. A jet-like swept comb filter."
+  },
+  "gx-flanger-gx": {
+    "name": "Flanger GX",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Guitarix's hand-written mono flanger with width in ms, depth, rate, feedback, wet and mix.",
+    "description": "A hand-written mono flanger with Width (ms), Depth, Freq, Feedback, Wet and Mix. Same code as the gx_flanger entry."
+  },
+  "gx-gx-flanger": {
+    "name": "Flanger GX (LV2 copy)",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Duplicate of Flanger GX from the LV2 source tree; identical processing.",
+    "description": "The LV2 copy of guitarix's hand-written mono flanger with Width, Depth, Freq, Feedback, Wet and Mix. Identical to Flanger GX apart from a comment."
+  },
+  "gx-flanger-mono": {
+    "name": "Flanger Mono",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Simple mono flanger with rate, level and wet/dry.",
+    "description": "Mono flanger built on the Faust library flanger with fixed delay settings, exposing Freq, Level and wet/dry. A quick one-knob-style flange."
+  },
+  "gx-gxtubevibrato": {
+    "name": "Tube Vibrato",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "True pitch vibrato from a modulated delay, wrapped in 12AX7 tube stages, in five bands.",
+    "description": "A delay-line pitch vibrato with Speed and Depth, whose LFO can be triangle or sine, run inside 12AX7 input and output tube-table stages across a five-band split. Drive sets the tube grit and Output the level."
+  },
+  "gx-tonestack-fender-blues": {
+    "name": "Tone Stack — Fender Blues Junior",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with Fender Blues Junior values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the Fender Blues Junior. Interactive three-band tone control."
+  },
+  "gx-mbchor": {
+    "name": "Multi-Band Chorus",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Five-band chorus with independent level, rate, delay and depth per band.",
+    "description": "Splits the signal at four adjustable crossovers and applies a separate chorus (Level, Freq, Delay, Depth) to each band. Lets the low end stay steady while the highs shimmer."
+  },
+  "gx-uniBar": {
+    "name": "Banded Waveguide Bar Resonator",
+    "family": "filter",
+    "category": "guitar",
+    "shortDesc": "STK bowed-bar physical model (banded waveguides) added to the input; metallic ring.",
+    "description": "Romain Michon's nonlinear banded-waveguide bar model from the STK: a bowed excitation feeding four modal delay-line resonators tuned by Synth Freq, summed with the input. Adds a ringing, bar-like resonance rather than processing the guitar directly."
+  },
+  "gx-phaser": {
+    "name": "Phaser",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "JOS phaser2: swept second-order allpass notches with speed, depth, feedback and spread.",
+    "description": "Julius Smith's phaser2 from the Faust effect library: a chain of second-order resonant allpasses swept by an LFO, with Speed, Depth, Feedback, Notch Width, min/max notch frequency and notch spread; wrapped to mono. A rich, adjustable analog-style phaser."
+  },
+  "gx-phaser-mono": {
+    "name": "Phaser Mono",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Simplified mono phaser with speed, level and wet/dry.",
+    "description": "Mono phaser built on the JOS phaser2 with fixed depth, feedback and notch settings, exposing Speed, Level and wet/dry. A simple, classic phase sweep."
+  },
+  "gx-switched-tremolo": {
+    "name": "Switched Tremolo",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Line 6 POD-style tremolo that steps between up to four LFO rates.",
+    "description": "Tremolo whose modulation cycles through up to four oscillator frequencies (Steps, Switch Freq, Freq 0–3) with Depth and wet/dry, inspired by the Line 6 POD. Produces rhythmic, pattern-like tremolo."
+  },
+  "gx-tremolo": {
+    "name": "Vactrol Tremolo",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Opto (vactrol/LDR) tremolo with CdS-cell lag; smooth amp-style throb.",
+    "description": "Model of a vactrol tremolo by transmogrifox: a hysteretic triangle LFO drives a CdS photocell model with RC lag and a resistive divider. Freq, Depth and wet/dry give the smooth, slightly asymmetric pulse of an optical amp tremolo."
+  },
+  "gx-gxtubetremelo": {
+    "name": "Tube Tremolo",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "Vactrol tremolo wrapped in 12AX7 input and output tube stages, in five bands.",
+    "description": "The vactrol (LDR) tremolo model placed between 12AX7 input and output tube-table stages across a five-band split, with Drive for tube grit, Speed, Depth and Output. Amp-style tremolo with tube warmth."
+  },
+  "gx-tubevibrato": {
+    "name": "Tube Vibrato (feedback)",
+    "family": "mod",
+    "category": "guitar",
+    "shortDesc": "One-sample feedback into a symmetric clipper; a resonant tone shaper, not a real vibrato.",
+    "description": "Feeds the output back into the input by Vibrato/2 (one-sample loop) and clips symmetrically at 0.7. Despite the name this produces resonance and clipping rather than pitch modulation."
+  },
+  "gx-freeverb": {
+    "name": "Freeverb",
+    "family": "reverb",
+    "category": "guitar",
+    "shortDesc": "Schroeder/Moorer Freeverb with room size, damping and wet/dry.",
+    "description": "The classic Freeverb algorithm (parallel combs into series allpasses) with RoomSize, Damp and wet/dry. A simple, smooth digital room reverb."
+  },
+  "gx-mbreverb": {
+    "name": "Multi-Band Reverb",
+    "family": "reverb",
+    "category": "guitar",
+    "shortDesc": "Five-band Freeverb with independent room size, damping and wet/dry per band.",
+    "description": "Splits the signal at four adjustable crossovers and applies a separate Freeverb (RoomSize, Damp, wet/dry) to each band. Keeps the lows dry while the highs bloom."
+  },
+  "gx-stereoverb": {
+    "name": "Stereo Verb",
+    "family": "reverb",
+    "category": "guitar",
+    "shortDesc": "Freeverb with an LFO-modulated stereo spread, summed to mono here.",
+    "description": "Freeverb (RoomSize, Damp, wet/dry) with an LFO that modulates the stereo image; wrapped to mono for the pedal, so the LFO adds subtle movement rather than width."
+  },
+  "gx-tonestack-twin": {
+    "name": "Tone Stack — Fender Twin Reverb",
+    "family": "eq",
+    "category": "guitar",
+    "shortDesc": "Passive Bass/Middle/Treble tone stack with '69 Fender Twin Reverb AA270 values.",
+    "description": "Symbolic third-order transfer function of the passive amp tone stack with R and C values from the 1969 Fender Twin Reverb AA270. Interactive three-band tone control with the blackface scoop."
+  },
+  "gx-gx-zita-rev1": {
+    "name": "Zita Rev1 (LV2 copy)",
+    "family": "reverb",
+    "category": "guitar",
+    "shortDesc": "Duplicate of the Zita Rev1 reverb from the LV2 tree; same algorithm and controls.",
+    "description": "Fons Adriaensen's zita-rev1 feedback-delay-network reverb with pre-delay, low/mid RT60, crossover, HF damping, two-band EQ and mix; wrapped to mono. Identical processing to the other Zita Rev1 entry, differing only in control labels."
+  },
+  "gx-zita-rev1": {
+    "name": "Zita Rev1",
+    "family": "reverb",
+    "category": "guitar",
+    "shortDesc": "Fons Adriaensen's zita-rev1 FDN hall reverb with RT60 per band and built-in EQ.",
+    "description": "The zita-rev1 eight-line feedback-delay-network reverb from the Faust library with guitarix defaults: pre-delay, low and mid RT60 with crossover, HF damping, two parametric EQ bands and dry/wet; wrapped to mono. A lush, natural hall."
+  },
+  "gx-delay": {
+    "name": "Delay",
+    "family": "time",
+    "category": "guitar",
+    "shortDesc": "Plain single-tap delay with gain and time.",
+    "description": "A single delay line with Delay time and feedback Gain. A basic, clean digital delay."
+  },
+  "gx-duck-delay": {
+    "name": "Duck Delay",
+    "family": "time",
+    "category": "guitar",
+    "shortDesc": "Ducking delay that fades the repeats down while you play and up when you stop.",
+    "description": "A feedback delay whose wet level is controlled by an envelope follower on the input: loud playing ducks the repeats, silence lets them through. Attack, Amount, Time, Feedback and Release, inspired by the Axe-FX ducking delay."
+  },
+  "gx-echo": {
+    "name": "Echo",
+    "family": "time",
+    "category": "guitar",
+    "shortDesc": "Simple echo with time and feedback percent.",
+    "description": "A single feedback echo with Time and Percent (feedback) controls. A basic slapback-to-repeat echo."
+  },
+  "gx-mbdel": {
+    "name": "Multi-Band Delay",
+    "family": "time",
+    "category": "guitar",
+    "shortDesc": "Five-band delay with independent time, gain and feedback per band.",
+    "description": "Splits the signal at four adjustable crossovers and applies a separate feedback delay (Delay, Gain, Feedback) to each band. Frequency-dependent rhythmic echoes."
+  },
+  "gx-mbe": {
+    "name": "Multi-Band Echo",
+    "family": "time",
+    "category": "guitar",
+    "shortDesc": "Five-band echo with independent time and feedback percent per band.",
+    "description": "Splits the signal at four adjustable crossovers and applies a separate echo (Time, Percent) to each band. Frequency-dependent echo textures."
+  },
+  "gx-stereodelay": {
+    "name": "Stereo Delay",
+    "family": "time",
+    "category": "guitar",
+    "shortDesc": "Two-channel delay with independent L/R time and gain plus an LFO; summed to mono here.",
+    "description": "Independent left and right delay times and gains with an LFO modulator; wrapped to mono for the pedal, so it behaves as a dual-tap delay."
+  },
+  "gx-stereoecho": {
+    "name": "Stereo Echo",
+    "family": "time",
+    "category": "guitar",
+    "shortDesc": "Two-channel echo with independent L/R time and feedback plus an LFO; summed to mono here.",
+    "description": "Independent left and right echo times and feedback percentages with an LFO modulator; wrapped to mono for the pedal, so it behaves as a dual-tap echo."
+  },
+  "gx-gxechocat": {
+    "name": "Copicat Tape Echo",
+    "family": "time",
+    "category": "guitar",
+    "shortDesc": "Watkins/Selmer Copicat-style multi-head tape echo with tube record/replay stages and wow.",
+    "description": "Tape echo built from real head spacings and tape speed (four playback heads), with DK-simulated record and replay valve stages from the Copicat circuit, band-limited tape filtering and a little wow. BPM sets head timing, Swell the repeats and Sustain the feedback."
+  },
+  "gx-gxtubedelay": {
+    "name": "Tube Delay",
+    "family": "time",
+    "category": "guitar",
+    "shortDesc": "Up to 2.5 s delay wrapped in 12AX7 input and output tube stages with filtered feedback.",
+    "description": "A feedback delay (up to 2.5 s) placed between 12AX7 input and output tube-table stages, with a high/low-pass in the feedback loop to prevent runaway. Drive adds tube grit; Level, Feedback, Delay and Output complete the set."
+  }
+}
