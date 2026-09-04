@@ -10,5 +10,5 @@
     "render": "node tools/render-effect.mjs",
     "start": "python3 server.py"
   },
-  "engines": { "node": ">=18" }
+  "engines": { "node": "22.x" }
 }
