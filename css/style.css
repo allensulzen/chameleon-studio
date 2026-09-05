@@ -383,15 +383,16 @@ kbd { font-family: var(--font-mono); font-size: 10.5px; padding: 1px 5px; border
 
 /* ---------- modals ---------- */
 .modal { position: fixed; inset: 0; z-index: 50; display: none; place-items: center; background: rgba(5,6,9,.7); backdrop-filter: blur(6px); padding: 20px; }
-.modal.open { display: grid; }
-.modal-box { width: min(560px, 100%); background: var(--panel); border: 1px solid var(--line-2); border-radius: 16px; box-shadow: 0 40px 80px -30px rgba(0,0,0,1); display: flex; flex-direction: column; max-height: 90vh; animation: rise .2s ease; }
+.modal.open { display: grid; grid-template-columns: minmax(0, 1fr); }
+.modal-box { width: min(560px, 100%); background: var(--panel); border: 1px solid var(--line-2); border-radius: 16px; box-shadow: 0 40px 80px -30px rgba(0,0,0,1); display: flex; flex-direction: column; max-height: 90vh; max-width: 100%; min-width: 0; justify-self: center; overflow: hidden; animation: rise .2s ease; }
 @keyframes rise { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
 .modal-wide { width: min(980px, 100%); }
 .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--line); }
 .modal-head h3 { font-family: var(--font-display); font-size: 22px; letter-spacing: .08em; font-weight: 400; }
 .modal-head .close-modal { border: 0; background: transparent; font-size: 22px; line-height: 1; cursor: pointer; color: var(--ink-3); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; }
 .modal-head .close-modal:hover { color: var(--ink); background: var(--panel-2); }
-.modal-body { padding: 18px 20px; overflow: auto; }
+.modal-body { padding: 18px 20px; overflow: auto; min-height: 0; min-width: 0; }
+.modal-body .code { max-width: 100%; overflow: auto; }
 .modal-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--line); }
 .steps { margin: 0 0 16px; padding-left: 20px; color: var(--ink-2); font-size: 13.5px; display: flex; flex-direction: column; gap: 6px; }
 .progress { height: 8px; border-radius: 4px; background: var(--panel-2); overflow: hidden; border: 1px solid var(--line); }
