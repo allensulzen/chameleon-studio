@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const defaults = (e) => Object.fromEntries(e.params.map(p => [p.path, p.default]));
   const mkStage = (id) => { const e = getEffectById(id); return { uid: newUid(), id, on: true, values: defaults(e) }; };
   const mkPatch = (name, ids = []) => {
-    const p = { name, chain: ids.filter(getEffectById).map(mkStage), pots: [null, null, null] };
+    const p = { name, chain: ids.filter(getEffectById).map(mkStage), pots: [null, null, null], potsLocked: false };
     autoAssign(p); return p;
   };
   function autoAssign(p) {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const saved = JSON.parse(localStorage.getItem('chameleon.v2') || 'null');
       if (saved && Array.isArray(saved.patches) && saved.patches.length === N_PATCHES) {
-        state.patches = saved.patches.map((p, i) => ({ name: p.name || PATCH_NAMES[i], chain: (p.chain || []).filter(s => getEffectById(s.id)).slice(0, MAX_STAGES).map(s => ({ uid: s.uid || newUid(), id: s.id, on: s.on !== false, values: { ...defaults(getEffectById(s.id)), ...(s.values || {}) } })), pots: (p.pots || [null, null, null]).slice(0, 3) }));
+        state.patches = saved.patches.map((p, i) => ({ name: p.name || PATCH_NAMES[i], chain: (p.chain || []).filter(s => getEffectById(s.id)).slice(0, MAX_STAGES).map(s => ({ uid: s.uid || newUid(), id: s.id, on: s.on !== false, values: { ...defaults(getEffectById(s.id)), ...(s.values || {}) } })), pots: (p.pots || [null, null, null]).slice(0, 3), potsLocked: !!p.potsLocked }));
         state.patches.forEach(autoAssign);
         state.current = Math.min(N_PATCHES - 1, saved.current || 0); state.source = SAMPLES[saved.source] ? saved.source : state.source;
       }
@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const el = {
     pedal: $('pedal'), lcdSlot: $('pedal-lcd-slot'), lcdName: $('pedal-lcd-name'), lcdState: $('pedal-lcd-state'), lcdChain: $('pedal-lcd-chain'),
     scope: $('lcd-scope'), led: $('pedal-led'), ledCap: $('pedal-status-text'), foot: $('pedal-footswitch'), print: $('pedal-effect-print'),
+    potLock: $('pot-lock'),
     knobs: [1, 2, 3].map(i => $(`knob-${i}`)), kOwner: [1, 2, 3].map(i => $(`knob-${i}-owner`)), kLabels: [1, 2, 3].map(i => $(`knob-${i}-label`)), kVals: [1, 2, 3].map(i => $(`knob-${i}-val`)),
     banks: $('banks'), chain: $('chain'), chainCap: $('chain-caption'), info: $('effect-info'), play: $('btn-play-audio'), sources: $('audio-sources'), meter: $('meter').firstElementChild,
     status: $('preview-engine-status'), chipEngine: $('chip-engine'), chipDevice: $('chip-device'),
@@ -103,6 +104,11 @@ document.addEventListener('DOMContentLoaded', () => {
     el.lcdState.textContent = state.bypassed ? 'BYPASS' : 'ACTIVE';
     el.pedal.classList.toggle('is-bypassed', state.bypassed);
     el.led.classList.toggle('on', !state.bypassed); el.ledCap.textContent = state.bypassed ? 'BYPASS' : 'ON';
+    el.pedal.classList.toggle('pots-locked', !!p.potsLocked);
+    el.potLock.classList.toggle('on', !!p.potsLocked); el.potLock.setAttribute('aria-pressed', String(!!p.potsLocked));
+    el.potLock.querySelector('.pot-lock-ico').innerHTML = ico(p.potsLocked ? 'tabler:lock' : 'tabler:lock-open');
+    el.potLock.querySelector('.pot-lock-text').textContent = p.potsLocked ? 'POTS LOCKED' : 'POTS LIVE';
+    el.knobs.forEach(k => k.classList.toggle('locked', !!p.potsLocked));
     p.pots.forEach((a, i) => {
       const s = a && stageByUid(a.uid); const cfg = s && paramOf(s, a.path);
       if (!cfg) { el.kOwner[i].textContent = '—'; el.kLabels[i].textContent = `POT ${i + 1}`; el.kVals[i].textContent = 'unassigned'; el.knobs[i].style.setProperty('--f', 0); el.knobs[i].classList.add('idle'); return; }
@@ -196,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function moveStage(uid, to) { const p = patch(); const from = p.chain.findIndex(s => s.uid === uid); if (from < 0) return; const [s] = p.chain.splice(from, 1); p.chain.splice(Math.max(0, Math.min(p.chain.length, to)), 0, s); renderAll(); }
   function selectPatch(i) { state.current = i; state.selected = null; renderAll(); }
   function toggleBypass() { state.bypassed = !state.bypassed; click(); renderPedal(); syncAudio(); }
+  function togglePotLock() { const p = patch(); p.potsLocked = !p.potsLocked; click(); renderPedal(); persist(); toast(p.potsLocked ? `Pots locked for patch ${p.name} — the pedal ignores them; edit values here in the studio` : `Pots live for patch ${p.name}`); }
   function cyclePatch() { click(); state.current = (state.current + 1) % N_PATCHES; state.selected = null; blinkLed(state.current + 1); renderAll(); }
   function setValue(stage, path, value, { rerender = true } = {}) {
     const cfg = paramOf(stage, path); value = Math.min(cfg.max, Math.max(cfg.min, value));
@@ -285,21 +292,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------------
   // Physical pots
   // ------------------------------------------------------------------
-  const potTarget = (i) => { const a = patch().pots[i]; const s = a && stageByUid(a.uid); const cfg = s && paramOf(s, a.path); return cfg ? { s, cfg, path: a.path } : null; };
+  const potTarget = (i, quiet) => { if (patch().potsLocked) { if (!quiet) toast(`Pots are locked for patch ${patch().name} — unlock them or edit the value in the stage panel`); return null; } const a = patch().pots[i]; const s = a && stageByUid(a.uid); const cfg = s && paramOf(s, a.path); return cfg ? { s, cfg, path: a.path } : null; };
   el.knobs.forEach((knob, i) => {
     let drag = null;
-    knob.addEventListener('pointerdown', (ev) => { const t = potTarget(i); if (!t) { toast('This pot has nothing assigned — pick a parameter in a stage'); return; } knob.setPointerCapture(ev.pointerId); knob.focus(); drag = { y: ev.clientY, v: t.s.values[t.path] }; document.body.style.cursor = 'ns-resize'; });
-    knob.addEventListener('pointermove', (ev) => { if (!drag) return; const t = potTarget(i); if (!t) return; const range = t.cfg.max - t.cfg.min; setValue(t.s, t.path, drag.v + ((drag.y - ev.clientY) / (ev.shiftKey ? 900 : 180)) * range); });
+    knob.addEventListener('pointerdown', (ev) => { const t = potTarget(i); if (!t) { if (!patch().potsLocked) toast('This pot has nothing assigned — pick a parameter in a stage'); return; } knob.setPointerCapture(ev.pointerId); knob.focus(); drag = { y: ev.clientY, v: t.s.values[t.path] }; document.body.style.cursor = 'ns-resize'; });
+    knob.addEventListener('pointermove', (ev) => { if (!drag) return; const t = potTarget(i, true); if (!t) return; const range = t.cfg.max - t.cfg.min; setValue(t.s, t.path, drag.v + ((drag.y - ev.clientY) / (ev.shiftKey ? 900 : 180)) * range); });
     const end = () => { drag = null; document.body.style.cursor = ''; };
     knob.addEventListener('pointerup', end); knob.addEventListener('pointercancel', end);
     knob.addEventListener('wheel', (ev) => { ev.preventDefault(); const t = potTarget(i); if (!t) return; const range = t.cfg.max - t.cfg.min; setValue(t.s, t.path, t.s.values[t.path] - Math.sign(ev.deltaY) * range * (ev.shiftKey ? 0.005 : 0.02)); }, { passive: false });
     knob.addEventListener('dblclick', () => { const t = potTarget(i); if (!t) return; setValue(t.s, t.path, t.cfg.default); toast('Reset'); });
     knob.addEventListener('keydown', (ev) => { const t = potTarget(i); if (!t) return; const step = (t.cfg.max - t.cfg.min) * (ev.shiftKey ? 0.002 : 0.02); if (['ArrowUp', 'ArrowRight'].includes(ev.key)) { setValue(t.s, t.path, t.s.values[t.path] + step); ev.preventDefault(); } if (['ArrowDown', 'ArrowLeft'].includes(ev.key)) { setValue(t.s, t.path, t.s.values[t.path] - step); ev.preventDefault(); } });
-    knob.addEventListener('click', () => { const t = potTarget(i); if (t && state.selected !== t.s.uid) { state.selected = t.s.uid; renderChain(); renderInfo(); } });
+    knob.addEventListener('click', () => { const t = potTarget(i, true); if (t && state.selected !== t.s.uid) { state.selected = t.s.uid; renderChain(); renderInfo(); } });
   });
 
   // Footswitch: tap = bypass, hold = next patch
   { let holdTimer = null, held = false; const HOLD_MS = 650;
+    el.potLock.addEventListener('click', togglePotLock);
     el.foot.addEventListener('pointerdown', (ev) => { ev.preventDefault(); held = false; el.foot.classList.add('pressed', 'holding'); holdTimer = setTimeout(() => { held = true; el.foot.classList.remove('holding'); cyclePatch(); }, HOLD_MS); });
     const release = () => { if (!el.foot.classList.contains('pressed')) return; clearTimeout(holdTimer); el.foot.classList.remove('pressed', 'holding'); if (!held) toggleBypass(); };
     el.foot.addEventListener('pointerup', release); el.foot.addEventListener('pointerleave', release); el.foot.addEventListener('pointercancel', release);
@@ -375,6 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.matches('input, textarea, select')) return;
     if (e.code === 'Space') { e.preventDefault(); state.playing ? stop() : play(); }
     else if (e.key === 'b' || e.key === 'B') toggleBypass();
+    else if (e.key === 'l' || e.key === 'L') togglePotLock();
     else if (['1', '2', '3', '4'].includes(e.key)) selectPatch(+e.key - 1);
     else if ((e.key === 'Delete' || e.key === 'Backspace') && state.selected) removeStage(state.selected);
     else if (e.key === 'Escape') document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
@@ -422,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const patchTable = state.patches.map((p, i) => {
       const chain = p.chain.map(s => { const e = effectOf(s); const vals = Object.entries(s.values).map(([k, v]) => `${k.split('/').pop()}=${+v.toFixed(4)}`).join(', '); return `    //   ${e.name}${s.on ? '' : ' (bypassed)'}  { ${vals} }`; }).join('\n');
       const pots = p.pots.map((a, k) => { const s = a && stageByUid.call(null, a.uid) || (a && p.chain.find(x => x.uid === a.uid)); return `    //   pot${k + 1} -> ${s ? effectOf(s).name + ' :: ' + a.path.split('/').pop() : '(unassigned)'}`; }).join('\n');
-      return `    // Patch ${PATCH_NAMES[i]} "${p.name}" — ${p.chain.length} stage(s)\n${chain || '    //   (empty)'}\n${pots}`;
+      return `    // Patch ${PATCH_NAMES[i]} "${p.name}" — ${p.chain.length} stage(s)${p.potsLocked ? '  [POTS LOCKED]' : ''}\n${chain || '    //   (empty)'}\n${pots}`;
     }).join('\n');
     return `/**
  * Chameleon Pedal — firmware for Electro-Smith Daisy Seed 3
@@ -452,6 +461,10 @@ AnalogControl pot1, pot2, pot3;
 ${patchTable}
 
 enum { NUM_PATCHES = ${N_PATCHES}, MAX_STAGES = ${MAX_STAGES} };
+// Per-patch pot lock (set in the studio). A locked patch ignores the pots completely: the ADCs are
+// still read (so takeover state stays coherent) but the stored values are always used, so a stray
+// foot on stage cannot change anything. Flip a patch's lock in the studio and re-flash.
+const bool pots_locked[NUM_PATCHES] = { ${state.patches.map(p => p.potsLocked ? 'true' : 'false').join(', ')} };
 int   current_patch = 0;
 bool  effect_active = true;
 bool  hold_fired    = false;
@@ -490,7 +503,7 @@ static void BlinkPatch(int n) {
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, size_t size) {
     float raw[3] = { pot1.Process(), pot2.Process(), pot3.Process() };
     float p[3];
-    for (int k = 0; k < 3; k++) p[k] = pot_state[current_patch][k].Update(raw[k]);   // p[k] is what the bound parameter should be set to
+    for (int k = 0; k < 3; k++) p[k] = pots_locked[current_patch] ? pot_state[current_patch][k].stored : pot_state[current_patch][k].Update(raw[k]);   // p[k] is what the bound parameter should be set to
     (void)p;
 
     footswitch.Debounce();

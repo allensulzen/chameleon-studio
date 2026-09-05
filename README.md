@@ -148,6 +148,8 @@ What exists today, and what does not — so nobody is surprised when the Seed ar
   hold = next patch), status LED, and a `PotTakeover` struct that implements the rule you asked for — a
   stored value stays exactly where the patch programmed it until the physical pot moves past a 2 % deadband,
   then the pot catches up and takes over smoothly (no jumps).
+- A per-patch **pot lock** (the `POTS LIVE / POTS LOCKED` toggle on the pedal, or press `L`): a locked patch
+  ignores the physical pots entirely, so nothing on stage can be changed by a foot; values stay editable in the studio.
 - The patch table: the four patches, their chain of up to seven stages, every parameter value, and which
   (stage, parameter) each of the three pots is bound to, all emitted as constant data.
 
