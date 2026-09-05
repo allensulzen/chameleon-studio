@@ -32,7 +32,7 @@ p_time = hslider("time", 500, 1, 2000, 1):si.smooth(ba.tau2pole(0.1));
 p_feedback = hslider("feedback", 0, 0, 1, 0.05);
 p_attack_time = hslider("attack", 0.1, 0.05, 0.5, 0.05);
 p_release_time = hslider("relese", 0.1, 0.05, 2, 0.05);
-p_amount = hslider("amount", 0.5, 0,56, 0.05):ba.db2linear;
+p_amount = hslider("amount", 12, 0,40, 0.5):si.smoo;
 
 //Consts
 c_channels_sw_time = 0.1;
@@ -42,6 +42,6 @@ get_delay_length(x) = x*ma.SR:_*0.001;
 
 process = _<:
 	_,(_<:(_+_:de.fdelay(c_fdelay_max_len,get_delay_length(p_time)))~_*p_feedback,		
-	(an.amp_follower_ud(p_attack_time,p_release_time):_*p_amount:_>1:(1 - _):
+	(ba.db2linear(0 - p_amount * min(1, an.amp_follower_ud(p_attack_time,p_release_time) * 4)) :
 	si.smooth(ba.tau2pole(c_channels_sw_time)))):_,_*_
 	:>_;

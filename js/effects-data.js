@@ -3,7 +3,7 @@
  * GENERATED FILE — do not edit by hand.
  * Source of truth: dsp/*.dsp (Faust) + dsp/catalog.json (UI metadata overrides).
  * Regenerate with:  node tools/build-catalog.mjs
- * Built 2026-09-04T20:44:58.834Z with Faust 2.87.11 — 269 effects
+ * Built 2026-09-05T00:53:36.099Z with Faust 2.87.11 — 269 effects
  */
 const EFFECTS_CATALOG = [
  {
@@ -12939,8 +12939,8 @@ const EFFECTS_CATALOG = [
    {
     "label": "Duck Amount",
     "min": 0,
-    "max": 56,
-    "default": 30,
+    "max": 40,
+    "default": 18,
     "step": 0.5,
     "unit": "dB",
     "path": "/Duck_Reverb/Duck_Amount"
@@ -12973,7 +12973,7 @@ const EFFECTS_CATALOG = [
     "path": "/Duck_Reverb/Wet_Dry"
    }
   ],
-  "faustCode": "declare name \"Duck Reverb\";\ndeclare description \"Freeverb ducked by an envelope follower: the tail stays out of the way while you play and blooms in the gaps\";\ndeclare author \"thedrgreenthumb (Sergey Konstantinov)\";\ndeclare license \"MIT\";\ndeclare source \"thedrgreenthumb/faust duck_reverb.dsp + freeverb.dspi\";\ndeclare category \"guitar\";\ndeclare family \"reverb\";\nimport(\"stdfaust.lib\");\n\np_attack  = hslider(\"[0] Attack[unit:s]\", 0.1, 0.05, 0.5, 0.01);\np_release = hslider(\"[1] Release[unit:s]\", 0.3, 0.05, 2, 0.01);\np_amount  = hslider(\"[2] Duck Amount[unit:dB]\", 30, 0, 56, 0.5) : si.smoo : ba.db2linear;\nroomsize  = hslider(\"[3] Room Size\", 0.6, 0, 1, 0.01) : si.smoo : *(0.28) : +(0.7);\ndamp      = hslider(\"[4] Damp\", 0.5, 0, 1, 0.01) : si.smoo;\nwet_dry   = hslider(\"[5] Wet/Dry\", 0.5, 0, 1, 0.01) : si.smoo;\n\nrev = re.mono_freeverb(roomsize, 0.5, damp*0.4, 23) : *(0.015);\nducker = an.amp_follower_ud(p_attack, p_release) : _*p_amount : _>1 : (1 - _) : si.smooth(ba.tau2pole(0.1));\nprocess(x) = x*(1-wet_dry) + (rev(x) * ducker(x)) * wet_dry * 3;"
+  "faustCode": "declare name \"Duck Reverb\";\ndeclare description \"Freeverb ducked by an envelope follower: the tail stays out of the way while you play and blooms in the gaps\";\ndeclare author \"thedrgreenthumb (Sergey Konstantinov)\";\ndeclare license \"MIT\";\ndeclare source \"thedrgreenthumb/faust duck_reverb.dsp + freeverb.dspi\";\ndeclare category \"guitar\";\ndeclare family \"reverb\";\nimport(\"stdfaust.lib\");\n\np_attack  = hslider(\"[0] Attack[unit:s]\", 0.1, 0.05, 0.5, 0.01);\np_release = hslider(\"[1] Release[unit:s]\", 0.3, 0.05, 2, 0.01);\np_amount  = hslider(\"[2] Duck Amount[unit:dB]\", 18, 0, 40, 0.5) : si.smoo;\nroomsize  = hslider(\"[3] Room Size\", 0.6, 0, 1, 0.01) : si.smoo : *(0.28) : +(0.7);\ndamp      = hslider(\"[4] Damp\", 0.5, 0, 1, 0.01) : si.smoo;\nwet_dry   = hslider(\"[5] Wet/Dry\", 0.5, 0, 1, 0.01) : si.smoo;\n\nrev = re.mono_freeverb(roomsize, 0.5, damp*0.4, 23) : *(0.015);\n// proportional ducking: reverb/delay level drops by up to `depth` dB as the input envelope rises\n// (the original used a hard gate — env*amount > 1 — which mutes the wet path entirely while playing,\n// so a 100 % wet mix went silent)\nduck_gain(att, rel, depth_db, x) = ba.db2linear(0 - depth_db * min(1, an.amp_follower_ud(att, rel, x) * 4)) : si.smooth(ba.tau2pole(0.02));\nprocess(x) = x*(1-wet_dry) + (rev(x) * duck_gain(p_attack, p_release, p_amount, x)) * wet_dry * 3;"
  },
  {
   "id": "owl-faustverb",
@@ -14917,7 +14917,7 @@ const EFFECTS_CATALOG = [
     "path": "/Delay_Duck/Ducking"
    }
   ],
-  "faustCode": "declare name \"Delay Duck\";\ndeclare description \"Ducking delay: repeats are pushed down while you play and swell back in the gaps\";\ndeclare author \"thedrgreenthumb (Sergey Konstantinov)\";\ndeclare license \"MIT\";\ndeclare source \"thedrgreenthumb/faust circles/delay_duck.dsp + geometry.lib\";\ndeclare category \"guitar\";\ndeclare family \"time\";\nimport(\"stdfaust.lib\");\nmix2(c,x,y) = (1-c)*x + c*y;\n// mono collapse of geometry.lib pp_delay: feedback delay with post-delay (in-loop) and feedback-path (out-of-loop) processors\nmono_delay(time_ms, fb, f_post, f_fb) = (+ : de.fdelay(131072, time_ms*ma.SR/1000) : f_post) ~ *(fb) : f_fb;\np_time = hslider(\"[0] Time[unit:ms]\", 500, 50, 2000, 1) : si.smooth(ba.tau2pole(0.05));\np_fb   = hslider(\"[1] Feedback\", 0.3, 0, 0.95, 0.01) : si.smoo;\np_dw   = hslider(\"[9] Dry/Wet\", 0.5, 0, 1, 0.01) : si.smoo;\np_duck = hslider(\"[2] Ducking\", 0.5, 0, 1, 0.01) : si.smoo;\nducking_impl(att, rel, amount) = an.amp_follower_ud(att,rel) : _*amount : _>1 : (1 - _) : si.smooth(ba.tau2pole(0.03));\nprocess(x) = mix2(p_dw, x, mono_delay(p_time, p_fb, _, _, x) * ducking_impl(0.05, 0.1, p_duck*44 : ba.db2linear, x));"
+  "faustCode": "declare name \"Delay Duck\";\ndeclare description \"Ducking delay: repeats are pushed down while you play and swell back in the gaps\";\ndeclare author \"thedrgreenthumb (Sergey Konstantinov)\";\ndeclare license \"MIT\";\ndeclare source \"thedrgreenthumb/faust circles/delay_duck.dsp + geometry.lib\";\ndeclare category \"guitar\";\ndeclare family \"time\";\nimport(\"stdfaust.lib\");\nmix2(c,x,y) = (1-c)*x + c*y;\n// mono collapse of geometry.lib pp_delay: feedback delay with post-delay (in-loop) and feedback-path (out-of-loop) processors\nmono_delay(time_ms, fb, f_post, f_fb) = (+ : de.fdelay(131072, time_ms*ma.SR/1000) : f_post) ~ *(fb) : f_fb;\np_time = hslider(\"[0] Time[unit:ms]\", 500, 50, 2000, 1) : si.smooth(ba.tau2pole(0.05));\np_fb   = hslider(\"[1] Feedback\", 0.3, 0, 0.95, 0.01) : si.smoo;\np_dw   = hslider(\"[9] Dry/Wet\", 0.5, 0, 1, 0.01) : si.smoo;\np_duck = hslider(\"[2] Ducking\", 0.5, 0, 1, 0.01) : si.smoo;\n// proportional ducking: reverb/delay level drops by up to `depth` dB as the input envelope rises\n// (the original used a hard gate — env*amount > 1 — which mutes the wet path entirely while playing,\n// so a 100 % wet mix went silent)\nduck_gain(att, rel, depth_db, x) = ba.db2linear(0 - depth_db * min(1, an.amp_follower_ud(att, rel, x) * 4)) : si.smooth(ba.tau2pole(0.02));\nprocess(x) = mix2(p_dw, x, mono_delay(p_time, p_fb, _, _, x) * duck_gain(0.05, 0.1, p_duck*40, x));"
  },
  {
   "id": "tdg-delay-emu",
@@ -15216,9 +15216,9 @@ const EFFECTS_CATALOG = [
    {
     "label": "amount",
     "min": 0,
-    "max": 56,
-    "default": 0.5,
-    "step": 0.05,
+    "max": 40,
+    "default": 12,
+    "step": 0.5,
     "unit": "",
     "path": "/Duck_Delay/amount"
    },
@@ -15250,7 +15250,7 @@ const EFFECTS_CATALOG = [
     "path": "/Duck_Delay/relese"
    }
   ],
-  "faustCode": "// PORTED by tools/port/gx-port.py from guitarix src/LV2/faust/duck_delay.dsp (GPL-2.0-or-later).\ndeclare license \"GPL-2.0-or-later\";\ndeclare chameleon_flags \"-double\";   // DK circuit sims are numerically unstable in single precision\ndeclare id   \"duckDelay\";\ndeclare name \"Duck Delay\";\ndeclare category \"Echo / Delay\";\n\n//------------------------------------\n//Inspired by:\n//http://www.gvst.co.uk/gduckdly.htm\n//Axe-FX II Owner's manual:5.6\n//------------------------------------\n\n//------------------------------------\n//Description:\n//The delayed signal added to output dependent of input signal amplitude. \n//If the input signal is high. The delayed signal turned off, and vise versa.\n//The switching controlled by envelope follower \n//(parameters: \"attack\", \"release\", and main - \"amount\", what controls envelope follower influence).\n//\n//Parameters description:\n//time - de.delay time in milliseconds \n//feedback - de.delay feedback\n//attack, release - envelope follower time in seconds controls\n//amount dB - envelope follower influence\n//------------------------------------\n\nimport(\"stdfaust.lib\");\n\n//Constrols\np_time = hslider(\"time\", 500, 1, 2000, 1):si.smooth(ba.tau2pole(0.1));\np_feedback = hslider(\"feedback\", 0, 0, 1, 0.05);\np_attack_time = hslider(\"attack\", 0.1, 0.05, 0.5, 0.05);\np_release_time = hslider(\"relese\", 0.1, 0.05, 2, 0.05);\np_amount = hslider(\"amount\", 0.5, 0,56, 0.05):ba.db2linear;\n\n//Consts\nc_channels_sw_time = 0.1;\nc_fdelay_max_len = 393216;\n\nget_delay_length(x) = x*ma.SR:_*0.001;\n\nprocess = _<:\n\t_,(_<:(_+_:de.fdelay(c_fdelay_max_len,get_delay_length(p_time)))~_*p_feedback,\t\t\n\t(an.amp_follower_ud(p_attack_time,p_release_time):_*p_amount:_>1:(1 - _):\n\tsi.smooth(ba.tau2pole(c_channels_sw_time)))):_,_*_\n\t:>_;"
+  "faustCode": "// PORTED by tools/port/gx-port.py from guitarix src/LV2/faust/duck_delay.dsp (GPL-2.0-or-later).\ndeclare license \"GPL-2.0-or-later\";\ndeclare chameleon_flags \"-double\";   // DK circuit sims are numerically unstable in single precision\ndeclare id   \"duckDelay\";\ndeclare name \"Duck Delay\";\ndeclare category \"Echo / Delay\";\n\n//------------------------------------\n//Inspired by:\n//http://www.gvst.co.uk/gduckdly.htm\n//Axe-FX II Owner's manual:5.6\n//------------------------------------\n\n//------------------------------------\n//Description:\n//The delayed signal added to output dependent of input signal amplitude. \n//If the input signal is high. The delayed signal turned off, and vise versa.\n//The switching controlled by envelope follower \n//(parameters: \"attack\", \"release\", and main - \"amount\", what controls envelope follower influence).\n//\n//Parameters description:\n//time - de.delay time in milliseconds \n//feedback - de.delay feedback\n//attack, release - envelope follower time in seconds controls\n//amount dB - envelope follower influence\n//------------------------------------\n\nimport(\"stdfaust.lib\");\n\n//Constrols\np_time = hslider(\"time\", 500, 1, 2000, 1):si.smooth(ba.tau2pole(0.1));\np_feedback = hslider(\"feedback\", 0, 0, 1, 0.05);\np_attack_time = hslider(\"attack\", 0.1, 0.05, 0.5, 0.05);\np_release_time = hslider(\"relese\", 0.1, 0.05, 2, 0.05);\np_amount = hslider(\"amount\", 12, 0,40, 0.5):si.smoo;\n\n//Consts\nc_channels_sw_time = 0.1;\nc_fdelay_max_len = 393216;\n\nget_delay_length(x) = x*ma.SR:_*0.001;\n\nprocess = _<:\n\t_,(_<:(_+_:de.fdelay(c_fdelay_max_len,get_delay_length(p_time)))~_*p_feedback,\t\t\n\t(ba.db2linear(0 - p_amount * min(1, an.amp_follower_ud(p_attack_time,p_release_time) * 4)) :\n\tsi.smooth(ba.tau2pole(c_channels_sw_time)))):_,_*_\n\t:>_;"
  },
  {
   "id": "gx-echo",
