@@ -4,6 +4,19 @@
   "trailingSlash": true,
   "headers": [
     {
+      "source": "/firmware/(.*)\\.bin",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/octet-stream"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
       "source": "/(.*)\\.wasm",
       "headers": [
         {

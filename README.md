@@ -153,13 +153,27 @@ What exists today, and what does not — so nobody is surprised when the Seed ar
 - The patch table: the four patches, their chain of up to seven stages, every parameter value, and which
   (stage, parameter) each of the three pots is bound to, all emitted as constant data.
 
+**Building and flashing (firmware/)**
+
+```bash
+brew install faust dfu-util && brew install --cask gcc-arm-embedded   # once
+git clone --recurse-submodules https://github.com/electro-smith/libDaisy ../fw/libDaisy && make -C ../fw/libDaisy
+git clone https://github.com/electro-smith/DaisySP ../fw/DaisySP && make -C ../fw/DaisySP
+cd firmware && ./gen-faust.sh dynamic-overdrive   # regenerate faust/*.h for the effects in patches.h
+make                                              # -> build/chameleon.bin ; cp it to firmware/chameleon.bin for the studio
+make program-dfu                                  # or: Seed in DFU mode, Flash Pedal in the studio
+```
+
+`main.cpp` is the engine (control surface, PotTakeover, series chain, SDRAM pool for effect state), `patches.h` the
+patch table, `chameleon_faust.h` the tiny Faust runtime. The studio's Flash button streams `firmware/chameleon.bin`
+over real DfuSe (`js/webdfu.js`). Internal flash is 128 KB, enough for a couple of light effects; the full library
+build will target the Daisy bootloader / 8 MB QSPI (`APP_TYPE=BOOT_QSPI`).
+
 **Not written yet**
 
-- The glue that instantiates N Faust classes per patch, runs them in series inside `AudioCallback`, and
-  routes pot values into the bound sliders. This is a couple of hundred lines against libDaisy + the
-  Faust-generated headers; it needs the real toolchain (`arm-none-eabi-gcc`, libDaisy, DaisySP) to build,
-  which is why it is not done from the browser.
-- A compiled `.bin`. Until one exists the *Flash Pedal* button deliberately refuses to write anything.
+- `tools/build-firmware.mjs`: generate `patches.h` + the faust/ headers straight from a studio patch export.
+- The bootloader/QSPI build for chains that don't fit in 128 KB (guitarix table effects are megabytes).
+- CPU budgeting per chain.
 
 So: the day the Seed shows up, the build is `faust -lang cpp -double -a daisy.cpp dsp/<effect>.dsp` for each
 stage, the generated control-surface file, the glue, `make`, then `make program-dfu` (or the studio's Flash

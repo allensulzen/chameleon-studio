@@ -417,7 +417,13 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btn-start-flash').addEventListener('click', async () => {
     const log = $('flash-status-text'), bar = $('flash-progress'), btn = $('btn-start-flash');
     try { btn.disabled = true; log.textContent = 'Requesting USB device…'; await dfu.connect(); el.chipDevice.className = 'chip ok'; el.chipDevice.lastElementChild.textContent = 'Daisy Seed in DFU mode'; dfu.onProgress = (p) => { bar.style.width = `${p}%`; log.textContent = `Flashing… ${p}%`; };
-      throw new Error('No compiled firmware available yet — build it with faust2daisy (see README), then this button will stream the real .bin.'); }
+      log.textContent = 'Fetching firmware image…';
+      const res = await fetch('firmware/chameleon.bin', { cache: 'no-store' });
+      if (!res.ok) throw new Error('firmware/chameleon.bin is missing — build it with `make` in firmware/ (see README)');
+      const bin = await res.arrayBuffer();
+      log.textContent = `Flashing ${(bin.byteLength / 1024).toFixed(1)} KB…`;
+      await dfu.flash(bin);
+      log.textContent = 'Done — the Seed rebooted into Chameleon. Tap the footswitch: LED toggles. Hold it: LED blinks the patch number.'; bar.style.width = '100%'; }
     catch (err) { log.textContent = `⚠ ${err.message}`; } finally { btn.disabled = false; }
   });
   function download(name, content) { const a = document.createElement('a'); a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content); a.download = name; a.click(); }

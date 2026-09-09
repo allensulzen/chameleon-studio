@@ -209,7 +209,7 @@
         </ol>
         <div class="progress"><div class="progress-bar" id="flash-progress"></div></div>
         <div class="log" id="flash-status-text">Ready to connect.</div>
-        <p class="note">No compiled firmware exists yet — the studio will refuse to write anything to the device until the Faust → Daisy build produces a real <code>.bin</code>. See the README, “Firmware pipeline”.</p>
+        <p class="note">Streams <code>firmware/chameleon.bin</code> (built from <code>firmware/</code> with <code>make</code>) into the Seed's internal flash over DfuSe, then reboots it. The current image is the first-flash build: control surface + Dynamic Overdrive on patches A/B, C/D pass-through.</p>
       </div>
       <div class="modal-foot"><button class="btn btn-ghost close-modal">Cancel</button><button class="btn btn-accent" id="btn-start-flash">Connect &amp; flash</button></div>
     </div>
