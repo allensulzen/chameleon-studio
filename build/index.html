@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../assets/favicon.png">
+</head>
+<body>
+<title>Chameleon Perfboard Build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f2f5f3; --paper-2: #e6ebe8; --ink: #14201a; --ink-2: #47554e; --ink-3: #7b8781; --line: #cdd5d0;
+    --acc: #1c9b78; --acc-ink: #0f6b52; --acc-soft: #d6efe6;
+    --w-9v: #d0342c; --w-3v3: #f07b1d; --w-gnd: #1a1a1a; --w-sig: #1f6fd6; --w-ref: #8a5cd6;
+    --warn-bg: #fff3d6; --warn-ink: #6b4a00; --warn-line: #f0c760;
+    --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --paper: #101614; --paper-2: #182019; --ink: #e9efec; --ink-2: #aab5af; --ink-3: #6f7b75; --line: #2a3530;
+    --acc: #3fc79e; --acc-ink: #7fdcbf; --acc-soft: #163b30; --w-gnd: #d9d9d9; --w-sig: #5b9cf5; --w-9v: #ff6b5f; --w-3v3: #ffa24a; --w-ref: #b393f0;
+    --warn-bg: #3a2c08; --warn-ink: #ffd97a; --warn-line: #7a5a10;
+  } }
+  :root[data-theme="dark"] {
+    --paper: #101614; --paper-2: #182019; --ink: #e9efec; --ink-2: #aab5af; --ink-3: #6f7b75; --line: #2a3530;
+    --acc: #3fc79e; --acc-ink: #7fdcbf; --acc-soft: #163b30; --w-gnd: #d9d9d9; --w-sig: #5b9cf5; --w-9v: #ff6b5f; --w-3v3: #ffa24a; --w-ref: #b393f0;
+    --warn-bg: #3a2c08; --warn-ink: #ffd97a; --warn-line: #7a5a10;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.5; padding-block: 28px 80px; padding-inline: 20px; }
+  .sheet { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+  h1 { font-size: 40px; font-weight: 900; line-height: 1.02; }
+  h2 { font-size: 24px; font-weight: 700; margin-top: 44px; padding-top: 18px; border-top: 2px solid var(--ink); }
+  h3 { font-size: 18px; font-weight: 700; margin-top: 6px; }
+  p { margin: 10px 0; max-width: 66ch; }
+  .lede { font-size: 19px; color: var(--ink-2); }
+  .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--acc-ink); margin-bottom: 8px; }
+  code, .pin, .ref { font-family: var(--font-mono); font-size: .9em; }
+  .pin { display: inline-block; padding: 1px 7px; border-radius: 4px; background: var(--paper-2); border: 1px solid var(--line); font-weight: 600; white-space: nowrap; }
+  .ref { font-weight: 600; color: var(--acc-ink); }
+  .warn { background: var(--warn-bg); color: var(--warn-ink); border: 1px solid var(--warn-line); border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .warn b { font-family: var(--font-display); }
+  figure { margin: 22px 0; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: 14px; color: var(--ink-3); margin-top: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--ink-2); margin-top: 10px; }
+  .legend span::before { content: ""; display: inline-block; width: 22px; height: 4px; border-radius: 2px; background: var(--c); vertical-align: middle; margin-right: 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 14px 0; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+  td:first-child { white-space: nowrap; }
+  .tbl-wrap { overflow-x: auto; }
+  ol.steps { list-style: none; counter-reset: step; padding: 0; margin: 18px 0 0; display: grid; gap: 20px; }
+  ol.steps > li { counter-increment: step; display: grid; grid-template-columns: 44px 1fr; gap: 14px; }
+  ol.steps > li::before { content: counter(step); font-family: var(--font-display); font-weight: 900; font-size: 26px; color: var(--acc); line-height: 1.1; }
+  .check { margin-top: 8px; padding: 8px 12px; border-left: 3px solid var(--acc); background: var(--acc-soft); color: var(--ink); font-size: 15.5px; border-radius: 0 6px 6px 0; }
+  .check b { color: var(--acc-ink); font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin-right: 6px; }
+  ul { padding-left: 20px; margin: 8px 0; } li { margin: 4px 0; }
+  .foot { margin-top: 48px; font-size: 14px; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 14px; }
+  a { color: var(--acc-ink); }
+  @media print { body { padding: 0; font-size: 12pt; } h2 { margin-top: 26px; } }
+</style>
+
+<main class="sheet">
+  <div class="eyebrow">Chameleon pedal · perfboard build · after the breadboard is proven</div>
+  <h1>Perfboard build</h1>
+  <p class="lede">Everything the breadboard left out: the 9 V power entry, the TL072 input buffer, the 5×7 cm board that carries the Seed, and the enclosure. Same footswitch, pots and jacks you already wired — they move over unchanged.</p>
+
+  <h2>Power, plainly</h2>
+  <p>The Seed wants 3.3 V inside, and it makes that itself from whatever you feed it. It accepts either of two sources, and it's safe to have both plugged in at once:</p>
+  <ul>
+    <li><strong>USB-C</strong> gives it 5 V. That's how it's been running so far, and it's how you flash it. It powers the Seed only — nothing else on the board.</li>
+    <li><strong>VIN (pin 39)</strong> takes 4–17 V, so a standard <strong>9 V pedalboard supply</strong> goes straight in. This is how the finished pedal runs. The 9 V rail also feeds the TL072, which needs more than 3.3 V to work.</li>
+  </ul>
+  <p>So: on stage, 9 V only. On the bench, USB for flashing plus 9 V if you want to hear the buffered input. USB alone still makes sound, but the guitar is going through an unpowered buffer — that's why the board below includes a bypass jumper.</p>
+  <p>Pedal supplies are <strong>centre-negative</strong>: the outer barrel of the plug is +9 V and the centre pin is ground, the opposite of most wall warts. The 1N5817 diode makes a backwards plug harmless (nothing happens instead of something dying), and the 470 µF capacitor smooths out supply noise so it doesn't end up as hum.</p>
+
+  <h2>Your pots' three wires</h2>
+  <p>Red and white are the two outer lugs, yellow is the wiper (middle). Yes — all three <strong>reds meet</strong> at one point (3V3 analog, Seed pin 21) and all three <strong>whites meet</strong> at another (AGND, pin 20). Each yellow goes to its own pin: 22, 23, 24. Every pot is the same voltage divider between the same two rails; only the wiper is unique. If a knob turns backwards, swap that pot's red and white.</p>
+
+  <h2>Parts</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Ref</th><th>Part</th><th>Qty</th><th>Job</th></tr></thead>
+    <tbody>
+      <tr><td><span class="ref">U1</span></td><td>TL072 dual op-amp, DIP-8 (BOJACK kit) + 8-pin socket</td><td>1</td><td>Input buffer. Only half is used; the spare half is tied off.</td></tr>
+      <tr><td><span class="ref">R1</span></td><td>1 MΩ ¼ W</td><td>1</td><td>Sets the 1 MΩ input impedance the pickup wants.</td></tr>
+      <tr><td><span class="ref">R2 R3</span></td><td>100 kΩ ¼ W</td><td>2</td><td>Divide 9 V to a 4.5 V mid-point the op-amp centres on.</td></tr>
+      <tr><td><span class="ref">R4 R5</span></td><td>10 kΩ ¼ W</td><td>2</td><td>R4 feedback; R5 in series with the Seed input so the clamp diodes can do their job.</td></tr>
+      <tr><td><span class="ref">R6</span></td><td>100 Ω ¼ W</td><td>1</td><td>Output isolation — protects the Seed if a cable shorts.</td></tr>
+      <tr><td><span class="ref">C1 C2</span></td><td>100 nF film</td><td>2</td><td>Block DC in and out of the buffer.</td></tr>
+      <tr><td><span class="ref">C3</span></td><td>100 pF ceramic (C0G)</td><td>1</td><td>Across R4 — rolls off radio frequencies.</td></tr>
+      <tr><td><span class="ref">C4 C5</span></td><td>10 µF electrolytic</td><td>2</td><td>C4 steadies the 4.5 V mid-point; C5 decouples the op-amp supply.</td></tr>
+      <tr><td><span class="ref">C6</span></td><td>470 µF electrolytic, 16 V+</td><td>1</td><td>Filters the 9 V rail.</td></tr>
+      <tr><td><span class="ref">D1 D2</span></td><td>1N4148</td><td>2</td><td>Clamp the Seed input to 3.3 V / ground against spikes.</td></tr>
+      <tr><td><span class="ref">D3</span></td><td>1N5817 Schottky</td><td>1</td><td>Reverse-polarity protection on the 9 V input.</td></tr>
+      <tr><td><span class="ref">J1 J2</span></td><td>¼″ mono chassis jacks</td><td>2</td><td>Guitar in, amp out.</td></tr>
+      <tr><td><span class="ref">J3</span></td><td>2.1 × 5.5 mm panel DC jack</td><td>1</td><td>9 V in, centre-negative.</td></tr>
+      <tr><td><span class="ref">SW1</span></td><td>SPST momentary soft-touch footswitch</td><td>1</td><td>Tap = bypass, hold = next patch.</td></tr>
+      <tr><td><span class="ref">VR1–3</span></td><td>B10K (10 kΩ linear) pots + knobs</td><td>3</td><td>Pots 1–3.</td></tr>
+      <tr><td><span class="ref">JP1</span></td><td>2-pin header + jumper (or just a wire)</td><td>1</td><td>Bypasses the buffer for USB-only bench use.</td></tr>
+      <tr><td>—</td><td>2 × 20-pin female headers</td><td>2</td><td>Socket for the Seed — never solder the Seed itself.</td></tr>
+      <tr><td>—</td><td>5×7 cm double-sided perfboard, 22 AWG hookup wire, copper foil tape, M3 heat-set inserts + screws</td><td>—</td><td>Board, wiring, shielding, enclosure.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>Schematic</h2>
+  <p>Read it left to right: the DC jack feeds the 9 V rail, which powers the Seed (VIN) and the op-amp. The guitar goes through the buffer into Seed pin 16, and the Seed's pin 18 goes out through 100 Ω to the amp jack. Pots and footswitch are unchanged from the breadboard.</p>
+  <figure>
+    <svg viewBox="0 0 860 520" role="img" aria-label="Schematic: power entry, TL072 input buffer, output, and the Daisy Seed connections">
+      <style>
+        .n { font: 600 11px var(--font-mono); fill: var(--ink-2); }
+        .v { font: 400 11px var(--font-body); fill: var(--ink-3); }
+        .t { font: 700 13px var(--font-display); fill: var(--ink); }
+        .ln { fill: none; stroke: var(--ink); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+        .rail { fill: none; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+        .box { fill: var(--paper-2); stroke: var(--ink); stroke-width: 1.6; }
+        .comp { fill: var(--paper); stroke: var(--ink); stroke-width: 1.6; }
+        .dot { fill: var(--ink); }
+      </style>
+
+      <!-- ===== Seed ===== -->
+      <rect class="box" x="640" y="40" width="200" height="440" rx="8"/>
+      <text x="740" y="64" text-anchor="middle" class="t">Daisy Seed (socketed)</text>
+      <g class="n">
+        <text x="650" y="104">39 VIN</text>
+        <text x="650" y="134">40 GND</text>
+        <text x="650" y="194">21 3V3A</text>
+        <text x="650" y="224">20 AGND</text>
+        <text x="650" y="294">16 AUDIO IN L</text>
+        <text x="650" y="354">18 AUDIO OUT L</text>
+        <text x="650" y="414">28 D21 ← SW1 → 40 GND</text>
+        <text x="650" y="444">22·23·24 ← pot wipers</text>
+        <text x="650" y="464">21 ← reds · 20 ← whites</text>
+      </g>
+
+      <!-- ===== Power entry ===== -->
+      <text x="20" y="34" class="t">Power entry — 9 V centre-negative</text>
+      <rect class="comp" x="20" y="60" width="92" height="50" rx="6"/><text x="66" y="80" text-anchor="middle" class="n">J3 DC</text><text x="66" y="96" text-anchor="middle" class="v">barrel = +9 V</text>
+      <path class="rail" stroke="var(--w-9v)" d="M112 72 H 140"/>
+      <polygon class="comp" points="140,64 162,72 140,80"/><line class="ln" x1="162" y1="64" x2="162" y2="80"/>
+      <text x="151" y="56" text-anchor="middle" class="n">D3 1N5817</text>
+      <path class="rail" stroke="var(--w-9v)" d="M162 72 H 640"/>
+      <circle class="dot" cx="230" cy="72" r="3"/>
+      <text x="300" y="66" class="n">+9 V rail → VIN, U1 pin 8, R2</text>
+      <line class="ln" x1="230" y1="72" x2="230" y2="96"/><line class="ln" x1="220" y1="96" x2="240" y2="96"/><line class="ln" x1="220" y1="103" x2="240" y2="103"/><line class="ln" x1="230" y1="103" x2="230" y2="130"/>
+      <text x="246" y="104" class="n">C6 470 µF</text>
+      <path class="rail" stroke="var(--w-gnd)" d="M112 98 H 124 V 130 H 640"/>
+      <text x="300" y="148" class="n">GND rail → pin 40, U1 pin 4, DC centre pin</text>
+
+      <!-- ===== Buffer ===== -->
+      <text x="20" y="182" class="t">Input buffer — U1a, half of the TL072</text>
+      <rect class="comp" x="20" y="270" width="60" height="46" rx="6"/><text x="50" y="290" text-anchor="middle" class="n">J1 IN</text><text x="50" y="306" text-anchor="middle" class="v">tip</text>
+      <!-- C1 -->
+      <path class="ln" d="M80 292 H 100"/><line class="ln" x1="100" y1="280" x2="100" y2="304"/><line class="ln" x1="108" y1="280" x2="108" y2="304"/><path class="ln" d="M108 292 H 150"/>
+      <text x="104" y="272" text-anchor="middle" class="n">C1 100n</text>
+      <circle class="dot" cx="150" cy="292" r="3"/>
+      <!-- R1 down to Vref -->
+      <line class="ln" x1="150" y1="292" x2="150" y2="316"/><rect class="comp" x="142" y="316" width="16" height="36"/><line class="ln" x1="150" y1="352" x2="150" y2="376"/>
+      <text x="164" y="332" class="n">R1 1M</text>
+      <circle class="dot" cx="150" cy="376" r="3"/>
+      <path class="rail" stroke="var(--w-ref)" d="M60 376 H 150"/><text x="20" y="372" class="n">4.5 V ref</text>
+      <!-- divider R2 R3 + C4 -->
+      <path class="rail" stroke="var(--w-9v)" d="M60 250 H 100"/><text x="20" y="246" class="n">9 V</text>
+      <line class="ln" x1="100" y1="250" x2="100" y2="330"/>
+      <rect class="comp" x="92" y="336" width="16" height="30"/><line class="ln" x1="100" y1="330" x2="100" y2="336"/><line class="ln" x1="100" y1="366" x2="100" y2="386"/>
+      <text x="88" y="356" text-anchor="end" class="n">R2 100k</text>
+      <circle class="dot" cx="100" cy="376" r="3"/>
+      <rect class="comp" x="92" y="386" width="16" height="30"/><line class="ln" x1="100" y1="416" x2="100" y2="440"/>
+      <text x="88" y="406" text-anchor="end" class="n">R3 100k</text>
+      <path class="rail" stroke="var(--w-gnd)" d="M86 440 H 114"/>
+      <line class="ln" x1="150" y1="376" x2="150" y2="404"/><line class="ln" x1="142" y1="404" x2="158" y2="404"/><line class="ln" x1="142" y1="411" x2="158" y2="411"/><line class="ln" x1="150" y1="411" x2="150" y2="440"/><path class="rail" stroke="var(--w-gnd)" d="M136 440 H 164"/>
+      <text x="164" y="426" class="n">C4 10µ</text>
+      <!-- op amp -->
+      <polygon class="comp" points="186,266 186,318 240,292"/>
+      <text x="192" y="284" class="n">+</text><text x="192" y="312" class="n">−</text><text x="213" y="258" text-anchor="middle" class="n">U1a</text>
+      <path class="ln" d="M150 292 H 186"/>
+      <path class="ln" d="M240 292 H 270"/><circle class="dot" cx="270" cy="292" r="3"/>
+      <!-- feedback loop R4 || C3 -->
+      <path class="ln" d="M186 306 H 176 V 344 H 270 V 292"/>
+      <rect class="comp" x="208" y="336" width="34" height="16"/><text x="225" y="368" text-anchor="middle" class="n">R4 10k ∥ C3 100p</text>
+      <!-- C2 R5 -->
+      <line class="ln" x1="284" y1="280" x2="284" y2="304"/><line class="ln" x1="292" y1="280" x2="292" y2="304"/><path class="ln" d="M270 292 H 284 M292 292 H 312"/>
+      <text x="288" y="272" text-anchor="middle" class="n">C2 100n</text>
+      <rect class="comp" x="312" y="284" width="34" height="16"/><text x="329" y="316" text-anchor="middle" class="n">R5 10k</text>
+      <path class="ln" stroke="var(--w-sig)" d="M346 292 H 640"/><circle class="dot" cx="400" cy="292" r="3"/>
+      <!-- clamps -->
+      <path class="ln" d="M400 292 V 258"/><polygon class="comp" points="393,258 407,258 400,244"/><line class="ln" x1="393" y1="244" x2="407" y2="244"/><path class="rail" stroke="var(--w-3v3)" d="M400 244 V 190 H 640"/><text x="412" y="238" class="n">D1 → 3V3A</text>
+      <path class="ln" d="M400 292 V 326"/><polygon class="comp" points="393,326 407,326 400,340"/><line class="ln" x1="393" y1="340" x2="407" y2="340"/><path class="rail" stroke="var(--w-gnd)" d="M400 340 V 366 M388 366 H 412 M393 372 H 407 M398 378 H 402"/><text x="412" y="362" class="n">D2 → AGND (pin 20)</text><path class="rail" stroke="var(--w-gnd)" d="M640 220 H 610"/><text x="606" y="214" text-anchor="end" class="n">AGND ← jack sleeves</text>
+      <!-- JP1 -->
+      <path class="ln" stroke-dasharray="4 4" d="M92 212 H 400 V 244"/><line class="ln" x1="92" y1="212" x2="92" y2="292"/><circle class="dot" cx="92" cy="292" r="3"/>
+      <text x="250" y="204" text-anchor="middle" class="n">JP1: jumper here to skip the buffer (USB-only bench)</text>
+      <!-- U1 power note -->
+      <text x="20" y="470" class="v">U1 pin 8 → 9 V rail, with C5 10 µF from pin 8 to GND right at the chip · U1 pin 4 → GND</text>
+      <text x="20" y="486" class="v">Spare half U1b: pin 5 → 4.5 V ref, pin 6 wired to pin 7 (keeps it quiet)</text>
+      <!-- output -->
+      <path class="ln" stroke="var(--w-sig)" d="M640 350 H 520"/><rect class="comp" x="486" y="342" width="34" height="16"/><text x="503" y="334" text-anchor="middle" class="n">R6 100Ω</text>
+      <path class="ln" stroke="var(--w-sig)" d="M486 350 H 440"/>
+      <rect class="comp" x="380" y="392" width="60" height="46" rx="6"/><text x="410" y="412" text-anchor="middle" class="n">J2 OUT</text><text x="410" y="428" text-anchor="middle" class="v">tip</text>
+      <path class="ln" stroke="var(--w-sig)" d="M440 350 H 430 V 392"/>
+      <text x="380" y="458" class="v">J2 sleeve and J1 sleeve → AGND</text>
+    </svg>
+    <div class="legend">
+      <span style="--c:var(--w-9v)">9 V rail</span>
+      <span style="--c:var(--w-gnd)">ground (GND 40 for power/switch · AGND 20 for audio)</span>
+      <span style="--c:var(--w-3v3)">3V3 analog (pin 21)</span>
+      <span style="--c:var(--w-ref)">4.5 V op-amp reference</span>
+      <span style="--c:var(--w-sig)">audio signal</span>
+    </div>
+    <figcaption>Buffer: unity-gain follower. R1 sets the 1 MΩ input impedance; C1/C2 block DC; R4 with C3 across it keeps radio out; R5 plus D1/D2 protect the Seed's ADC. Op-amp runs single-supply from 9 V, so the input sits at 4.5 V and swings around it.</figcaption>
+  </figure>
+
+  <div class="warn"><b>Why the buffer needs 9 V.</b> A TL072 won't run on the Seed's 3.3 V — it needs at least ~7 V across it. So the finished pedal runs on the 9 V supply; USB alone still runs the Seed (and flashes it) but leaves the op-amp asleep and the guitar path silent. JP1 exists for exactly that case on the bench. Both supplies plugged in at once is fine.</div>
+
+  <h2>Board layout — 5×7 cm perfboard (18 × 24 holes)</h2>
+  <figure>
+    <svg viewBox="0 0 760 420" role="img" aria-label="Zone map of the 5 by 7 cm perfboard">
+      <style>
+        .g { fill: var(--paper-2); stroke: var(--line); }
+        .z { fill: var(--acc-soft); stroke: var(--acc); stroke-width: 1.4; rx: 4; }
+        .zt { font: 700 12px var(--font-display); fill: var(--ink); }
+        .zs { font: 400 11px var(--font-body); fill: var(--ink-2); }
+        .ax { font: 600 10px var(--font-mono); fill: var(--ink-3); }
+      </style>
+      <!-- grid 18 cols x 24 rows, 14px pitch, origin 60,40 -->
+      <rect x="52" y="32" width="268" height="352" rx="6" fill="var(--paper-2)" stroke="var(--ink)" stroke-width="1.6"/>
+      <g fill="var(--ink-3)">
+        <!-- rows of dots drawn as pattern -->
+        <pattern id="holes" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="7" cy="7" r="1.6" fill="var(--ink-3)"/></pattern>
+        <rect x="60" y="40" width="252" height="336" fill="url(#holes)"/>
+      </g>
+      <text x="60" y="26" class="ax">col 1</text><text x="290" y="26" class="ax">col 18</text>
+      <text x="326" y="50" class="ax">row 1</text><text x="326" y="374" class="ax">row 24</text>
+      <!-- Seed headers cols 1 & 7 rows 1-20 -->
+      <rect class="z" x="60" y="40" width="14" height="280"/><rect class="z" x="144" y="40" width="14" height="280"/>
+      <rect x="74" y="40" width="70" height="280" fill="none" stroke="var(--acc)" stroke-dasharray="4 4"/>
+      <text x="109" y="150" text-anchor="middle" class="zt">Seed</text><text x="109" y="166" text-anchor="middle" class="zs">headers in</text><text x="109" y="180" text-anchor="middle" class="zs">cols 1 and 7</text><text x="109" y="194" text-anchor="middle" class="zs">rows 1–20</text>
+      <!-- U1 socket -->
+      <rect class="z" x="186" y="82" width="42" height="56"/><text x="207" y="106" text-anchor="middle" class="zt">U1</text><text x="207" y="120" text-anchor="middle" class="zs">socket</text>
+      <!-- buffer parts -->
+      <rect class="z" x="172" y="152" width="126" height="126"/><text x="235" y="200" text-anchor="middle" class="zt">Buffer</text><text x="235" y="216" text-anchor="middle" class="zs">R1–R5, C1–C4, D1, D2</text><text x="235" y="230" text-anchor="middle" class="zs">JP1 header</text>
+      <!-- power -->
+      <rect class="z" x="60" y="334" width="126" height="42"/><text x="123" y="352" text-anchor="middle" class="zt">Power</text><text x="123" y="366" text-anchor="middle" class="zs">D3, C6, C5</text>
+      <!-- wire-in row -->
+      <rect class="z" x="200" y="334" width="112" height="42"/><text x="256" y="352" text-anchor="middle" class="zt">Wire-in pads</text><text x="256" y="366" text-anchor="middle" class="zs">jacks, pots, switch, DC</text>
+      <!-- output -->
+      <rect class="z" x="172" y="290" width="126" height="34"/><text x="235" y="311" text-anchor="middle" class="zt">R6 · out</text>
+      <!-- notes -->
+      <g class="zs">
+        <text x="360" y="60" class="zt">Rules of the board</text>
+        <text x="360" y="84">Seed pins 1–20 land in column 1, pins 21–40 in column 7</text>
+        <text x="360" y="100">(top to bottom). Pin 20 / pin 21 sit at row 20, right beside</text>
+        <text x="360" y="116">the buffer's clamp diodes — short wires.</text>
+        <text x="360" y="144">Run the 9 V rail and GND along row 24 as two bare bus wires.</text>
+        <text x="360" y="160">Run AGND (pin 20) as its own bus up the middle of the</text>
+        <text x="360" y="176">buffer zone; join AGND to GND at one point only, pin 20↔40.</text>
+        <text x="360" y="204">Stand resistors on end to save space. Put C5 within one</text>
+        <text x="360" y="220">hole of U1 pin 8. Keep C1 → R1 → op-amp input as short as</text>
+        <text x="360" y="236">the socket allows — that node is the sensitive one.</text>
+        <text x="360" y="264">Wire-in pads: solder 3–4″ of hookup wire to each pad, then</text>
+        <text x="360" y="280">to the panel parts after the enclosure is drilled. Colour</text>
+        <text x="360" y="296">code: red 9 V, black GND, orange 3V3A, blue audio,</text>
+        <text x="360" y="312">yellow wipers, white footswitch.</text>
+        <text x="360" y="340">Double-check the Seed orientation against the USB</text>
+        <text x="360" y="356">socket before soldering the second header.</text>
+      </g>
+    </svg>
+    <figcaption>Zones, not hole-by-hole — the exact hole for each part is yours to pick as you go, and the wire-in pads keep every off-board part on plain hookup wire.</figcaption>
+  </figure>
+
+  <h2>Enclosure</h2>
+  <p>A 1590B-size box (or the 3D print from the plan) takes the 5×7 board flat on the floor with the Seed's USB socket facing a hole in the end wall, so you can flash it without opening the box. Drill: pots 7 mm, ¼″ jacks 10 mm, footswitch 12 mm, DC jack 12 mm (check your jack — many 2.1 mm panel jacks want 8 mm), USB-C access slot 10 × 5 mm, LED window 3 mm above the Seed's LED if you want to see it.</p>
+  <p>Line the inside with copper foil tape, soldering every overlap so the foil is one sheet electrically, and run one wire from the foil to the input jack's sleeve lug. That single wire is what makes the 480 MHz chip inaudible through a high-gain amp. Do not ground the foil anywhere else.</p>
+
+  <h2>Build order, with a check after each step</h2>
+  <ol class="steps">
+    <li><div>
+      <h3>Headers first, nothing else</h3>
+      <p>Solder the two 20-pin female headers into columns 1 and 7, rows 1–20, using the Seed itself (unplugged, unpowered) as the jig so they're parallel. Remove the Seed before doing anything else.</p>
+      <div class="check"><b>Check</b> The Seed slides in and out without forcing. USB socket points where you planned the slot.</div>
+    </div></li>
+    <li><div>
+      <h3>Power entry</h3>
+      <p>D3 (band toward the Seed), C6 (long leg to 9 V), the 9 V and GND bus wires along row 24, wire-in pads for the DC jack. Wire the DC jack: its barrel/sleeve lug to the D3 anode pad, its centre-pin lug to GND.</p>
+      <div class="check"><b>Check</b> With the Seed OUT, plug in a 9 V pedal supply and measure ≈ 8.7 V between the C6 legs (9 V minus the diode). Plug the supply in backwards on purpose: 0 V, nothing warm. Then Seed IN, USB unplugged, 9 V in: user LED comes on solid. Measure 3.3 V on pin 21.</div>
+    </div></li>
+    <li><div>
+      <h3>Buffer</h3>
+      <p>U1 socket, then R2/R3/C4 for the 4.5 V reference, C5 on the supply pin, R1/C1 on the input, R4∥C3 feedback, C2/R5 out, D1/D2 at the Seed-side node, JP1 header. Tie the spare half off (pin 5 → 4.5 V, pin 6 → pin 7). Chip in last, notch matching the socket.</p>
+      <div class="check"><b>Check</b> 9 V in, no Seed: pin 8 of U1 reads ≈ 8.7 V, pin 4 reads 0, pin 3 and pin 1 both read ≈ 4.35 V (half of 8.7). If pin 1 is pinned at 0 or 8.7 V the feedback wire is missing. Then Seed in, guitar into J1, amp on J2 at low volume: clean sound on patch C with the top end back — compare to JP1 jumpered.</div>
+    </div></li>
+    <li><div>
+      <h3>Output, controls, switch</h3>
+      <p>R6 from pin 18 to the OUT wire-in pad. Pot reds to the 3V3A pad (pin 21), whites to the AGND pad (pin 20), yellows to the pads for 22/23/24. Footswitch pads: pin 28 and GND (pin 40).</p>
+      <div class="check"><b>Check</b> Exactly what the breadboard did: tap = LED off/on, hold = blinks the patch number, pots move Gain/Tone/Level on patch A.</div>
+    </div></li>
+    <li><div>
+      <h3>Box it</h3>
+      <p>Drill, foil, mount the panel parts, drop the board in, connect the foil to the input jack sleeve, close it up.</p>
+      <div class="check"><b>Check</b> High-gain amp, gain up, nothing playing: no whine. Rock the pedal on the floor: no crackle from the jacks. Flash it through the USB slot from the studio without opening the box.</div>
+    </div></li>
+  </ol>
+
+  <h2>Values on the wire-in pads, for reference</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Pad</th><th>Goes to</th><th>Seed pin</th></tr></thead>
+    <tbody>
+      <tr><td>DC +</td><td>DC jack barrel lug (via D3)</td><td>39 VIN</td></tr>
+      <tr><td>GND</td><td>DC jack centre lug, footswitch lug B</td><td>40</td></tr>
+      <tr><td>IN</td><td>J1 tip (into C1)</td><td>16 via buffer</td></tr>
+      <tr><td>OUT</td><td>J2 tip (via R6)</td><td>18</td></tr>
+      <tr><td>AGND</td><td>J1 sleeve, J2 sleeve, pot whites</td><td>20</td></tr>
+      <tr><td>3V3A</td><td>pot reds</td><td>21</td></tr>
+      <tr><td>P1 P2 P3</td><td>pot yellows</td><td>22 23 24</td></tr>
+      <tr><td>SW</td><td>footswitch lug A</td><td>28</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="foot">Companion to the breadboard sheet. Pinout from libDaisy's Daisy_Seed_Rev4_Pinout.csv; firmware in chameleon-studio/firmware.</div>
+</main>
+
+</body>
+</html>
