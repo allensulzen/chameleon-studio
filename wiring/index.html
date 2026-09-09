@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../assets/favicon.png">
+</head>
+<body>
+<title>Chameleon Breadboard Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f2f5f3; --paper-2: #e6ebe8; --ink: #14201a; --ink-2: #47554e; --ink-3: #7b8781; --line: #cdd5d0;
+    --acc: #1c9b78; --acc-ink: #0f6b52; --acc-soft: #d6efe6;
+    --w-3v3: #d0342c; --w-gnd: #1a1a1a; --w-pot: #e0a100; --w-audio: #1f6fd6; --w-sw: #ee7a1a;
+    --warn-bg: #fff3d6; --warn-ink: #6b4a00; --warn-line: #f0c760;
+    --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --paper: #101614; --paper-2: #182019; --ink: #e9efec; --ink-2: #aab5af; --ink-3: #6f7b75; --line: #2a3530;
+    --acc: #3fc79e; --acc-ink: #7fdcbf; --acc-soft: #163b30; --w-gnd: #d9d9d9; --w-pot: #f3bd2b; --w-audio: #5b9cf5; --w-3v3: #ff6b5f;
+    --warn-bg: #3a2c08; --warn-ink: #ffd97a; --warn-line: #7a5a10;
+  } }
+  :root[data-theme="dark"] {
+    --paper: #101614; --paper-2: #182019; --ink: #e9efec; --ink-2: #aab5af; --ink-3: #6f7b75; --line: #2a3530;
+    --acc: #3fc79e; --acc-ink: #7fdcbf; --acc-soft: #163b30; --w-gnd: #d9d9d9; --w-pot: #f3bd2b; --w-audio: #5b9cf5; --w-3v3: #ff6b5f;
+    --warn-bg: #3a2c08; --warn-ink: #ffd97a; --warn-line: #7a5a10;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.5; padding-block: 28px 80px; padding-inline: 20px; }
+  .sheet { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+  h1 { font-size: 40px; font-weight: 900; line-height: 1.02; }
+  h2 { font-size: 24px; font-weight: 700; margin-top: 44px; padding-top: 18px; border-top: 2px solid var(--ink); }
+  h3 { font-size: 18px; font-weight: 700; }
+  p { margin: 10px 0; max-width: 66ch; }
+  .lede { font-size: 19px; color: var(--ink-2); }
+  .eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--acc-ink); margin-bottom: 8px; }
+  code, .pin { font-family: var(--font-mono); font-size: .9em; }
+  .pin { display: inline-block; padding: 1px 7px; border-radius: 4px; background: var(--paper-2); border: 1px solid var(--line); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .warn { background: var(--warn-bg); color: var(--warn-ink); border: 1px solid var(--warn-line); border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .warn b { font-family: var(--font-display); }
+  figure { margin: 22px 0; }
+  figure svg { width: 100%; height: auto; display: block; }
+  figcaption { font-size: 14px; color: var(--ink-3); margin-top: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--ink-2); margin-top: 10px; }
+  .legend span::before { content: ""; display: inline-block; width: 22px; height: 4px; border-radius: 2px; background: var(--c); vertical-align: middle; margin-right: 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15.5px; margin: 14px 0; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+  td:first-child { white-space: nowrap; }
+  .tbl-wrap { overflow-x: auto; }
+  ol.steps { list-style: none; counter-reset: step; padding: 0; margin: 18px 0 0; display: grid; gap: 18px; }
+  ol.steps > li { counter-increment: step; display: grid; grid-template-columns: 44px 1fr; gap: 14px; }
+  ol.steps > li::before { content: counter(step); font-family: var(--font-display); font-weight: 900; font-size: 26px; color: var(--acc); line-height: 1.1; }
+  .check { margin-top: 8px; padding: 8px 12px; border-left: 3px solid var(--acc); background: var(--acc-soft); color: var(--ink); font-size: 15.5px; border-radius: 0 6px 6px 0; }
+  .check b { color: var(--acc-ink); font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin-right: 6px; }
+  ul { padding-left: 20px; margin: 8px 0; } li { margin: 4px 0; }
+  pre { background: var(--paper-2); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.5; }
+  .foot { margin-top: 48px; font-size: 14px; color: var(--ink-3); border-top: 1px solid var(--line); padding-top: 14px; }
+  a { color: var(--acc-ink); }
+  @media print { body { padding: 0; font-size: 12.5pt; } h2 { margin-top: 26px; } .warn { border-width: 1.5px; } }
+</style>
+
+<main class="sheet">
+  <div class="eyebrow">Chameleon pedal · breadboard bring-up · Daisy Seed</div>
+  <h1>Breadboard sheet</h1>
+  <p class="lede">One evening's build: seat the Seed, wire the footswitch, three pots and two jacks, and hear the first overdrive. Everything on this sheet matches the firmware already on the Seed, so each step has something you can see or hear when it's right.</p>
+
+  <div class="warn"><b>Pin numbers on this sheet are the physical header pins (1–40), counted the way the board is printed.</b> The older project plan mislabelled three of them: pin 21 is <em>3V3 analog</em>, not ground; pin 38 is 3V3 <em>digital</em>; the ground you want for the footswitch and power is pin 40. The table below is the one to trust.</div>
+
+  <h2>What you're building tonight</h2>
+  <p>The Seed does all the audio work. Around it: a momentary footswitch that the firmware reads as tap (bypass) or hold (next patch), three 10 kΩ pots read as 0–3.3 V, and two ¼″ jacks straight into the Seed's line-level in and out. No op-amp buffer yet — plug the guitar straight in for tonight; it works, just a touch dull. Power comes over the USB cable from the laptop, so leave the 9 V jack and diode for another night.</p>
+
+  <figure>
+    <svg viewBox="0 0 760 640" role="img" aria-label="Wiring diagram: Daisy Seed with footswitch, three pots and two jacks">
+      <style>
+        .board { fill: var(--paper-2); stroke: var(--ink); stroke-width: 2; }
+        .hdr { fill: var(--ink); }
+        .lbl { font: 600 11px var(--font-mono); fill: var(--ink-2); }
+        .num { font: 600 10.5px var(--font-mono); fill: var(--ink-3); }
+        .hot { fill: var(--ink); }
+        .part { fill: var(--paper); stroke: var(--ink); stroke-width: 1.6; }
+        .ptxt { font: 700 13px var(--font-display); fill: var(--ink); }
+        .stxt { font: 400 11.5px var(--font-body); fill: var(--ink-2); }
+        .w { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      </style>
+      <text x="380" y="14" text-anchor="middle" class="stxt">power + flashing over USB-C from the laptop</text>
+      <rect class="board" x="300" y="40" width="160" height="470" rx="8"/>
+      <rect x="360" y="24" width="40" height="22" rx="3" fill="var(--ink-3)"/><text x="380" y="39" text-anchor="middle" class="lbl" style="fill:var(--paper)">USB-C</text>
+      <text x="380" y="250" text-anchor="middle" class="ptxt">Daisy Seed</text>
+      <text x="380" y="266" text-anchor="middle" class="stxt">top view · USB at the top</text>
+      <circle cx="380" cy="500" r="4" fill="#e04a3f"/><text x="380" y="492" text-anchor="middle" class="num">user LED</text>
+            <rect class="hdr" x="294" y="58" width="10" height="10"/><text class="num" x="310" y="67">1</text>
+      <rect class="hdr" x="294" y="80" width="10" height="10"/><text class="num" x="310" y="89">2</text>
+      <rect class="hdr" x="294" y="102" width="10" height="10"/><text class="num" x="310" y="111">3</text>
+      <rect class="hdr" x="294" y="124" width="10" height="10"/><text class="num" x="310" y="133">4</text>
+      <rect class="hdr" x="294" y="146" width="10" height="10"/><text class="num" x="310" y="155">5</text>
+      <rect class="hdr" x="294" y="168" width="10" height="10"/><text class="num" x="310" y="177">6</text>
+      <rect class="hdr" x="294" y="190" width="10" height="10"/><text class="num" x="310" y="199">7</text>
+      <rect class="hdr" x="294" y="212" width="10" height="10"/><text class="num" x="310" y="221">8</text>
+      <rect class="hdr" x="294" y="234" width="10" height="10"/><text class="num" x="310" y="243">9</text>
+      <rect class="hdr" x="294" y="256" width="10" height="10"/><text class="num" x="310" y="265">10</text>
+      <rect class="hdr" x="294" y="278" width="10" height="10"/><text class="num" x="310" y="287">11</text>
+      <rect class="hdr" x="294" y="300" width="10" height="10"/><text class="num" x="310" y="309">12</text>
+      <rect class="hdr" x="294" y="322" width="10" height="10"/><text class="num" x="310" y="331">13</text>
+      <rect class="hdr" x="294" y="344" width="10" height="10"/><text class="num" x="310" y="353">14</text>
+      <rect class="hdr" x="294" y="366" width="10" height="10"/><text class="num" x="310" y="375">15</text>
+      <rect class="hdr" x="294" y="388" width="10" height="10" fill="var(--w-audio)"/><text class="num hot" x="310" y="397">16 IN L</text>
+      <rect class="hdr" x="294" y="410" width="10" height="10"/><text class="num" x="310" y="419">17</text>
+      <rect class="hdr" x="294" y="432" width="10" height="10" fill="var(--w-audio)"/><text class="num hot" x="310" y="441">18 OUT L</text>
+      <rect class="hdr" x="294" y="454" width="10" height="10"/><text class="num" x="310" y="463">19</text>
+      <rect class="hdr" x="294" y="476" width="10" height="10" fill="var(--w-gnd)"/><text class="num hot" x="310" y="485">20 AGND</text>
+      <rect class="hdr" x="456" y="58" width="10" height="10" fill="var(--w-gnd)"/><text class="num hot" x="450" y="67" text-anchor="end">40 GND</text>
+      <rect class="hdr" x="456" y="80" width="10" height="10"/><text class="num" x="450" y="89" text-anchor="end">39 VIN</text>
+      <rect class="hdr" x="456" y="102" width="10" height="10"/><text class="num" x="450" y="111" text-anchor="end">38 3V3D</text>
+      <rect class="hdr" x="456" y="124" width="10" height="10"/><text class="num" x="450" y="133" text-anchor="end">37</text>
+      <rect class="hdr" x="456" y="146" width="10" height="10"/><text class="num" x="450" y="155" text-anchor="end">36</text>
+      <rect class="hdr" x="456" y="168" width="10" height="10"/><text class="num" x="450" y="177" text-anchor="end">35</text>
+      <rect class="hdr" x="456" y="190" width="10" height="10"/><text class="num" x="450" y="199" text-anchor="end">34</text>
+      <rect class="hdr" x="456" y="212" width="10" height="10"/><text class="num" x="450" y="221" text-anchor="end">33</text>
+      <rect class="hdr" x="456" y="234" width="10" height="10"/><text class="num" x="450" y="243" text-anchor="end">32</text>
+      <rect class="hdr" x="456" y="256" width="10" height="10"/><text class="num" x="450" y="265" text-anchor="end">31</text>
+      <rect class="hdr" x="456" y="278" width="10" height="10"/><text class="num" x="450" y="287" text-anchor="end">30</text>
+      <rect class="hdr" x="456" y="300" width="10" height="10"/><text class="num" x="450" y="309" text-anchor="end">29</text>
+      <rect class="hdr" x="456" y="322" width="10" height="10" fill="var(--w-sw)"/><text class="num hot" x="450" y="331" text-anchor="end">28 D21 SW</text>
+      <rect class="hdr" x="456" y="344" width="10" height="10"/><text class="num" x="450" y="353" text-anchor="end">27</text>
+      <rect class="hdr" x="456" y="366" width="10" height="10"/><text class="num" x="450" y="375" text-anchor="end">26</text>
+      <rect class="hdr" x="456" y="388" width="10" height="10"/><text class="num" x="450" y="397" text-anchor="end">25</text>
+      <rect class="hdr" x="456" y="410" width="10" height="10" fill="var(--w-pot)"/><text class="num hot" x="450" y="419" text-anchor="end">24 A2 P3</text>
+      <rect class="hdr" x="456" y="432" width="10" height="10" fill="var(--w-pot)"/><text class="num hot" x="450" y="441" text-anchor="end">23 A1 P2</text>
+      <rect class="hdr" x="456" y="454" width="10" height="10" fill="var(--w-pot)"/><text class="num hot" x="450" y="463" text-anchor="end">22 A0 P1</text>
+      <rect class="hdr" x="456" y="476" width="10" height="10" fill="var(--w-3v3)"/><text class="num hot" x="450" y="485" text-anchor="end">21 3V3A</text>
+
+      <!-- Footswitch -->
+      <g transform="translate(600 150)">
+        <circle class="part" cx="40" cy="40" r="34"/><circle class="part" cx="40" cy="40" r="16"/>
+        <text x="40" y="96" text-anchor="middle" class="ptxt">Footswitch</text>
+        <text x="40" y="111" text-anchor="middle" class="stxt">momentary · any two lugs</text>
+      </g>
+      <path class="w" stroke="var(--w-sw)" d="M466 327 H 560 V 190 H 606"/>
+      <path class="w" stroke="var(--w-gnd)" d="M466 63 H 640 V 156"/>
+
+      <!-- Pots -->
+      <g transform="translate(600 405)">
+        <rect class="part" x="10" y="0" width="120" height="150" rx="10"/>
+        <text x="70" y="22" text-anchor="middle" class="ptxt">3 × 10 kΩ pots</text>
+        <text x="70" y="38" text-anchor="middle" class="stxt">lugs seen from the back</text>
+        <g class="stxt"><text x="30" y="66">CCW</text><text x="70" y="66" text-anchor="middle">wiper</text><text x="110" y="66" text-anchor="end">CW</text></g>
+        <circle cx="34" cy="80" r="5" fill="var(--w-gnd)"/><circle cx="70" cy="80" r="5" fill="var(--w-pot)"/><circle cx="106" cy="80" r="5" fill="var(--w-3v3)"/>
+        <text x="70" y="106" text-anchor="middle" class="stxt">CCW lug → AGND 20</text>
+        <text x="70" y="121" text-anchor="middle" class="stxt">wiper → 22 / 23 / 24</text>
+        <text x="70" y="136" text-anchor="middle" class="stxt">CW lug → 3V3A 21</text>
+      </g>
+      <path class="w" stroke="var(--w-pot)" d="M466 415 H 540 V 470 H 660 V 482"/>
+      <path class="w" stroke="var(--w-pot)" d="M466 437 H 534 V 476 H 670 V 482"/>
+      <path class="w" stroke="var(--w-pot)" d="M466 459 H 528 V 482 H 680"/>
+      <path class="w" stroke="var(--w-3v3)" d="M466 481 H 500 V 570 H 706 V 490"/>
+      <path class="w" stroke="var(--w-gnd)" d="M304 481 H 250 V 600 H 634 V 490"/>
+
+      <!-- Jacks -->
+      <g transform="translate(24 340)">
+        <rect class="part" x="0" y="0" width="150" height="66" rx="8"/>
+        <text x="75" y="24" text-anchor="middle" class="ptxt">Guitar IN jack</text>
+        <text x="75" y="41" text-anchor="middle" class="stxt">tip → pin 16</text>
+        <text x="75" y="56" text-anchor="middle" class="stxt">sleeve → AGND 20</text>
+      </g>
+      <g transform="translate(24 430)">
+        <rect class="part" x="0" y="0" width="150" height="66" rx="8"/>
+        <text x="75" y="24" text-anchor="middle" class="ptxt">Amp OUT jack</text>
+        <text x="75" y="41" text-anchor="middle" class="stxt">tip → pin 18</text>
+        <text x="75" y="56" text-anchor="middle" class="stxt">sleeve → AGND 20</text>
+      </g>
+      <path class="w" stroke="var(--w-audio)" d="M174 360 H 230 V 393 H 294"/>
+      <path class="w" stroke="var(--w-audio)" d="M174 450 H 236 V 437 H 294"/>
+      <path class="w" stroke="var(--w-gnd)" d="M174 392 H 210 V 600 H 250"/>
+      <path class="w" stroke="var(--w-gnd)" d="M174 482 H 210"/>
+    </svg>
+    <div class="legend">
+      <span style="--c:var(--w-3v3)">3V3 analog (pin 21)</span>
+      <span style="--c:var(--w-gnd)">ground (20 analog · 40 digital)</span>
+      <span style="--c:var(--w-pot)">pot wipers → ADC</span>
+      <span style="--c:var(--w-sw)">footswitch → D21</span>
+      <span style="--c:var(--w-audio)">audio</span>
+    </div>
+    <figcaption>Pins are numbered like a DIP chip: 1 at the top-left beside the USB socket, down to 20 at the bottom-left, then 21 at the bottom-right up to 40 at the top-right. Only the coloured pins are used tonight.</figcaption>
+  </figure>
+
+  <h2>Pin table</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Seed pin</th><th>Name</th><th>Connect to</th><th>Wire</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pin">16</span></td><td>Audio in L</td><td>Guitar jack tip</td><td>blue</td></tr>
+      <tr><td><span class="pin">18</span></td><td>Audio out L</td><td>Amp jack tip</td><td>blue</td></tr>
+      <tr><td><span class="pin">20</span></td><td>AGND</td><td>Both jack sleeves · every pot's CCW lug</td><td>black</td></tr>
+      <tr><td><span class="pin">21</span></td><td>3V3 analog</td><td>Every pot's CW lug</td><td>red</td></tr>
+      <tr><td><span class="pin">22</span></td><td>A0</td><td>Pot 1 wiper (middle lug)</td><td>yellow</td></tr>
+      <tr><td><span class="pin">23</span></td><td>A1</td><td>Pot 2 wiper</td><td>yellow</td></tr>
+      <tr><td><span class="pin">24</span></td><td>A2</td><td>Pot 3 wiper</td><td>yellow</td></tr>
+      <tr><td><span class="pin">28</span></td><td>D21</td><td>Footswitch, one lug</td><td>orange</td></tr>
+      <tr><td><span class="pin">40</span></td><td>GND</td><td>Footswitch, other lug</td><td>black</td></tr>
+      <tr><td><span class="pin">39</span> / <span class="pin">40</span></td><td>VIN / GND</td><td>9 V barrel jack — <em>not tonight</em>; USB powers everything</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+  <p>Put pin 21 on the breadboard's red rail and pin 20 on the blue rail; then the pots are three wires each to the rails plus one wiper wire back to the Seed. Keep pin 40 (digital ground) for the footswitch only — the two grounds are joined inside the Seed, but keeping the audio ground on its own rail is why the pedal will be quiet later.</p>
+
+  <h2>Build order, with a check after each step</h2>
+  <ol class="steps">
+    <li><div>
+      <h3>Seat the Seed and power it</h3>
+      <p>Push the Seed into the breadboard straddling the centre channel, USB socket toward one end. Each pin gets two free holes beside it. Plug the USB-C cable into the laptop.</p>
+      <div class="check"><b>Check</b> Two LEDs on solid: the small power LED near the USB socket and the user LED near pin 20. Solid user LED means the firmware booted and patch A is active. If only the power LED lights, the flash didn't take — re-flash from the studio.</div>
+    </div></li>
+    <li><div>
+      <h3>Footswitch</h3>
+      <p>Two wires: pin <span class="pin">28</span> to one lug of the momentary switch, pin <span class="pin">40</span> to another lug. On a soft-touch SPST that's the only two lugs. If the switch in the parts pile is a 3PDT latching stomp, don't use it tonight — a jumper wire touched from pin 28 to pin 40 does the same job for testing.</p>
+      <div class="check"><b>Check</b> Tap: user LED goes off (bypass). Tap again: back on. Hold about a second: the LED blinks <em>2</em> times — you're on patch B. Hold again: 3 blinks (C), then 4 (D), then 1 (A).</div>
+    </div></li>
+    <li><div>
+      <h3>Pots</h3>
+      <p>Each 10 kΩ pot has three lugs. Looking at the back of the pot with the lugs pointing down: left lug to the blue rail (AGND 20), right lug to the red rail (3V3A 21), middle lug (the wiper) to the Seed — pot 1 to pin <span class="pin">22</span>, pot 2 to <span class="pin">23</span>, pot 3 to <span class="pin">24</span>. If a pot turns the "wrong way" later, swap its two outer lugs.</p>
+      <div class="check"><b>Check</b> Nothing to see until audio is in — but a multimeter on a wiper should sweep 0 → 3.3 V as the pot turns. With no pots wired the firmware simply keeps the programmed values, so a missing pot never breaks anything.</div>
+    </div></li>
+    <li><div>
+      <h3>Jacks and first sound</h3>
+      <p>Guitar jack: tip to pin <span class="pin">16</span>, sleeve to the blue rail. Amp jack: tip to pin <span class="pin">18</span>, sleeve to the blue rail. Chassis jacks have a tip lug (the long one that touches the plug's end) and a sleeve lug on the body. Turn the amp's volume all the way down before plugging in — the Seed puts out line level, hotter than a guitar.</p>
+      <div class="check"><b>Check</b> Play. Patch A is a mild overdrive with the pots on Gain / Tone / Level; patch B is the same overdrive hotter and darker; C and D are clean pass-through so you can A/B against the dry guitar by holding the footswitch. Tap = true bypass with the LED off.</div>
+    </div></li>
+    <li><div>
+      <h3>Not tonight</h3>
+      <p>The TL072 input buffer (fixes the slight dullness of plugging a passive pickup straight into a line input), the 9 V barrel jack with its 1N5817 diode and 470 µF cap, and the copper shielding all belong to the perfboard build. The wiring above is exactly what carries over; the buffer just slots between the guitar jack and pin 16.</p>
+    </div></li>
+  </ol>
+
+  <h2>If something's off</h2>
+  <ul>
+    <li><strong>No user LED, power LED on.</strong> The bootloader is still in charge. Hold BOOT, tap RESET, release, and flash again from chameleonpedal.com → Flash Pedal.</li>
+    <li><strong>Tap does nothing.</strong> The footswitch wire is on the wrong pin — it must be pin 28 (D21) on the <em>right-hand</em> column, 13th from the top, to pin 40 at the very top right.</li>
+    <li><strong>Hum or buzz.</strong> Expected on a breadboard with a plastic-cased laptop supply; keep the jack sleeves on the analog rail and the guitar cable short. The metal enclosure and shielding fix it for good.</li>
+    <li><strong>Sound but a pot does nothing.</strong> Its wiper is on the wrong pin, or the pot is on the patch's third parameter that barely changes (Level on patch A). Turn it fully and listen for volume.</li>
+    <li><strong>Distorted on the clean patches (C/D).</strong> Input is clipping: humbuckers hit the Seed's line input hard. Back the guitar's volume knob off; the buffer stage handles this properly later.</li>
+  </ul>
+
+  <h2>Checking from the Mac</h2>
+  <p>The Seed only shows up as a USB device while it's in DFU mode; once the firmware runs it disappears from the USB list, which is how you know it left the bootloader.</p>
+  <pre>system_profiler SPUSBDataType | grep -A6 -i "DFU"     # in DFU mode: shows "DFU in FS Mode", vendor 0x0483
+system_profiler SPUSBDataType | grep -ci "DFU"        # after flashing: 0 — the Seed is running Chameleon</pre>
+
+  <div class="foot">Sources: Electro-Smith Daisy Seed rev 4 pinout (libDaisy/doc/Daisy_Seed_Rev4_Pinout.csv) · chameleon-studio/firmware/main.cpp · the studio at chameleonpedal.com</div>
+</main>
+
+</body>
+</html>

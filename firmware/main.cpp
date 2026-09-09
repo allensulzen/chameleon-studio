@@ -2,8 +2,8 @@
  * Chameleon Pedal — Daisy Seed firmware
  *
  * Control surface + multi-stage Faust engine.
- *   footswitch  : physical pin 28 (D21) to DGND, internal pull-up. tap = bypass, hold = next patch
- *   pots        : wipers on physical pins 22/23/24 (A0/A1/A2), ends to 3V3_A (pin 38) and AGND (pin 20)
+ *   footswitch  : physical pin 28 (D21) to GND (pin 40), internal pull-up. tap = bypass, hold = next patch
+ *   pots        : wipers on physical pins 22/23/24 (A0/A1/A2), ends to 3V3A (pin 21) and AGND (pin 20)
  *   audio       : IN L pin 16, OUT L pin 18 (mono; OUT R mirrors)
  *   LED         : onboard user LED. solid = active, off = bypass, N blinks = patch N after a hold
  *
