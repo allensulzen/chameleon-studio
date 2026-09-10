@@ -5,7 +5,9 @@
  *   footswitch  : physical pin 28 (D21) to GND (pin 40), internal pull-up. tap = bypass, hold = next patch
  *   pots        : wipers on physical pins 22/23/24 (A0/A1/A2), ends to 3V3A (pin 21) and AGND (pin 20)
  *   audio       : IN L pin 16, OUT L pin 18 (mono; OUT R mirrors)
- *   LED         : onboard user LED. solid = active, off = bypass, N blinks = patch N after a hold
+ *   LED         : onboard user LED (solid = active) plus an RGB LED on TIM3 PWM —
+ *                 red pin 10 (D9), green pin 11 (D10), blue pin 5 (D4), common cathode to AGND, 150/100/100 Ω.
+ *                 Colour = the patch's hue (same rule as the studio); dim = bypass; N flashes of the new colour = patch N.
  *
  * Effects are Faust classes generated into firmware/faust/*.h; the patch table is patches.h.
  * Pot rule: stored values win until a pot moves (>2 % of travel) and catches up — see PotTakeover.
@@ -21,6 +23,7 @@ using namespace daisy;
 static DaisySeed     hw;
 static Switch        footswitch;
 static AnalogControl pots[3];
+static PWMHandle     pwm;                 // TIM3: ch1 D9 (red), ch2 D10 (green), ch3 D4 (blue)
 
 static constexpr int   BLOCK      = 48;
 static constexpr float HOLD_MS    = 650.f;
@@ -72,6 +75,7 @@ static Patch patches[NUM_PATCHES];
 static volatile int  current_patch = 0;
 static volatile bool effect_active = true;
 static bool          hold_fired    = false;
+static volatile bool led_dirty     = false;   // set in the audio thread, serviced in main()
 static float         sr            = 48000.f;
 
 static float bufA[BLOCK], bufB[BLOCK], bufR[BLOCK];
@@ -104,9 +108,25 @@ static void load_patch(int p, const float raw[3]) {
     }
 }
 
-static void blink(int n) {
-    for (int i = 0; i < n; i++) { hw.SetLed(true); System::Delay(90); hw.SetLed(false); System::Delay(140); }
+// ---- RGB LED: hue (0-360) -> gamma-corrected PWM, so the box shows the studio's colour
+static void led_rgb(float r, float g, float b) {
+    auto gam = [](float x) { x = x < 0 ? 0 : x > 1 ? 1 : x; return x * x; };
+    pwm.Channel1().Set(gam(r)); pwm.Channel2().Set(gam(g) * 0.75f); pwm.Channel3().Set(gam(b) * 0.85f);   // green/blue LEDs run brighter per mA; trim to balance
+}
+static void led_hue(int hue, float level) {
+    float h = fmodf((float)hue, 360.f) / 60.f; if (h < 0) h += 6.f;
+    float x = 1.f - fabsf(fmodf(h, 2.f) - 1.f), r = 0, g = 0, b = 0;
+    if (h < 1) { r = 1; g = x; } else if (h < 2) { r = x; g = 1; } else if (h < 3) { g = 1; b = x; } else if (h < 4) { g = x; b = 1; } else if (h < 5) { r = x; b = 1; } else { r = 1; b = x; }
+    led_rgb(r * level, g * level, b * level);
+}
+static void led_show() {
     hw.SetLed(effect_active);
+    led_hue(PATCHES[current_patch].hue, effect_active ? 1.f : 0.06f);
+}
+static void blink(int n) {
+    int hue = PATCHES[current_patch].hue;
+    for (int i = 0; i < n; i++) { hw.SetLed(true); led_hue(hue, 1.f); System::Delay(90); hw.SetLed(false); led_rgb(0, 0, 0); System::Delay(140); }
+    led_show();
 }
 
 // ------------------------------------------------------------------ audio
@@ -130,7 +150,7 @@ static void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer
         current_patch = (current_patch + 1) % NUM_PATCHES;
         load_patch(current_patch, raw);
     }
-    if (footswitch.FallingEdge()) { if (!hold_fired) { effect_active = !effect_active; hw.SetLed(effect_active); } hold_fired = false; }
+    if (footswitch.FallingEdge()) { if (!hold_fired) { effect_active = !effect_active; led_dirty = true; } hold_fired = false; }
 
     // series chain, mono
     size_t n = size > (size_t)BLOCK ? BLOCK : size;
@@ -166,13 +186,20 @@ int main(void) {
     float raw[3] = { 0.f, 0.f, 0.f };
     load_patch(0, raw);
 
-    hw.SetLed(true);
+    // RGB LED on TIM3 (24 kHz PWM, no visible flicker, above the audio band's neighbours)
+    PWMHandle::Config pc; pc.periph = PWMHandle::Config::Peripheral::TIM_3; pc.prescaler = 0; pc.period = 10000;
+    pwm.Init(pc);
+    PWMHandle::Channel::Config c1(seed::D9), c2(seed::D10), c3(seed::D4);
+    pwm.Channel1().Init(c1); pwm.Channel2().Init(c2); pwm.Channel3().Init(c3);
+
+    led_show();
     hw.StartAudio(AudioCallback);
 
-    // pending patch-change blinks run here, outside the audio callback
+    // LED work runs here, outside the audio callback (blinks take real time)
     int shown = 0;
     while (1) {
         if (shown != current_patch) { shown = current_patch; blink(shown + 1); }
+        else if (led_dirty) { led_dirty = false; led_show(); }
         System::Delay(20);
     }
 }

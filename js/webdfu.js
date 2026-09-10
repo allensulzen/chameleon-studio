@@ -28,12 +28,15 @@ class ChameleonDFU {
     this.device = devs.find(d => d.vendorId === 0x0483 && d.productId === 0xdf11) || await navigator.usb.requestDevice({ filters: [{ vendorId: 0x0483, productId: 0xdf11 }, { vendorId: 0x0483 }] });
     await this.device.open();
     if (this.device.configuration === null) await this.device.selectConfiguration(1);
-    // alt 0 of interface 0 is "@Internal Flash /0x08000000/..."
+    // DfuSe alt settings are named like "@Internal Flash /0x08000000/01*128Kg" or, on the Daisy
+    // bootloader, "@Flash /0x90000000/2048*4Kg". Parse them so flash() can pick the right one.
     const iface = this.device.configuration.interfaces[0];
     this.interfaceNumber = iface.interfaceNumber;
+    this.regions = iface.alternates.map((a, i) => ChameleonDFU.parseRegion(a.interfaceName || '', i)).filter(Boolean);
     await this.device.claimInterface(this.interfaceNumber);
     await this.device.selectAlternateInterface(this.interfaceNumber, 0);
     await this.readTransferSize();
+    this.isDaisyBootloader = /daisy/i.test(this.device.productName || '') || this.regions.some(r => r.start === 0x90000000);
     this.isConnected = true;
     this.log(`Connected: ${this.device.productName || 'STM32 BOOTLOADER'} (transfer size ${this.transferSize})`);
     await this.clearToIdle();
@@ -44,6 +47,21 @@ class ChameleonDFU {
     if (this.device && this.device.opened) { try { await this.device.releaseInterface(this.interfaceNumber); await this.device.close(); } catch (e) {} }
     this.device = null; this.isConnected = false;
   }
+
+  // "@Name /0xADDR/N*SizeK[g|e|...]..." -> { alt, start, end, sectors:[{start,size,count}] }
+  static parseRegion(name, alt) {
+    const m = /@\s*([^/]*?)\s*\/\s*0x([0-9a-fA-F]+)\s*\/(.*)$/.exec(name);
+    if (!m) return null;
+    let addr = parseInt(m[2], 16); const sectors = [];
+    for (const seg of m[3].split(',')) {
+      const sm = /(\d+)\s*\*\s*(\d+)\s*([KM]?)/i.exec(seg); if (!sm) continue;
+      const count = +sm[1], size = +sm[2] * ({ K: 1024, M: 1048576, '': 1 })[sm[3].toUpperCase()];
+      sectors.push({ start: addr, size, count }); addr += count * size;
+    }
+    return { alt, name: m[1], start: parseInt(m[2], 16), end: addr, sectors };
+  }
+  regionFor(address) { return this.regions.find(r => address >= r.start && address < r.end) || null; }
+  sectorSizeAt(region, address) { for (const s of region.sectors) if (address >= s.start && address < s.start + s.size * s.count) return s.size; return region.sectors[0]?.size || 4096; }
 
   // DFU functional descriptor (type 0x21) carries wTransferSize; ST uses 1024 (0x400)
   async readTransferSize() {
@@ -99,15 +117,20 @@ class ChameleonDFU {
   async flash(binaryData, opts = {}) {
     if (!this.isConnected || !this.device) throw new Error('Not connected — pair the Seed in DFU mode first.');
     const address = opts.address ?? 0x08000000;
-    const sectorSize = opts.sectorSize ?? (address >= 0x90000000 ? 4096 : 128 * 1024);
     const total = binaryData.byteLength;
     if (!total) throw new Error('Empty firmware image');
     if (address === 0x08000000 && total > 128 * 1024) throw new Error(`Image is ${(total / 1024).toFixed(0)} KB — internal flash holds 128 KB. Build for the Daisy bootloader (APP_TYPE=BOOT_QSPI) instead.`);
+    const region = this.regionFor(address);
+    if (address >= 0x90000000 && !region) throw new Error('This bootloader has no QSPI region — the Seed is in the STM32 DFU, not the Daisy bootloader. Install the bootloader first, then reset and try again.');
+    if (region && region.alt !== 0) await this.device.selectAlternateInterface(this.interfaceNumber, region.alt);
     const progress = (p) => { if (this.onProgress) this.onProgress(Math.round(p)); };
 
     await this.clearToIdle();
-    this.log(`Erasing ${Math.ceil(total / sectorSize)} sector(s) at 0x${address.toString(16)}…`);
-    for (let a = address; a < address + total; a += sectorSize) { await this.eraseSector(a); progress(5 + 10 * (a - address) / total); }
+    let count = 0;
+    for (let a = address; a < address + total;) { const sz = region ? this.sectorSizeAt(region, a) : (opts.sectorSize ?? 128 * 1024); a += sz; count++; }
+    this.log(`Erasing ${count} sector(s) at 0x${address.toString(16)}${region ? ' (' + region.name + ')' : ''}…`);
+    let done = 0;
+    for (let a = address; a < address + total;) { const sz = region ? this.sectorSizeAt(region, a) : (opts.sectorSize ?? 128 * 1024); await this.eraseSector(a); a += sz; progress(5 + 10 * (++done / count)); }
 
     this.log(`Writing ${total} bytes in ${this.transferSize}-byte blocks…`);
     await this.setAddress(address);

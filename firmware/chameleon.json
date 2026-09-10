@@ -1,0 +1,37 @@
+{
+  "built": "2026-09-10T11:39:26.447Z",
+  "appType": "BOOT_QSPI",
+  "address": 2416181248,
+  "size": 122776,
+  "effects": [
+    "dynamic-overdrive",
+    "clean-boost",
+    "tape-delay"
+  ],
+  "patches": [
+    {
+      "name": "A",
+      "chain": [
+        "dynamic-overdrive"
+      ]
+    },
+    {
+      "name": "B",
+      "chain": [
+        "dynamic-overdrive"
+      ]
+    },
+    {
+      "name": "C",
+      "chain": [
+        "clean-boost"
+      ]
+    },
+    {
+      "name": "D",
+      "chain": [
+        "tape-delay"
+      ]
+    }
+  ]
+}

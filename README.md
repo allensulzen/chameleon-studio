@@ -148,6 +148,8 @@ What exists today, and what does not — so nobody is surprised when the Seed ar
   hold = next patch), status LED, and a `PotTakeover` struct that implements the rule you asked for — a
   stored value stays exactly where the patch programmed it until the physical pot moves past a 2 % deadband,
   then the pot catches up and takes over smoothly (no jumps).
+- An **RGB status LED** (pins 10/11/5 via TIM3 PWM) showing the patch's colour — the same family hue the studio
+  uses — dimmed on bypass and flashing the new colour N times on a patch change.
 - A per-patch **pot lock** (the `POTS LIVE / POTS LOCKED` toggle on the pedal, or press `L`): a locked patch
   ignores the physical pots entirely, so nothing on stage can be changed by a foot; values stay editable in the studio.
 - The patch table: the four patches, their chain of up to seven stages, every parameter value, and which
@@ -155,25 +157,31 @@ What exists today, and what does not — so nobody is surprised when the Seed ar
 
 **Building and flashing (firmware/)**
 
+The studio's four patches become firmware in one command. Export them (Patches → Export → `chameleon-patches.json`), then:
+
 ```bash
 brew install faust dfu-util && brew install --cask gcc-arm-embedded   # once
 git clone --recurse-submodules https://github.com/electro-smith/libDaisy ../fw/libDaisy && make -C ../fw/libDaisy
 git clone https://github.com/electro-smith/DaisySP ../fw/DaisySP && make -C ../fw/DaisySP
-cd firmware && ./gen-faust.sh dynamic-overdrive   # regenerate faust/*.h for the effects in patches.h
-make                                              # -> build/chameleon.bin ; cp it to firmware/chameleon.bin for the studio
-make program-dfu                                  # or: Seed in DFU mode, Flash Pedal in the studio
+node tools/build-firmware.mjs chameleon-patches.json --make   # -> firmware/patches.h, firmware/faust/*.h, firmware/chameleon.bin
+node tools/build-firmware.mjs --default --make                # the built-in starter set instead
 ```
 
-`main.cpp` is the engine (control surface, PotTakeover, series chain, SDRAM pool for effect state), `patches.h` the
-patch table, `chameleon_faust.h` the tiny Faust runtime. The studio's Flash button streams `firmware/chameleon.bin`
-over real DfuSe (`js/webdfu.js`). Internal flash is 128 KB, enough for a couple of light effects; the full library
-build will target the Daisy bootloader / 8 MB QSPI (`APP_TYPE=BOOT_QSPI`).
+`build-firmware.mjs` compiles every effect the patches use with the native Faust compiler, writes the patch
+table (values, pot bindings, pot lock, LED hue) and builds the image for the **Daisy bootloader** (runs from the
+8 MB QSPI flash — the 128 KB internal flash only fits two or three effects). Flashing from the studio:
+
+1. Once per Seed: Flash Pedal → *Install bootloader* with the Seed in STM32 DFU (hold BOOT, tap RESET, release).
+2. Every time after: tap RESET, press BOOT once while the user LED breathes (2 s window), *Connect & flash*.
+
+`main.cpp` is the engine (control surface, PotTakeover, series chain, SDRAM pool, RGB LED on TIM3 PWM),
+`chameleon_faust.h` the tiny Faust runtime, `patches.h` the generated table. The Firmware button in the studio
+shows the `patches.h` the current patches would produce.
 
 **Not written yet**
 
-- `tools/build-firmware.mjs`: generate `patches.h` + the faust/ headers straight from a studio patch export.
-- The bootloader/QSPI build for chains that don't fit in 128 KB (guitarix table effects are megabytes).
-- CPU budgeting per chain.
+- CPU budgeting per chain (the studio does not yet warn when a patch is too heavy for the Seed).
+- Building from the browser (needs the ARM toolchain, so it stays a local `node tools/build-firmware.mjs` step).
 
 So: the day the Seed shows up, the build is `faust -lang cpp -double -a daisy.cpp dsp/<effect>.dsp` for each
 stage, the generated control-surface file, the glue, `make`, then `make program-dfu` (or the studio's Flash

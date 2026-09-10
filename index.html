@@ -202,27 +202,28 @@
     <div class="modal-box">
       <div class="modal-head"><h3>Flash pedal over WebUSB</h3><button class="close-modal" aria-label="Close" data-icon="tabler:x"></button></div>
       <div class="modal-body">
-        <ol class="steps">
+        <p class="note" id="flash-image-info">Reading firmware image…</p>
+        <ol class="steps" id="flash-steps">
           <li>Connect the pedal with a <strong>USB-C data cable</strong>.</li>
-          <li>Enter DFU mode: hold <strong>BOOT</strong>, tap <strong>RESET</strong>, release <strong>BOOT</strong>.</li>
-          <li>Click connect and pick <strong>STM32 BOOTLOADER</strong> / <strong>DFU in FS Mode</strong>.</li>
+          <li><strong>Daisy bootloader installed?</strong> Tap <strong>RESET</strong>; the user LED breathes for 2 s — press <strong>BOOT</strong> once during that to hold it in DFU. <em>No bootloader yet?</em> Use <em>Install bootloader</em> below first (hold BOOT, tap RESET, release BOOT).</li>
+          <li>Click <strong>Connect &amp; flash</strong> and pick <strong>Daisy Bootloader</strong> (or <strong>DFU in FS Mode</strong> for the STM32 one).</li>
         </ol>
         <div class="progress"><div class="progress-bar" id="flash-progress"></div></div>
         <div class="log" id="flash-status-text">Ready to connect.</div>
-        <p class="note">Streams <code>firmware/chameleon.bin</code> (built from <code>firmware/</code> with <code>make</code>) into the Seed's internal flash over DfuSe, then reboots it. The current image is the first-flash build: control surface + Dynamic Overdrive on patches A/B, C/D pass-through.</p>
+        <p class="note">The Daisy bootloader lives in the Seed's 128 KB internal flash and runs the pedal firmware from the 8 MB QSPI flash, so patches can use as many effects as you like. Install it once per Seed; after that every flash goes through it.</p>
       </div>
-      <div class="modal-foot"><button class="btn btn-ghost close-modal">Cancel</button><button class="btn btn-accent" id="btn-start-flash">Connect &amp; flash</button></div>
+      <div class="modal-foot"><button class="btn btn-ghost close-modal">Cancel</button><button class="btn btn-ghost" id="btn-install-boot" title="One-time: writes the Daisy bootloader to internal flash (Seed in STM32 DFU: hold BOOT, tap RESET)">Install bootloader</button><button class="btn btn-accent" id="btn-start-flash">Connect &amp; flash</button></div>
     </div>
   </div>
 
   <div class="modal" id="code-modal" aria-hidden="true">
     <div class="modal-box modal-wide">
-      <div class="modal-head"><h3>Generated firmware</h3><button class="close-modal" aria-label="Close" data-icon="tabler:x"></button></div>
+      <div class="modal-head"><h3>Firmware patch table</h3><button class="close-modal" aria-label="Close" data-icon="tabler:x"></button></div>
       <div class="modal-body">
-        <p class="note">Control-surface skeleton for libDaisy: the four patches, their chains and pot assignments, with every stage's Faust source embedded. The DSP is compiled from those sources with <code>faust2daisy</code>.</p>
+        <p class="note">This is <code>firmware/patches.h</code> for the four patches as they are right now — the same file <code>tools/build-firmware.mjs</code> writes from an export. Build: <code>node tools/build-firmware.mjs chameleon-patches.json --make</code>, then Flash Pedal.</p>
         <pre class="code" id="code-content"></pre>
       </div>
-      <div class="modal-foot"><button class="btn btn-ghost" id="btn-copy-code">Copy</button><button class="btn btn-accent" id="btn-download-code">Download .cpp</button></div>
+      <div class="modal-foot"><button class="btn btn-ghost" id="btn-copy-code">Copy</button><button class="btn btn-accent" id="btn-download-code">Download patches.h</button></div>
     </div>
   </div>
 

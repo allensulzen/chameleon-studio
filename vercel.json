@@ -4,6 +4,15 @@
   "trailingSlash": true,
   "headers": [
     {
+      "source": "/firmware/(.*)\\.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
       "source": "/firmware/(.*)\\.bin",
       "headers": [
         {

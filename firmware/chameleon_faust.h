@@ -59,7 +59,7 @@ public:
 // address parameters with the same paths the studio uses (effects-data.js `path`).
 struct ParamMap : public UI {
     static constexpr int MAX_PARAMS = 24;
-    static constexpr int MAX_PATH   = 96;
+    static constexpr int MAX_PATH   = 64;
     struct Param { char path[MAX_PATH]; FAUSTFLOAT* zone; FAUSTFLOAT init, min, max; };
     Param params[MAX_PARAMS];
     int   count = 0;
@@ -82,7 +82,7 @@ protected:
     void openBox(const char* label) override {
         // Faust puts the top-level box name first; keep "/Name/..." like the JSON UI paths
         size_t n = std::strlen(prefix_);
-        if (n + std::strlen(label) + 2 < MAX_PATH) { prefix_[n] = '/'; std::strcpy(prefix_ + n + 1, label); }
+        if (n + std::strlen(label) + 2 < MAX_PATH) { prefix_[n] = '/'; std::strcpy(prefix_ + n + 1, label); for (char* c = prefix_ + n + 1; *c; c++) if (*c == ' ') *c = '_'; }
         depth_++;
     }
     void closeBox() override {
@@ -93,6 +93,7 @@ protected:
         Param& p = params[count++];
         std::strncpy(p.path, prefix_, MAX_PATH - 1); p.path[MAX_PATH - 1] = 0;
         size_t n = std::strlen(p.path); if (n + 1 < MAX_PATH) { p.path[n] = '/'; std::strncpy(p.path + n + 1, label, MAX_PATH - n - 2); p.path[MAX_PATH - 1] = 0; }
+        for (char* c = p.path; *c; c++) if (*c == ' ') *c = '_';   // Faust JSON addresses use '_' for spaces
         p.zone = zone; p.init = init; p.min = mn; p.max = mx;
     }
 };

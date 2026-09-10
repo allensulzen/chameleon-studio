@@ -8,5 +8,6 @@ for id in "$@"; do
   flags=$(grep -o 'chameleon_flags "[^"]*"' "../dsp/$id.dsp" | sed 's/.*"\(.*\)"/\1/')
   prec=$( [[ "$flags" == *-double* ]] && echo -double || echo -single )
   faust -lang cpp $prec -cn "$cls" -scn chdsp -i -I ../dsp -I ../dsp/lib "../dsp/$id.dsp" -o "faust/$id.h"
+  sed -i.bak -E 's/^static (float|double|int) ((f|i)tbl[A-Za-z0-9_]+)\[/static \1 DSY_SDRAM_BSS \2[/' "faust/$id.h" && rm -f "faust/$id.h.bak"
   echo "faust/$id.h  ($cls, $prec)"
 done

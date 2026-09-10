@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('open'); }));
   $('btn-open-code').addEventListener('click', () => { $('code-content').textContent = generateFirmware(); el.codeModal.classList.add('open'); });
   $('btn-copy-code').addEventListener('click', () => { navigator.clipboard.writeText($('code-content').textContent); toast('Firmware copied'); });
-  $('btn-download-code').addEventListener('click', () => download('chameleon_firmware.cpp', $('code-content').textContent));
+  $('btn-download-code').addEventListener('click', () => download('patches.h', $('code-content').textContent));
   $('btn-open-flash').addEventListener('click', () => el.flashModal.classList.add('open'));
   const dfu = new ChameleonDFU();
   // WebUSB device awareness: a Daisy Seed is only a USB device in DFU mode (BOOT+RESET) — the STM32
@@ -414,130 +414,81 @@ document.addEventListener('DOMContentLoaded', () => {
   if (navigator.usb) { navigator.usb.addEventListener('connect', scanUsb); navigator.usb.addEventListener('disconnect', scanUsb); }
   el.chipDevice.addEventListener('click', async () => { if (!navigator.usb) return; try { await navigator.usb.requestDevice({ filters: [{ vendorId: ST }] }); toast('Paired — the pedal will be recognised automatically from now on'); } catch (e) { toast('No device chosen (is the Seed in DFU mode? hold BOOT, tap RESET)'); } scanUsb(); });
   scanUsb();
+  // Firmware image metadata (written by tools/build-firmware.mjs --make)
+  let fwInfo = null;
+  async function loadFwInfo() {
+    try { fwInfo = await (await fetch('firmware/chameleon.json', { cache: 'no-store' })).json(); }
+    catch (e) { fwInfo = { address: 0x08000000, appType: 'BOOT_NONE', note: 'no chameleon.json — assuming an internal-flash image' }; }
+    const qspi = fwInfo.address >= 0x90000000;
+    $('flash-image-info').innerHTML = `<b>${fwInfo.effects ? fwInfo.effects.length + ' effect(s): ' + fwInfo.effects.join(', ') : 'firmware/chameleon.bin'}</b> · ${fwInfo.size ? (fwInfo.size / 1024).toFixed(0) + ' KB' : ''} · ${qspi ? 'runs from QSPI via the Daisy bootloader' : 'internal flash (no bootloader needed)'}${fwInfo.built ? ' · built ' + fwInfo.built.slice(0, 10) : ''}`;
+    $('btn-install-boot').hidden = !qspi;
+  }
+  $('btn-open-flash').addEventListener('click', loadFwInfo);
+  async function flashImage(url, address, label) {
+    const log = $('flash-status-text'), bar = $('flash-progress');
+    log.textContent = `Fetching ${label}…`; bar.style.width = '0%';
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`${url} is missing — run tools/build-firmware.mjs --make (see README)`);
+    const bin = await res.arrayBuffer();
+    log.textContent = 'Requesting USB device…';
+    await dfu.connect();
+    dfu.onProgress = (p) => { bar.style.width = `${p}%`; log.textContent = `Flashing ${label} ${(bin.byteLength / 1024).toFixed(1)} KB → 0x${address.toString(16)}… ${p}%`; };
+    if (address >= 0x90000000 && !dfu.isDaisyBootloader) throw new Error('This is the STM32 DFU (no QSPI). Install the Daisy bootloader first, then tap RESET and press BOOT while the LED breathes.');
+    if (address === 0x08000000 && dfu.isDaisyBootloader && !/bootloader/i.test(label)) throw new Error('You are in the Daisy bootloader — this image is for internal flash. Rebuild with APP_TYPE=BOOT_QSPI.');
+    await dfu.flash(bin, { address });
+    return bin.byteLength;
+  }
   $('btn-start-flash').addEventListener('click', async () => {
-    const log = $('flash-status-text'), bar = $('flash-progress'), btn = $('btn-start-flash');
-    try { btn.disabled = true; log.textContent = 'Requesting USB device…'; await dfu.connect(); el.chipDevice.className = 'chip ok'; el.chipDevice.lastElementChild.textContent = 'Daisy Seed in DFU mode'; dfu.onProgress = (p) => { bar.style.width = `${p}%`; log.textContent = `Flashing… ${p}%`; };
-      log.textContent = 'Fetching firmware image…';
-      const res = await fetch('firmware/chameleon.bin', { cache: 'no-store' });
-      if (!res.ok) throw new Error('firmware/chameleon.bin is missing — build it with `make` in firmware/ (see README)');
-      const bin = await res.arrayBuffer();
-      log.textContent = `Flashing ${(bin.byteLength / 1024).toFixed(1)} KB…`;
-      await dfu.flash(bin);
-      log.textContent = 'Done — the Seed rebooted into Chameleon. Tap the footswitch: LED toggles. Hold it: LED blinks the patch number.'; bar.style.width = '100%'; }
-    catch (err) { log.textContent = `⚠ ${err.message}`; } finally { btn.disabled = false; }
+    const log = $('flash-status-text'), btn = $('btn-start-flash');
+    try {
+      btn.disabled = true; if (!fwInfo) await loadFwInfo();
+      await flashImage('firmware/chameleon.bin', fwInfo.address || 0x08000000, 'Chameleon');
+      log.textContent = 'Done — the Seed rebooted into Chameleon. RGB LED shows the patch colour; tap = bypass (dim), hold = next patch (flashes).'; $('flash-progress').style.width = '100%';
+    } catch (err) { log.textContent = `⚠ ${err.message}`; } finally { btn.disabled = false; }
+  });
+  $('btn-install-boot').addEventListener('click', async () => {
+    const log = $('flash-status-text'), btn = $('btn-install-boot');
+    try {
+      btn.disabled = true;
+      await flashImage('firmware/dsy_bootloader.bin', 0x08000000, 'Daisy bootloader');
+      log.textContent = 'Bootloader installed. Now: tap RESET, press BOOT once while the LED breathes, then Connect & flash.'; $('flash-progress').style.width = '100%';
+    } catch (err) { log.textContent = `⚠ ${err.message}`; } finally { btn.disabled = false; }
   });
   function download(name, content) { const a = document.createElement('a'); a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content); a.download = name; a.click(); }
 
   // ------------------------------------------------------------------
   // Firmware exporter
   // ------------------------------------------------------------------
+  // Emits firmware/patches.h exactly as tools/build-firmware.mjs does, from the live patches.
   function generateFirmware() {
-    const used = [...new Set(state.patches.flatMap(p => p.chain.map(s => s.id)))].map(getEffectById);
-    const sources = used.map(e => `// ==== ${e.name}  (dsp/${e.id}.dsp)  licence: ${e.license}  flags: ${e.flags || '-'} ====\n` + e.faustCode.split('\n').map(l => '// ' + l).join('\n')).join('\n\n');
-    const patchTable = state.patches.map((p, i) => {
-      const chain = p.chain.map(s => { const e = effectOf(s); const vals = Object.entries(s.values).map(([k, v]) => `${k.split('/').pop()}=${+v.toFixed(4)}`).join(', '); return `    //   ${e.name}${s.on ? '' : ' (bypassed)'}  { ${vals} }`; }).join('\n');
-      const pots = p.pots.map((a, k) => { const s = a && stageByUid.call(null, a.uid) || (a && p.chain.find(x => x.uid === a.uid)); return `    //   pot${k + 1} -> ${s ? effectOf(s).name + ' :: ' + a.path.split('/').pop() : '(unassigned)'}`; }).join('\n');
-      return `    // Patch ${PATCH_NAMES[i]} "${p.name}" — ${p.chain.length} stage(s)${p.potsLocked ? '  [POTS LOCKED]' : ''}\n${chain || '    //   (empty)'}\n${pots}`;
-    }).join('\n');
-    return `/**
- * Chameleon Pedal — firmware for Electro-Smith Daisy Seed 3
- *
- * ${used.length} distinct effect(s) across ${N_PATCHES} patches. Series chains of up to ${MAX_STAGES} stages;
- * the three pots are bound per patch to one parameter of one stage each.
- *
- * This file is the hand-written CONTROL SURFACE (footswitch state machine, LED feedback,
- * pot reading, patch table). The effect algorithms are the Faust sources reproduced below;
- * compile them with faust2daisy / "faust -a daisy" (use -double where flags say so) and drop the
- * generated classes into the Stage hooks. Any stage whose source is GPL makes this firmware GPL.
- */
-
-${sources}
-
-#include "daisy_seed.h"
-#include "daisysp.h"
-
-using namespace daisy;
-using namespace daisysp;
-
-DaisySeed     hw;
-Switch        footswitch;
-AnalogControl pot1, pot2, pot3;
-
-// ---- Patch table (generated) ----
-${patchTable}
-
-enum { NUM_PATCHES = ${N_PATCHES}, MAX_STAGES = ${MAX_STAGES} };
-// Per-patch pot lock (set in the studio). A locked patch ignores the pots completely: the ADCs are
-// still read (so takeover state stays coherent) but the stored values are always used, so a stray
-// foot on stage cannot change anything. Flip a patch's lock in the studio and re-flash.
-const bool pots_locked[NUM_PATCHES] = { ${state.patches.map(p => p.potsLocked ? 'true' : 'false').join(', ')} };
-int   current_patch = 0;
-bool  effect_active = true;
-bool  hold_fired    = false;
-float sr;
-
-// ---- Pot behaviour: stored values win until a pot actually moves ----
-// Every parameter keeps the value programmed in the studio. A physical pot only takes over its
-// bound parameter once it has moved by more than POT_DEADBAND since the patch was loaded, and then
-// only after it has "caught up" (crossed) the stored value — so switching patches, or flashing new
-// firmware, never yanks a setting to wherever the knob physically sits.
-struct PotTakeover {
-    float stored;      // the value the studio programmed (normalised 0..1)
-    float origin;      // pot reading when the patch was loaded
-    bool  armed;       // pot has moved since load
-    bool  live;        // pot has caught up with the stored value and now controls it
-    void Load(float storedNorm, float potNow) { stored = storedNorm; origin = potNow; armed = false; live = false; }
-    float Update(float potNow) {
-        const float POT_DEADBAND = 0.02f;   // ~2 % of travel
-        if (!armed) { if (fabsf(potNow - origin) > POT_DEADBAND) armed = true; else return stored; }
-        if (!live)  { if (fabsf(potNow - stored) < POT_DEADBAND || (potNow - stored) * (origin - stored) < 0) live = true; else return stored; }
-        return potNow;
-    }
-};
-PotTakeover pot_state[NUM_PATCHES][3];
-
-// TODO: instantiate the Faust-generated classes for the effects listed above, e.g.
-//   FaustKlonCentaur fx_klon; FaustTapeDelay fx_tape; ...
-// and fill Stage::process with the right object per patch/stage. Each class exposes
-// setParamValue(path, value) for the stored values and the three pot bindings.
-
-static void BlinkPatch(int n) {
-    for (int i = 0; i < n; i++) { hw.SetLed(true); System::Delay(110); hw.SetLed(false); System::Delay(110); }
-    hw.SetLed(effect_active);
-}
-
-void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, size_t size) {
-    float raw[3] = { pot1.Process(), pot2.Process(), pot3.Process() };
-    float p[3];
-    for (int k = 0; k < 3; k++) p[k] = pots_locked[current_patch] ? pot_state[current_patch][k].stored : pot_state[current_patch][k].Update(raw[k]);   // p[k] is what the bound parameter should be set to
-    (void)p;
-
-    footswitch.Debounce();
-    if (footswitch.Pressed() && footswitch.TimeHeldMs() > 1500.0f && !hold_fired) {
-        hold_fired = true; current_patch = (current_patch + 1) % NUM_PATCHES; BlinkPatch(current_patch + 1);
-        for (int k = 0; k < 3; k++) pot_state[current_patch][k].Load(/* stored value of the bound param, normalised */ 0.5f, raw[k]);
-    }
-    if (footswitch.FallingEdge()) { if (!hold_fired) { effect_active = !effect_active; hw.SetLed(effect_active); } hold_fired = false; }
-
-    for (size_t i = 0; i < size; i++) {
-        float x = in[0][i];
-        float y = x;
-        if (effect_active) {
-            // y = patches[current_patch].process(x);   // series through the enabled stages
-        }
-        out[0][i] = y; out[1][i] = y;
-    }
-}
-
-int main(void) {
-    hw.Init(); hw.SetAudioBlockSize(48); sr = hw.AudioSampleRate();
-    footswitch.Init(hw.GetPin(28), 1000);
-    AdcChannelConfig adc[3]; adc[0].InitSingle(hw.GetPin(22)); adc[1].InitSingle(hw.GetPin(23)); adc[2].InitSingle(hw.GetPin(24));
-    hw.adc.Init(adc, 3); pot1.Init(hw.adc.GetPtr(0), sr / 48.0f); pot2.Init(hw.adc.GetPtr(1), sr / 48.0f); pot3.Init(hw.adc.GetPtr(2), sr / 48.0f); hw.adc.Start();
-    hw.SetLed(true); hw.StartAudio(AudioCallback);
-    while (1) {}
-}
-`;
+    const used = []; state.patches.forEach(p => p.chain.forEach(s => { if (!used.includes(s.id)) used.push(s.id); }));
+    const cls = (id) => id.replace(/(^|-)([a-z0-9])/g, (_, __, c) => c.toUpperCase());
+    const cstr = (x) => JSON.stringify(String(x));
+    const f = (v) => { let t = String(+Number(v).toPrecision(7)); if (!/[.e]/.test(t)) t += '.0'; return t + 'f'; };
+    const L = [];
+    L.push(`// GENERATED by Chameleon Studio (${new Date().toISOString().slice(0, 10)}) — same format as tools/build-firmware.mjs`);
+    L.push('// Effects used: ' + (used.join(', ') || '(none)') + '\n// Generate their C++ with:  cd firmware && ./gen-faust.sh ' + used.join(' '));
+    L.push('#pragma once');
+    used.forEach(id => L.push(`#include "faust/${id}.h"`));
+    L.push('', '#define CH_EFFECTS(X) \\', used.map(id => `    X(${cls(id)}, ${cstr(id)})`).join(' \\\n') || '    /* no effects */', '');
+    L.push('enum { NUM_PATCHES = 4, MAX_STAGES = 7, MAX_VALUES = 24 };');
+    L.push('struct ValueDef { const char* path; float value; };');
+    L.push('struct StageDef { int effect; bool on; int nvalues; ValueDef values[MAX_VALUES]; };');
+    L.push('struct PotDef   { int stage; const char* path; };');
+    L.push('struct PatchDef { const char* name; bool potsLocked; int hue; int nstages; StageDef stages[MAX_STAGES]; PotDef pots[3]; };', '');
+    L.push('static const PatchDef PATCHES[NUM_PATCHES] = {');
+    state.patches.forEach((p, pi) => {
+      const first = p.chain.find(x => x.on) || p.chain[0];
+      const hue = first ? hueOf(effectOf(first)) : 178;
+      const stages = p.chain.map(st => { const e = effectOf(st); const vals = e.params.slice(0, 24).map(prm => `{ ${cstr(prm.path)}, ${f(st.values[prm.path] ?? prm.default)} }`); return `      { ${used.indexOf(st.id)}, ${st.on ? 'true' : 'false'}, ${vals.length}, { ${vals.join(', ')} } }`; });
+      const pots = [0, 1, 2].map(k => { const a = p.pots[k]; const si = a ? p.chain.findIndex(x => x.uid === a.uid) : -1; return si >= 0 ? `{ ${si}, ${cstr(a.path)} }` : '{ -1, "" }'; });
+      L.push(`    // Patch ${PATCH_NAMES[pi]}: ${p.chain.map(x => effectOf(x).name).join(' -> ') || '(empty)'}${p.potsLocked ? '  [pots locked]' : ''}`);
+      L.push(`    { ${cstr(p.name)}, ${p.potsLocked ? 'true' : 'false'}, ${hue}, ${stages.length},`);
+      L.push(`      { ${stages.length ? '\n' + stages.join(',\n') + '\n      ' : ''}},`);
+      L.push(`      { ${pots.join(', ')} } },`);
+    });
+    L.push('};');
+    return L.join('\n') + '\n';
   }
 
   // ------------------------------------------------------------------
