@@ -33,12 +33,20 @@ class ChameleonDFU {
     const iface = this.device.configuration.interfaces[0];
     this.interfaceNumber = iface.interfaceNumber;
     this.regions = iface.alternates.map((a, i) => ChameleonDFU.parseRegion(a.interfaceName || '', i)).filter(Boolean);
+    // Chrome doesn't always expose the alt-setting name strings (interfaceName comes back null on some
+    // platforms). Fall back to the known layouts so flashing doesn't depend on them.
+    const daisy = /daisy/i.test(this.device.productName || '');
+    if (!this.regions.length) {
+      this.regions = daisy
+        ? [ChameleonDFU.parseRegion('@Flash /0x90000000/64*4Kg/0x90040000/60*64Kg/0x90400000/60*64Kg', 0)]
+        : [ChameleonDFU.parseRegion('@Internal Flash /0x08000000/01*128Kg', 0)];
+    }
     await this.device.claimInterface(this.interfaceNumber);
     await this.device.selectAlternateInterface(this.interfaceNumber, 0);
     await this.readTransferSize();
-    this.isDaisyBootloader = /daisy/i.test(this.device.productName || '') || this.regions.some(r => r.start === 0x90000000);
+    this.isDaisyBootloader = daisy || this.regions.some(r => r.start === 0x90000000);
     this.isConnected = true;
-    this.log(`Connected: ${this.device.productName || 'STM32 BOOTLOADER'} (transfer size ${this.transferSize})`);
+    this.log(`Connected: ${this.device.productName || 'STM32 BOOTLOADER'} (transfer size ${this.transferSize}; regions ${this.regions.map(r => '0x' + r.start.toString(16) + '-0x' + r.end.toString(16)).join(', ')})`);
     await this.clearToIdle();
     return { productName: this.device.productName || 'Daisy Seed (DFU)', serialNumber: this.device.serialNumber || '' };
   }
