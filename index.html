@@ -204,9 +204,9 @@
       <div class="modal-body">
         <p class="note" id="flash-image-info">Reading firmware image…</p>
         <ol class="steps" id="flash-steps">
-          <li>Connect the pedal with a <strong>USB-C data cable</strong>.</li>
-          <li><strong>Daisy bootloader installed?</strong> Tap <strong>RESET</strong>; the user LED breathes for 2 s — press <strong>BOOT</strong> once during that to hold it in DFU. <em>No bootloader yet?</em> Use <em>Install bootloader</em> below first (hold BOOT, tap RESET, release BOOT).</li>
-          <li>Click <strong>Connect &amp; flash</strong> and pick <strong>Daisy Bootloader</strong> (or <strong>DFU in FS Mode</strong> for the STM32 one).</li>
+          <li>Plug the pedal in over USB-C. The chip in the header turns green when it's recognised (first time on a computer: click the chip and pick it).</li>
+          <li>Click <strong>Connect &amp; flash</strong>. The pedal switches itself into update mode, takes the new firmware, and reboots. No buttons.</li>
+          <li><em>Brand-new Seed only:</em> hold BOOT, tap RESET, release, then <strong>Install bootloader</strong> once. After that it's step 2 forever.</li>
         </ol>
         <div class="progress"><div class="progress-bar" id="flash-progress"></div></div>
         <div class="log" id="flash-status-text">Ready to connect.</div>

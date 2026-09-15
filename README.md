@@ -171,8 +171,12 @@ node tools/build-firmware.mjs --default --make                # the built-in sta
 table (values, pot bindings, pot lock, LED hue) and builds the image for the **Daisy bootloader** (runs from the
 8 MB QSPI flash — the 128 KB internal flash only fits two or three effects). Flashing from the studio:
 
-1. Once per Seed: Flash Pedal → *Install bootloader* with the Seed in STM32 DFU (hold BOOT, tap RESET, release).
-2. Every time after: tap RESET, press BOOT once while the user LED breathes (2 s window), *Connect & flash*.
+1. Once per brand-new Seed: Flash Pedal → *Install bootloader* with the Seed in STM32 DFU (hold BOOT, tap RESET,
+   release), then tap RESET, press BOOT during the 2 s LED pulse and *Connect & flash* for the first image.
+2. Every time after, no buttons: the running pedal enumerates as a USB CDC serial device (0483:5740). Pair it once
+   per computer by clicking the device chip, then *Connect & flash* sends `DFU\n` over Web Serial, the firmware
+   calls `System::ResetToBootloader(DAISY_INFINITE_TIMEOUT)`, the studio flashes over WebUSB and the pedal reboots.
+   `ID?` over the same port answers `CHAMELEON <patch> <active>`.
 
 `main.cpp` is the engine (control surface, PotTakeover, series chain, SDRAM pool, RGB LED on TIM3 PWM),
 `chameleon_faust.h` the tiny Faust runtime, `patches.h` the generated table. The Firmware button in the studio
@@ -189,11 +193,11 @@ button, which streams the `.bin` over WebUSB to the STM32 bootloader). CPU budge
 480 MHz) is roughly 7 light effects or 3-4 guitarix circuit sims at 48 kHz; the studio warns nothing about
 this yet, so keep an eye on it.
 
-### Flashing your Daisy Seed (when a .bin exists)
+### Flashing your Daisy Seed
 
-1. Connect the pedal over a **USB-C data cable**.
-2. Enter DFU mode: hold **BOOT**, tap **RESET**, release **BOOT**.
-3. Click **Flash Pedal** and pick **STM32 BOOTLOADER / DFU in FS Mode**.
+1. Connect the pedal over a **USB-C data cable** — the chip in the top bar turns green ("Chameleon connected").
+   First time on this computer: click the chip and pick the pedal's serial port.
+2. Click **Flash Pedal → Connect & flash**. (Brand-new Seed only: see the bootloader steps above.)
 
 ## Deploying the studio
 

@@ -403,17 +403,53 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btn-download-code').addEventListener('click', () => download('patches.h', $('code-content').textContent));
   $('btn-open-flash').addEventListener('click', () => el.flashModal.classList.add('open'));
   const dfu = new ChameleonDFU();
-  // WebUSB device awareness: a Daisy Seed is only a USB device in DFU mode (BOOT+RESET) — the STM32
-  // bootloader (0483:DF11). Once paired in this browser it shows up here on every load.
-  const ST = 0x0483;
-  function setDevice(dev) {
-    if (dev) { el.chipDevice.className = 'chip chip-btn ok'; el.chipDevice.lastElementChild.textContent = `Daisy Seed in DFU mode (${dev.productName || 'STM32 BOOTLOADER'})`; }
-    else { el.chipDevice.className = 'chip chip-btn'; el.chipDevice.lastElementChild.textContent = navigator.usb ? 'No pedal connected — click to pair' : 'WebUSB not available in this browser'; }
+  // Device awareness. A running Chameleon shows up as a USB serial port (ST CDC 0483:5740) — that's
+  // how the studio recognises it and how it sends it to the bootloader. In DFU it's a WebUSB device
+  // (0483:DF11). Both are paired once per computer through the browser's picker; after that they're
+  // recognised automatically.
+  const ST = 0x0483, PID_CDC = 0x5740, PID_DFU = 0xdf11;
+  let serialPort = null;
+  function setDevice(kind, label) {
+    el.chipDevice.className = 'chip chip-btn' + (kind ? ' ok' : '');
+    el.chipDevice.lastElementChild.textContent = label;
   }
-  async function scanUsb() { if (!navigator.usb) { setDevice(null); return; } try { const devs = await navigator.usb.getDevices(); setDevice(devs.find(d => d.vendorId === ST) || null); } catch (e) { setDevice(null); } }
-  if (navigator.usb) { navigator.usb.addEventListener('connect', scanUsb); navigator.usb.addEventListener('disconnect', scanUsb); }
-  el.chipDevice.addEventListener('click', async () => { if (!navigator.usb) return; try { await navigator.usb.requestDevice({ filters: [{ vendorId: ST }] }); toast('Paired — the pedal will be recognised automatically from now on'); } catch (e) { toast('No device chosen (is the Seed in DFU mode? hold BOOT, tap RESET)'); } scanUsb(); });
-  scanUsb();
+  async function scanDevices() {
+    if (!navigator.usb) { setDevice(null, 'WebUSB not available in this browser'); return; }
+    try {
+      const ports = navigator.serial ? await navigator.serial.getPorts() : [];
+      serialPort = ports.find(p => { const i = p.getInfo(); return i.usbVendorId === ST && (i.usbProductId === PID_CDC || i.usbProductId == null); }) || null;
+      const devs = await navigator.usb.getDevices();
+      const dfuDev = devs.find(d => d.vendorId === ST && d.productId === PID_DFU);
+      if (serialPort) setDevice('run', 'Chameleon connected — ready to flash');
+      else if (dfuDev) setDevice('dfu', `Seed in bootloader (${dfuDev.productName || 'DFU'})`);
+      else setDevice(null, 'No pedal connected — click to pair');
+    } catch (e) { setDevice(null, 'No pedal connected — click to pair'); }
+  }
+  if (navigator.usb) { navigator.usb.addEventListener('connect', scanDevices); navigator.usb.addEventListener('disconnect', scanDevices); }
+  if (navigator.serial) { navigator.serial.addEventListener('connect', scanDevices); navigator.serial.addEventListener('disconnect', scanDevices); }
+  el.chipDevice.addEventListener('click', async () => {
+    if (!navigator.usb) return;
+    try {
+      if (navigator.serial) { await navigator.serial.requestPort({ filters: [{ usbVendorId: ST }] }); toast('Paired — the pedal will be recognised automatically from now on'); }
+      else { await navigator.usb.requestDevice({ filters: [{ vendorId: ST }] }); toast('Paired'); }
+    } catch (e) { toast('No device chosen — is the pedal plugged in with a data cable?'); }
+    scanDevices();
+  });
+  scanDevices();
+
+  // Ask a running pedal to reboot into the bootloader over its serial port. Resolves when the DFU device shows up.
+  async function rebootToDfu(log) {
+    if (!serialPort) { const ports = await navigator.serial.getPorts(); serialPort = ports.find(p => p.getInfo().usbVendorId === ST) || null; }
+    if (!serialPort) return false;
+    log('Asking the pedal to enter update mode…');
+    await serialPort.open({ baudRate: 115200 });
+    const w = serialPort.writable.getWriter(); await w.write(new TextEncoder().encode('DFU\n')); w.releaseLock();
+    try { await serialPort.close(); } catch (e) {}
+    serialPort = null;
+    for (let i = 0; i < 40; i++) { await new Promise(r => setTimeout(r, 250)); const devs = await navigator.usb.getDevices(); if (devs.some(d => d.vendorId === ST && d.productId === PID_DFU)) return true; }
+    return 'unpaired';   // it rebooted but this computer hasn't paired the DFU device yet — the picker will handle it
+  }
+
   // Firmware image metadata (written by tools/build-firmware.mjs --make)
   let fwInfo = null;
   async function loadFwInfo() {
@@ -430,7 +466,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error(`${url} is missing — run tools/build-firmware.mjs --make (see README)`);
     const bin = await res.arrayBuffer();
-    log.textContent = 'Requesting USB device…';
+    if (navigator.serial && address >= 0x90000000) { const r = await rebootToDfu(m => { log.textContent = m; }); if (r === 'unpaired') log.textContent = 'Pedal is in update mode — pick it in the dialog (one-time on this computer)…'; }
+    log.textContent = log.textContent || 'Requesting USB device…';
     await dfu.connect();
     dfu.onProgress = (p) => { bar.style.width = `${p}%`; log.textContent = `Flashing ${label} ${(bin.byteLength / 1024).toFixed(1)} KB → 0x${address.toString(16)}… ${p}%`; };
     if (address >= 0x90000000 && !dfu.isDaisyBootloader) throw new Error('This is the STM32 DFU (no QSPI). Install the Daisy bootloader first, then tap RESET and press BOOT while the LED breathes.');
@@ -443,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       btn.disabled = true; if (!fwInfo) await loadFwInfo();
       await flashImage('firmware/chameleon.bin', fwInfo.address || 0x08000000, 'Chameleon');
-      log.textContent = 'Done — the Seed rebooted into Chameleon. RGB LED shows the patch colour; tap = bypass (dim), hold = next patch (flashes).'; $('flash-progress').style.width = '100%';
+      log.textContent = 'Done — the pedal rebooted into the new firmware.'; $('flash-progress').style.width = '100%'; setTimeout(scanDevices, 2500);
     } catch (err) { log.textContent = `⚠ ${err.message}`; } finally { btn.disabled = false; }
   });
   $('btn-install-boot').addEventListener('click', async () => {

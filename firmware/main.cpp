@@ -13,6 +13,7 @@
  * Pot rule: stored values win until a pot moves (>2 % of travel) and catches up — see PotTakeover.
  */
 #include <cstdio>
+#include <cstring>
 #include <new>
 #include "daisy_seed.h"
 #include "chameleon_faust.h"
@@ -76,6 +77,23 @@ static volatile int  current_patch = 0;
 static volatile bool effect_active = true;
 static bool          hold_fired    = false;
 static volatile bool led_dirty     = false;   // set in the audio thread, serviced in main()
+static volatile bool want_dfu      = false;   // set by the USB command "DFU", serviced in main()
+
+// ---- USB serial (CDC) command port: the studio talks to the running pedal over this.
+//   "ID?"  -> "CHAMELEON <patch> <active>\n"   (also lets the site recognise a Chameleon)
+//   "DFU"  -> reboot into the Daisy bootloader and stay there until flashed. No buttons.
+static char usb_line[32]; static int usb_len = 0;
+static void usb_rx(uint8_t* buf, uint32_t* len) {
+    for (uint32_t i = 0; i < *len; i++) {
+        char c = (char)buf[i];
+        if (c == '\n' || c == '\r') {
+            usb_line[usb_len] = 0;
+            if (!strcmp(usb_line, "DFU")) { want_dfu = true; }
+            else if (!strcmp(usb_line, "ID?")) { char r[48]; int n = snprintf(r, sizeof r, "CHAMELEON %d %d\n", current_patch + 1, effect_active ? 1 : 0); hw.usb_handle.TransmitInternal((uint8_t*)r, n); }
+            usb_len = 0;
+        } else if (usb_len < (int)sizeof(usb_line) - 1) usb_line[usb_len++] = c;
+    }
+}
 static float         sr            = 48000.f;
 
 static float bufA[BLOCK], bufB[BLOCK], bufR[BLOCK];
@@ -192,12 +210,17 @@ int main(void) {
     PWMHandle::Channel::Config c1(seed::D9), c2(seed::D10), c3(seed::D4);
     pwm.Channel1().Init(c1); pwm.Channel2().Init(c2); pwm.Channel3().Init(c3);
 
+    // USB serial so the studio can identify the pedal and send it to the bootloader without buttons
+    hw.usb_handle.Init(UsbHandle::FS_INTERNAL);
+    hw.usb_handle.SetReceiveCallback(usb_rx, UsbHandle::FS_INTERNAL);
+
     led_show();
     hw.StartAudio(AudioCallback);
 
     // LED work runs here, outside the audio callback (blinks take real time)
     int shown = 0;
     while (1) {
+        if (want_dfu) { hw.StopAudio(); led_rgb(1, 1, 1); System::Delay(150); System::ResetToBootloader(System::BootloaderMode::DAISY_INFINITE_TIMEOUT); }
         if (shown != current_patch) { shown = current_patch; blink(shown + 1); }
         else if (led_dirty) { led_dirty = false; led_show(); }
         System::Delay(20);
