@@ -411,6 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let serialPort = null;
   function setDevice(kind, label) {
     el.chipDevice.className = 'chip chip-btn' + (kind ? ' ok' : '');
+    el.chipDevice.dataset.state = kind || '';
     el.chipDevice.lastElementChild.textContent = label;
   }
   async function scanDevices() {
@@ -429,6 +430,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (navigator.serial) { navigator.serial.addEventListener('connect', scanDevices); navigator.serial.addEventListener('disconnect', scanDevices); }
   el.chipDevice.addEventListener('click', async () => {
     if (!navigator.usb) return;
+    if (el.chipDevice.dataset.state === 'dfu') { toast('Seed is in its bootloader and already paired — use Flash Pedal'); return; }
+    if (el.chipDevice.dataset.state === 'serial') { toast('Pedal paired and ready — use Flash Pedal'); return; }
     try {
       if (navigator.serial) { await navigator.serial.requestPort({ filters: [{ usbVendorId: ST }] }); toast('Paired — the pedal will be recognised automatically from now on'); }
       else { await navigator.usb.requestDevice({ filters: [{ vendorId: ST }] }); toast('Paired'); }
