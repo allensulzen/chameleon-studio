@@ -74,7 +74,7 @@
   <div class="warn"><b>Pin numbers on this sheet are the physical header pins (1–40), counted the way the board is printed.</b> The older project plan mislabelled three of them: pin 21 is <em>3V3 analog</em>, not ground; pin 38 is 3V3 <em>digital</em>; the ground you want for the footswitch and power is pin 40. The table below is the one to trust.</div>
 
   <h2>What you're building tonight</h2>
-  <p>The Seed does all the audio work. Around it: a momentary footswitch that the firmware reads as tap (bypass) or hold (next patch), three 10 kΩ pots read as 0–3.3 V, and two ¼″ jacks straight into the Seed's line-level in and out. No op-amp buffer yet — plug the guitar straight in for tonight; it works, just a touch dull. Power comes over the USB cable from the laptop, so leave the 9 V jack and diode for another night.</p>
+  <p>The Seed does all the audio work. Around it: a momentary footswitch that the firmware reads as tap (bypass) or hold (next patch), three 10 kΩ pots read as 0–3.3 V, and two ¼″ jacks straight into the Seed's line-level in and out. No op-amp buffer yet — plug the guitar straight in for tonight; it works, just a touch dull. Power comes over the USB cable from the laptop for the first pass; the 9 V entry and the buffer are Phase 2, further down.</p>
 
   <figure>
     <svg viewBox="0 0 760 640" role="img" aria-label="Wiring diagram: Daisy Seed with footswitch, three pots and two jacks">
@@ -257,9 +257,35 @@
     </div></li>
     <li><div>
       <h3>Not tonight</h3>
-      <p>The TL072 input buffer (fixes the slight dullness of plugging a passive pickup straight into a line input), the 9 V barrel jack with its 1N5817 diode and 470 µF cap, and the copper shielding all belong to the perfboard build. The wiring above is exactly what carries over; the buffer just slots between the guitar jack and pin 16. That build has its own sheet (the perfboard build).</p>
+      <p>Once the first pass works, the 9 V entry and the TL072 buffer go on the breadboard too — that's the Phase 2 section below. The copper shielding waits for the box.</p>
     </div></li>
   </ol>
+
+  <h2>Phase 2 — power entry and the TL072 buffer, on the breadboard</h2>
+  <p>Same parts as the perfboard build, prototyped first. Use the breadboard's <em>second</em> pair of rails for this: keep the left rails as 3V3A (red) / AGND (blue) like they are, and make the right rails <strong>9 V</strong> (red) / <strong>GND</strong> (blue). The two grounds are joined inside the Seed (pins 20 and 40), so don't add another jumper between them.</p>
+  <p>TL072 pins, notch up, counted counter-clockwise from the top-left: <span class="pin">1</span> OUT A · <span class="pin">2</span> IN− A · <span class="pin">3</span> IN+ A · <span class="pin">4</span> V− (GND) · <span class="pin">5</span> IN+ B · <span class="pin">6</span> IN− B · <span class="pin">7</span> OUT B · <span class="pin">8</span> V+ (9 V). The chip straddles the centre channel; each pin gets its own 5-hole row.</p>
+  <ol class="steps">
+    <li><div>
+      <h3>9 V entry</h3>
+      <p>Solder two 4″ wires to the DC jack: one to the <em>sleeve</em> lug (that's +9 V on a centre-negative pedal supply) and one to the <em>centre-pin</em> lug (ground). Sleeve wire → 1N5817 anode (the end without the band); the diode's <em>band</em> end → right red rail. Centre-pin wire → right blue rail. 470 µF across the rails, long leg (+) on red, stripe side on blue. Then one wire from the red rail to Seed pin <span class="pin">39</span> (VIN) and one from the blue rail to pin <span class="pin">40</span>.</p>
+      <div class="check"><b>Check</b> Before the pin 39 wire goes in: plug the 9 V supply in and meter red-to-blue rail ≈ 8.7 V. Plug it in backwards on purpose: 0 V, nothing warm. Then connect pin 39, unplug USB, plug 9 V in: both Seed LEDs light and the pedal works with no laptop attached.</div>
+    </div></li>
+    <li><div>
+      <h3>Op-amp power and the 4.5 V reference</h3>
+      <p>U1 pin <span class="pin">8</span> → red (9 V) rail, with a 10 µF from pin 8 to the blue rail (long leg on pin 8). U1 pin <span class="pin">4</span> → blue rail. Reference: 100 kΩ from the red rail to a free row (call it <em>REF</em>), 100 kΩ from REF to the blue rail, 10 µF from REF to blue (long leg on REF). Tie off the spare half: pin <span class="pin">5</span> → REF, pin <span class="pin">6</span> → pin <span class="pin">7</span> with a short jumper.</p>
+      <div class="check"><b>Check</b> 9 V on: pin 8 ≈ 8.7 V, pin 4 = 0, REF ≈ 4.3 V, pin 7 ≈ 4.3 V.</div>
+    </div></li>
+    <li><div>
+      <h3>The buffer itself</h3>
+      <p>Move the guitar jack's tip wire off Seed pin 16 and into a free row (<em>IN</em>). 100 nF film from IN to another row (<em>A</em>). 1 MΩ from A to REF. Jumper A → U1 pin <span class="pin">3</span>. Feedback: 10 kΩ from pin <span class="pin">1</span> to pin <span class="pin">2</span>, and the 100 pF ceramic across the same two pins. Output: 100 nF from pin 1 to a row (<em>B</em>), 10 kΩ from B to a row (<em>C</em>), jumper C → Seed pin <span class="pin">16</span>. Protection at C: 1N4148 with its band toward the left red rail (3V3A), and a second 1N4148 from the left blue rail (AGND) with its band toward C.</p>
+      <div class="check"><b>Check</b> 9 V on, no signal: pin 3 and pin 1 both ≈ 4.3 V (pin 1 stuck at 0 or 8.7 means the feedback pair is missing). Play on patch C: same tone as before but with the top end back — swap the jack wire between IN and pin 16 to A/B it. On USB only, the buffer is unpowered and the guitar goes quiet; that's expected, move the jack wire back to pin 16 for USB-only sessions (this is the JP1 jumper on the perfboard).</div>
+    </div></li>
+    <li><div>
+      <h3>Output resistor</h3>
+      <p>Move the amp jack's tip wire off pin 18 into a free row; 100 Ω from that row to pin <span class="pin">18</span>. It only matters when a cable shorts, but it's one part and you'll forget it later.</p>
+    </div></li>
+  </ol>
+  <p>With those four steps the breadboard is electrically the finished pedal. Everything after this is the perfboard, the box and the shielding — see the perfboard sheet.</p>
 
   <h2>If something's off</h2>
   <ul>
