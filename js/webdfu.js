@@ -50,15 +50,24 @@ class ChameleonDFU {
 
   // "@Name /0xADDR/N*SizeK[g|e|...]..." -> { alt, start, end, sectors:[{start,size,count}] }
   static parseRegion(name, alt) {
-    const m = /@\s*([^/]*?)\s*\/\s*0x([0-9a-fA-F]+)\s*\/(.*)$/.exec(name);
+    // DfuSe: "@Name /0xADDR/N*SizeK[g],N*SizeK[g]/0xADDR2/N*SizeK[g]..." — the Daisy bootloader chains
+    // three address blocks in one string: "@Flash /0x90000000/64*4Kg/0x90040000/60*64Kg/0x90400000/60*64Kg"
+    const m = /@\s*([^/]*?)\s*\/(.*)$/.exec(name);
     if (!m) return null;
-    let addr = parseInt(m[2], 16); const sectors = [];
-    for (const seg of m[3].split(',')) {
-      const sm = /(\d+)\s*\*\s*(\d+)\s*([KM]?)/i.exec(seg); if (!sm) continue;
-      const count = +sm[1], size = +sm[2] * ({ K: 1024, M: 1048576, '': 1 })[sm[3].toUpperCase()];
-      sectors.push({ start: addr, size, count }); addr += count * size;
+    const parts = m[2].split('/').map(x => x.trim()).filter(Boolean);
+    const sectors = []; let addr = null, start = null;
+    for (const part of parts) {
+      if (/^0x[0-9a-fA-F]+$/.test(part)) { addr = parseInt(part, 16); if (start === null) start = addr; continue; }
+      if (addr === null) continue;
+      for (const seg of part.split(',')) {
+        const sm = /(\d+)\s*\*\s*(\d+)\s*([KM]?)/i.exec(seg); if (!sm) continue;
+        const count = +sm[1], size = +sm[2] * ({ K: 1024, M: 1048576, '': 1 })[sm[3].toUpperCase()];
+        sectors.push({ start: addr, size, count }); addr += count * size;
+      }
     }
-    return { alt, name: m[1], start: parseInt(m[2], 16), end: addr, sectors };
+    if (start === null || !sectors.length) return null;
+    const end = Math.max(...sectors.map(s => s.start + s.size * s.count));
+    return { alt, name: m[1], start, end, sectors };
   }
   regionFor(address) { return this.regions.find(r => address >= r.start && address < r.end) || null; }
   sectorSizeAt(region, address) { for (const s of region.sectors) if (address >= s.start && address < s.start + s.size * s.count) return s.size; return region.sectors[0]?.size || 4096; }
