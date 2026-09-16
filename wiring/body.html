@@ -256,6 +256,173 @@
   <h2>Phase 2 — power entry and the TL072 buffer, on the breadboard</h2>
   <p>Same parts as the perfboard build, prototyped first. Use the breadboard's <em>second</em> pair of rails for this: keep the left rails as 3V3A (red) / AGND (blue) like they are, and make the right rails <strong>9 V</strong> (red) / <strong>GND</strong> (blue). The two grounds are joined inside the Seed (pins 20 and 40), so don't add another jumper between them.</p>
   <p>TL072 pins, notch up, counted counter-clockwise from the top-left: <span class="pin">1</span> OUT A · <span class="pin">2</span> IN− A · <span class="pin">3</span> IN+ A · <span class="pin">4</span> V− (GND) · <span class="pin">5</span> IN+ B · <span class="pin">6</span> IN− B · <span class="pin">7</span> OUT B · <span class="pin">8</span> V+ (9 V). The chip straddles the centre channel; each pin gets its own 5-hole row.</p>
+  <figure>
+    <svg viewBox="0 0 940 680" role="img" aria-label="Phase 2 schematic: 9 V entry, TL072 input buffer, protection diodes and output resistor">
+      <style>
+        .chip { fill: var(--paper-2); stroke: var(--ink); stroke-width: 2; }
+        .notch { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+        .hdr { fill: var(--ink); }
+        .lbl { font: 600 11px var(--font-mono); fill: var(--ink-2); }
+        .num { font: 600 10.5px var(--font-mono); fill: var(--ink-3); }
+        .part { fill: var(--paper); stroke: var(--ink); stroke-width: 1.6; }
+        .cp { stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; }
+        .ptxt { font: 700 12.5px var(--font-display); fill: var(--ink); }
+        .stxt { font: 400 11.5px var(--font-body); fill: var(--ink-2); }
+        .dot { fill: var(--ink); }
+        .w { fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+        .w-9v { stroke: var(--w-3v3); } .w-3v3 { stroke: var(--w-3v3); } .w-gnd { stroke: var(--w-gnd); } .w-audio { stroke: var(--w-audio); } .w-ref { stroke: var(--w-pot); } .w-sig { stroke: var(--ink-2); }
+      </style>
+      <line class="w w-9v" x1="100" y1="52" x2="760" y2="52"/>
+      <text x="100" y="42" text-anchor="start" class="lbl">+9 V rail (right red rail) → Seed pin 39 VIN</text>
+      <polygon class="part" points="771,44 771,60 787,52"/><line class="cp" x1="787" y1="44" x2="787" y2="60"/>
+      <text x="780" y="38" text-anchor="middle" class="ptxt">D1 1N5817</text>
+      <line class="w w-9v" x1="760" y1="52" x2="771" y2="52"/>
+      <line class="w w-9v" x1="787" y1="52" x2="822" y2="52"/>
+      <rect class="part" x="822" y="30" width="110" height="66" rx="6"/>
+      <text x="877" y="50" text-anchor="middle" class="ptxt">DC jack</text>
+      <text x="877" y="66" text-anchor="middle" class="stxt">2.1 mm, centre −</text>
+      <text x="877" y="82" text-anchor="middle" class="stxt">sleeve = +9 V</text>
+      <line class="w w-gnd" x1="877" y1="96" x2="877" y2="120"/>
+      <line class="w w-gnd" x1="877" y1="120" x2="877" y2="130"/><line class="cp" x1="866" y1="130" x2="888" y2="130"/><line class="cp" x1="870" y1="135" x2="884" y2="135"/><line class="cp" x1="874" y1="140" x2="880" y2="140"/>
+      <text x="877" y="153" text-anchor="middle" class="num">GND rail</text>
+      <line class="cp" x1="659" y1="106" x2="681" y2="106"/><line class="cp" x1="659" y1="114" x2="681" y2="114"/>
+      <text x="654" y="104" text-anchor="middle" class="ptxt">+</text>
+      <text x="686" y="114" text-anchor="start" class="ptxt">C5 470 µF</text>
+      <line class="w w-9v" x1="670" y1="52" x2="670" y2="106"/>
+      <circle cx="670" cy="52" r="3.2" class="dot"/>
+      <line class="w w-gnd" x1="670" y1="114" x2="670" y2="140"/>
+      <line class="w w-gnd" x1="670" y1="140" x2="670" y2="150"/><line class="cp" x1="659" y1="150" x2="681" y2="150"/><line class="cp" x1="663" y1="155" x2="677" y2="155"/><line class="cp" x1="667" y1="160" x2="673" y2="160"/>
+      <text x="670" y="173" text-anchor="middle" class="num">GND rail</text>
+      <rect class="chip" x="410" y="240" width="150" height="170" rx="6"/>
+      <path class="notch" d="M473.0,240 a12,12 0 0 0 24,0"/>
+      <text x="485.0" y="322" text-anchor="middle" class="ptxt">TL072</text>
+      <text x="485.0" y="338" text-anchor="middle" class="stxt">notch up</text>
+      <rect class="hdr" x="400" y="260" width="10" height="10"/>
+      <text x="418" y="269" text-anchor="start" class="lbl">1 OUT A</text>
+      <rect class="hdr" x="400" y="300" width="10" height="10"/>
+      <text x="418" y="309" text-anchor="start" class="lbl">2 IN− A</text>
+      <rect class="hdr" x="400" y="340" width="10" height="10"/>
+      <text x="418" y="349" text-anchor="start" class="lbl">3 IN+ A</text>
+      <rect class="hdr" x="400" y="380" width="10" height="10"/>
+      <text x="418" y="389" text-anchor="start" class="lbl">4 V−</text>
+      <rect class="hdr" x="560" y="260" width="10" height="10"/>
+      <text x="552" y="269" text-anchor="end" class="lbl">V+ 8</text>
+      <rect class="hdr" x="560" y="300" width="10" height="10"/>
+      <text x="552" y="309" text-anchor="end" class="lbl">OUT B 7</text>
+      <rect class="hdr" x="560" y="340" width="10" height="10"/>
+      <text x="552" y="349" text-anchor="end" class="lbl">IN− B 6</text>
+      <rect class="hdr" x="560" y="380" width="10" height="10"/>
+      <text x="552" y="389" text-anchor="end" class="lbl">IN+ B 5</text>
+      <polyline class="w w-9v" points="570,265 600,265 600,52"/>
+      <circle cx="600" cy="52" r="3.2" class="dot"/>
+      <line class="w w-9v" x1="600" y1="265" x2="700" y2="265"/>
+      <circle cx="600" cy="265" r="3.2" class="dot"/>
+      <line class="w w-9v" x1="700" y1="265" x2="700" y2="295"/>
+      <line class="cp" x1="689" y1="299" x2="711" y2="299"/><line class="cp" x1="689" y1="307" x2="711" y2="307"/>
+      <text x="684" y="297" text-anchor="middle" class="ptxt">+</text>
+      <text x="716" y="307" text-anchor="start" class="ptxt">C2 10 µF</text>
+      <line class="w w-gnd" x1="700" y1="311" x2="700" y2="327"/>
+      <line class="w w-gnd" x1="700" y1="327" x2="700" y2="337"/><line class="cp" x1="689" y1="337" x2="711" y2="337"/><line class="cp" x1="693" y1="342" x2="707" y2="342"/><line class="cp" x1="697" y1="347" x2="703" y2="347"/>
+      <text x="700" y="360" text-anchor="middle" class="num">GND rail</text>
+      <line class="w w-gnd" x1="400" y1="385" x2="370" y2="385"/>
+      <line class="w w-gnd" x1="370" y1="385" x2="370" y2="405"/>
+      <line class="w w-gnd" x1="370" y1="405" x2="370" y2="415"/><line class="cp" x1="359" y1="415" x2="381" y2="415"/><line class="cp" x1="363" y1="420" x2="377" y2="420"/><line class="cp" x1="367" y1="425" x2="373" y2="425"/>
+      <text x="370" y="438" text-anchor="middle" class="num">GND rail</text>
+      <line class="w w-ref" x1="220" y1="500" x2="800" y2="500"/>
+      <text x="230" y="492" text-anchor="start" class="lbl">REF bus ≈ 4.3 V (any free row)</text>
+      <rect class="part" x="722" y="418" width="16" height="44" rx="2"/>
+      <text x="743" y="444" text-anchor="start" class="ptxt">R2 100 kΩ</text>
+      <line class="w w-9v" x1="730" y1="52" x2="730" y2="418"/>
+      <circle cx="730" cy="52" r="3.2" class="dot"/>
+      <line class="w w-ref" x1="730" y1="462" x2="730" y2="500"/>
+      <circle cx="730" cy="500" r="3.2" class="dot"/>
+      <rect class="part" x="722" y="523" width="16" height="44" rx="2"/>
+      <text x="743" y="549" text-anchor="start" class="ptxt">R3 100 kΩ</text>
+      <line class="w w-ref" x1="730" y1="500" x2="730" y2="523"/>
+      <line class="w w-gnd" x1="730" y1="567" x2="730" y2="572"/>
+      <line class="w w-gnd" x1="730" y1="572" x2="730" y2="582"/><line class="cp" x1="719" y1="582" x2="741" y2="582"/><line class="cp" x1="723" y1="587" x2="737" y2="587"/><line class="cp" x1="727" y1="592" x2="733" y2="592"/>
+      <text x="730" y="605" text-anchor="middle" class="num">GND rail</text>
+      <line class="cp" x1="819" y1="536" x2="841" y2="536"/><line class="cp" x1="819" y1="544" x2="841" y2="544"/>
+      <text x="814" y="534" text-anchor="middle" class="ptxt">+</text>
+      <text x="846" y="544" text-anchor="start" class="ptxt">C3 10 µF</text>
+      <line class="w w-ref" x1="800" y1="500" x2="830" y2="500"/>
+      <line class="w w-ref" x1="830" y1="500" x2="830" y2="536"/>
+      <line class="w w-gnd" x1="830" y1="544" x2="830" y2="572"/>
+      <line class="w w-gnd" x1="830" y1="572" x2="830" y2="582"/><line class="cp" x1="819" y1="582" x2="841" y2="582"/><line class="cp" x1="823" y1="587" x2="837" y2="587"/><line class="cp" x1="827" y1="592" x2="833" y2="592"/>
+      <text x="830" y="605" text-anchor="middle" class="num">GND rail</text>
+      <polyline class="w w-ref" points="570,385 600,385 600,500"/>
+      <circle cx="600" cy="500" r="3.2" class="dot"/>
+      <polyline class="w w-sig" points="570,345 585,345 585,305 570,305"/>
+      <text x="595" y="293" text-anchor="start" class="stxt">jumper 6→7 (unused half)</text>
+      <rect class="part" x="20" y="319" width="96" height="52" rx="6"/>
+      <text x="68" y="339" text-anchor="middle" class="ptxt">Guitar IN jack</text>
+      <text x="68" y="357" text-anchor="middle" class="stxt">tip → IN row</text>
+      <line class="w w-audio" x1="116" y1="345" x2="138" y2="345"/>
+      <line class="cp" x1="146" y1="334" x2="146" y2="356"/><line class="cp" x1="154" y1="334" x2="154" y2="356"/>
+      <text x="150" y="329" text-anchor="middle" class="ptxt">C1 100 nF</text>
+      <line class="w w-audio" x1="162" y1="345" x2="220" y2="345"/>
+      <circle cx="220" cy="345" r="3.2" class="dot"/>
+      <text x="220" y="335" text-anchor="middle" class="lbl">A</text>
+      <line class="w w-audio" x1="220" y1="345" x2="400" y2="345"/>
+      <text x="330" y="337" text-anchor="middle" class="stxt">jumper → pin 3</text>
+      <rect class="part" x="212" y="408" width="16" height="44" rx="2"/>
+      <text x="233" y="434" text-anchor="start" class="ptxt">R1 1 MΩ</text>
+      <line class="w w-ref" x1="220" y1="345" x2="220" y2="408"/>
+      <line class="w w-ref" x1="220" y1="452" x2="220" y2="500"/>
+      <circle cx="220" cy="500" r="3.2" class="dot"/>
+      <polyline class="w w-sig" points="400,265 300,265"/>
+      <polyline class="w w-sig" points="400,305 300,305"/>
+      <rect class="part" x="332" y="263.0" width="16" height="44" rx="2"/>
+      <line class="w w-sig" x1="340" y1="265" x2="340" y2="267"/>
+      <line class="w w-sig" x1="340" y1="303" x2="340" y2="305"/>
+      <circle cx="340" cy="265" r="3.2" class="dot"/>
+      <circle cx="340" cy="305" r="3.2" class="dot"/>
+      <line class="cp" x1="289" y1="281.0" x2="311" y2="281.0"/><line class="cp" x1="289" y1="289.0" x2="311" y2="289.0"/>
+      <line class="w w-sig" x1="300" y1="265" x2="300" y2="279.0"/>
+      <line class="w w-sig" x1="300" y1="291.0" x2="300" y2="305"/>
+      <text x="368" y="253" text-anchor="end" class="ptxt">R4 10 kΩ ∥ C4 100 pF</text>
+      <text x="320" y="321" text-anchor="middle" class="stxt">pin 1 ↔ pin 2</text>
+      <polyline class="w w-audio" points="380,265 380,165 300,165"/>
+      <circle cx="380" cy="265" r="3.2" class="dot"/>
+      <line class="cp" x1="284" y1="154" x2="284" y2="176"/><line class="cp" x1="292" y1="154" x2="292" y2="176"/>
+      <text x="288" y="149" text-anchor="middle" class="ptxt">C6 100 nF</text>
+      <line class="w w-audio" x1="276" y1="165" x2="250" y2="165"/>
+      <circle cx="250" cy="165" r="3.2" class="dot"/>
+      <text x="250" y="185" text-anchor="middle" class="lbl">B</text>
+      <rect class="part" x="193" y="157" width="44" height="16" rx="2"/>
+      <text x="215" y="152" text-anchor="middle" class="ptxt">R5 10 kΩ</text>
+      <line class="w w-audio" x1="250" y1="165" x2="237" y2="165"/>
+      <line class="w w-audio" x1="193" y1="165" x2="150" y2="165"/>
+      <circle cx="150" cy="165" r="3.2" class="dot"/>
+      <text x="162" y="159" text-anchor="start" class="lbl">C</text>
+      <line class="w w-audio" x1="150" y1="165" x2="110" y2="165"/>
+      <rect class="part" x="14" y="143" width="96" height="44" rx="6"/>
+      <text x="62" y="162" text-anchor="middle" class="ptxt">Seed pin 16</text>
+      <text x="62" y="178" text-anchor="middle" class="stxt">IN L</text>
+      <polygon class="part" points="142,134 158,134 150,118"/><line class="cp" x1="142" y1="118" x2="158" y2="118"/>
+      <text x="163" y="129" text-anchor="start" class="ptxt">D2 1N4148</text>
+      <line class="w w-audio" x1="150" y1="165" x2="150" y2="134"/>
+      <line class="w w-3v3" x1="150" y1="118" x2="150" y2="95"/>
+      <text x="150" y="89" text-anchor="middle" class="num">3V3A (left red rail)</text>
+      <polygon class="part" points="142,214 158,214 150,198"/><line class="cp" x1="142" y1="198" x2="158" y2="198"/>
+      <text x="163" y="209" text-anchor="start" class="ptxt">D3 1N4148</text>
+      <line class="w w-audio" x1="150" y1="165" x2="150" y2="198"/>
+      <line class="w w-gnd" x1="150" y1="214" x2="150" y2="237"/>
+      <text x="150" y="251" text-anchor="middle" class="num">AGND (left blue rail)</text>
+      <rect class="part" x="20" y="620" width="96" height="40" rx="6"/>
+      <text x="68" y="637" text-anchor="middle" class="ptxt">Seed pin 18</text>
+      <text x="68" y="653" text-anchor="middle" class="stxt">OUT L</text>
+      <line class="w w-audio" x1="116" y1="640" x2="138" y2="640"/>
+      <rect class="part" x="138" y="632" width="44" height="16" rx="2"/>
+      <text x="160" y="627" text-anchor="middle" class="ptxt">R6 100 Ω</text>
+      <line class="w w-audio" x1="182" y1="640" x2="220" y2="640"/>
+      <rect class="part" x="220" y="620" width="96" height="40" rx="6"/>
+      <text x="268" y="637" text-anchor="middle" class="ptxt">Amp OUT jack</text>
+      <text x="268" y="653" text-anchor="middle" class="stxt">tip</text>
+      <text x="340" y="644" text-anchor="start" class="stxt">← was a straight wire; now one resistor in the way</text>
+    </svg>
+    <figcaption>Phase 2 as a schematic: red = 9 V, yellow = the 4.5 V reference, blue = guitar signal, grey = ground. Every part is in the parts list; the steps below say which breadboard row each one goes in.</figcaption>
+  </figure>
   <ol class="steps">
     <li><div>
       <h3>9 V entry</h3>
