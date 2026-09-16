@@ -5,11 +5,12 @@
 #   make program-dfu           -> flash the app (Seed in the Daisy bootloader: tap RESET, press BOOT while the LED breathes)
 TARGET = chameleon
 APP_TYPE ?= BOOT_QSPI
-CPP_SOURCES = main.cpp
+CPP_SOURCES = main.cpp $(wildcard fx/*.cpp)
+FW_ID ?= dev
 LIBDAISY_DIR ?= ../../fw/libDaisy
 DAISYSP_DIR  ?= ../../fw/DaisySP
 C_INCLUDES += -I. -Ifaust
 OPT = -O3
-CPPFLAGS += -fno-exceptions -fno-rtti -Wno-unused-variable -Wno-unused-but-set-variable
+CPPFLAGS += -fno-exceptions -fno-rtti -Wno-unused-variable -Wno-unused-but-set-variable -DFW_ID=\"$(FW_ID)\"
 SYSTEM_FILES_DIR = $(LIBDAISY_DIR)/core
 include $(SYSTEM_FILES_DIR)/Makefile

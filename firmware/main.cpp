@@ -9,7 +9,10 @@
  *                 red pin 10 (D9), green pin 11 (D10), blue pin 5 (D4), common cathode to AGND, 150/100/100 Ω.
  *                 Colour = the patch's hue (same rule as the studio); dim = bypass; N flashes of the new colour = patch N.
  *
- * Effects are Faust classes generated into firmware/faust/*.h; the patch table is patches.h.
+ * Every effect in the catalog is compiled in (firmware/fx/<id>.cpp, one factory per effect, listed in
+ * effects.h). Patches are DATA: the studio writes a PatchBlob (patchblob.h) into QSPI at PATCH_BLOB_ADDR
+ * and the firmware reads it at boot — no rebuild to change patches. patches.h is only the fallback set
+ * used when no valid blob is present (fresh flash).
  * Pot rule: stored values win until a pot moves (>2 % of travel) and catches up — see PotTakeover.
  */
 #include <cstdio>
@@ -17,7 +20,13 @@
 #include <new>
 #include "daisy_seed.h"
 #include "chameleon_faust.h"
+#include "effects.h"
+#include "patchblob.h"
 #include "patches.h"
+
+#ifndef FW_ID
+#define FW_ID "dev"
+#endif
 
 using namespace daisy;
 
@@ -31,26 +40,17 @@ static constexpr float HOLD_MS    = 650.f;
 static constexpr float POT_DEADBAND = 0.02f;
 
 // ------------------------------------------------------------------ effect factory
-enum EffectId {
-#define X(cls, id) EFFECT_##cls,
-    CH_EFFECTS(X)
-#undef X
-    NUM_EFFECTS
-};
-
 // Faust objects live in SDRAM (64 MB) so reverbs and long delays never fight the 512 KB of core RAM.
 static char DSY_SDRAM_BSS sdram_pool[16 * 1024 * 1024];
 static size_t sdram_used = 0;
 static void* sdram_alloc(size_t n) { n = (n + 31) & ~size_t(31); void* p = sdram_pool + sdram_used; sdram_used += n; return p; }
 
 static chdsp* make_effect(int idx) {
-    switch (idx) {
-#define X(cls, id) case EFFECT_##cls: return new (sdram_alloc(sizeof(cls))) cls();
-        CH_EFFECTS(X)
-#undef X
-        default: return nullptr;
-    }
+    if (idx < 0 || idx >= NUM_EFFECTS) return nullptr;
+    const EffectEntry& e = EFFECTS[idx];
+    return e.make(sdram_alloc(e.size()));
 }
+static int effect_index(const char* id) { for (int i = 0; i < NUM_EFFECTS; i++) if (!strcmp(EFFECTS[i].id, id)) return i; return -1; }
 
 // ------------------------------------------------------------------ pot takeover
 struct PotTakeover {
@@ -73,6 +73,10 @@ struct Patch {
 };
 static Patch patches[NUM_PATCHES];
 
+// The live patch table: copied out of QSPI (studio-written blob) or synthesised from patches.h.
+static PatchBlob DSY_SDRAM_BSS blob;
+static bool blob_from_qspi = false;
+
 static volatile int  current_patch = 0;
 static volatile bool effect_active = true;
 static bool          hold_fired    = false;
@@ -89,7 +93,7 @@ static void usb_rx(uint8_t* buf, uint32_t* len) {
         if (c == '\n' || c == '\r') {
             usb_line[usb_len] = 0;
             if (!strcmp(usb_line, "DFU")) { want_dfu = true; }
-            else if (!strcmp(usb_line, "ID?")) { char r[48]; int n = snprintf(r, sizeof r, "CHAMELEON %d %d\n", current_patch + 1, effect_active ? 1 : 0); hw.usb_handle.TransmitInternal((uint8_t*)r, n); }
+            else if (!strcmp(usb_line, "ID?")) { char r[96]; int n = snprintf(r, sizeof r, "CHAMELEON %d %d %s %d %s\n", current_patch + 1, effect_active ? 1 : 0, FW_ID, NUM_EFFECTS, blob_from_qspi ? "blob" : "builtin"); hw.usb_handle.TransmitInternal((uint8_t*)r, n); }
             usb_len = 0;
         } else if (usb_len < (int)sizeof(usb_line) - 1) usb_line[usb_len++] = c;
     }
@@ -98,21 +102,46 @@ static float         sr            = 48000.f;
 
 static float bufA[BLOCK], bufB[BLOCK], bufR[BLOCK];
 
+// patches.h (fallback) -> blob, so there is one code path
+static void blob_from_builtin() {
+    memset(&blob, 0, sizeof blob);
+    blob.h.magic = PATCH_BLOB_MAGIC; blob.h.version = PATCH_BLOB_VERSION; blob.h.length = sizeof blob; blob.h.npatches = PB_PATCHES;
+    for (int p = 0; p < NUM_PATCHES && p < PB_PATCHES; p++) {
+        const PatchDef& def = PATCHES[p]; PbPatch& pb = blob.patches[p];
+        strncpy(pb.name, def.name, PB_NAME - 1); pb.potsLocked = def.potsLocked; pb.hue = (uint16_t)def.hue; pb.nstages = def.nstages;
+        for (int s = 0; s < def.nstages && s < PB_STAGES; s++) {
+            const StageDef& sd = def.stages[s]; PbStage& ps = pb.stages[s];
+            ps.effect = (uint16_t)sd.effect; strncpy(ps.id, EFFECTS[sd.effect].id, PB_ID - 1); ps.on = sd.on; ps.nvalues = sd.nvalues;
+            for (int v = 0; v < sd.nvalues && v < PB_VALUES; v++) { strncpy(ps.values[v].path, sd.values[v].path, PB_PATH - 1); ps.values[v].value = sd.values[v].value; }
+        }
+        for (int k = 0; k < 3; k++) { pb.pots[k].stage = (int8_t)def.pots[k].stage; strncpy(pb.pots[k].path, def.pots[k].path, PB_PATH - 1); }
+    }
+}
+
+static void load_blob() {
+    const PatchBlob* q = (const PatchBlob*)PATCH_BLOB_ADDR;   // QSPI is memory-mapped under the Daisy bootloader
+    if (pb_valid(q)) { memcpy(&blob, q, sizeof blob); blob_from_qspi = true; }
+    else blob_from_builtin();
+}
+
 static void build_patches() {
     for (int p = 0; p < NUM_PATCHES; p++) {
-        const PatchDef& def = PATCHES[p]; Patch& pt = patches[p];
-        pt.nstages = def.nstages; pt.potsLocked = def.potsLocked;
-        for (int s = 0; s < def.nstages; s++) {
-            const StageDef& sd = def.stages[s]; Stage& st = pt.stages[s];
-            st.dsp = make_effect(sd.effect); if (!st.dsp) { st.on = false; continue; }
+        const PbPatch& def = blob.patches[p]; Patch& pt = patches[p];
+        pt.nstages = def.nstages > PB_STAGES ? PB_STAGES : def.nstages; pt.potsLocked = def.potsLocked;
+        for (int s = 0; s < pt.nstages; s++) {
+            const PbStage& sd = def.stages[s]; Stage& st = pt.stages[s];
+            // trust the id string over the index, so a blob written for another firmware build still resolves
+            int idx = (sd.effect < NUM_EFFECTS && !strncmp(EFFECTS[sd.effect].id, sd.id, PB_ID)) ? sd.effect : effect_index(sd.id);
+            st.dsp = make_effect(idx); if (!st.dsp) { st.on = false; continue; }
             st.dsp->init((int)sr);
             st.nin = st.dsp->getNumInputs(); st.nout = st.dsp->getNumOutputs();
             st.params.build(st.dsp);
-            for (int v = 0; v < sd.nvalues; v++) st.params.set(sd.values[v].path, sd.values[v].value);
-            st.on = sd.on;
+            int nv = sd.nvalues > PB_VALUES ? PB_VALUES : sd.nvalues;
+            for (int v = 0; v < nv; v++) st.params.set(sd.values[v].path, sd.values[v].value);
+            st.on = sd.on != 0;
         }
         for (int k = 0; k < 3; k++) {
-            const PotDef& pd = def.pots[k];
+            const PbPot& pd = def.pots[k];
             pt.potParam[k] = (pd.stage >= 0 && pd.stage < pt.nstages) ? pt.stages[pd.stage].params.find(pd.path) : nullptr;
         }
     }
@@ -139,10 +168,10 @@ static void led_hue(int hue, float level) {
 }
 static void led_show() {
     hw.SetLed(effect_active);
-    led_hue(PATCHES[current_patch].hue, effect_active ? 1.f : 0.06f);
+    led_hue(blob.patches[current_patch].hue, effect_active ? 1.f : 0.06f);
 }
 static void blink(int n) {
-    int hue = PATCHES[current_patch].hue;
+    int hue = blob.patches[current_patch].hue;
     for (int i = 0; i < n; i++) { hw.SetLed(true); led_hue(hue, 1.f); System::Delay(90); hw.SetLed(false); led_rgb(0, 0, 0); System::Delay(140); }
     led_show();
 }
@@ -200,6 +229,7 @@ int main(void) {
     for (int k = 0; k < 3; k++) pots[k].Init(hw.adc.GetPtr(k), sr / BLOCK);
     hw.adc.Start();
 
+    load_blob();
     build_patches();
     float raw[3] = { 0.f, 0.f, 0.f };
     load_patch(0, raw);

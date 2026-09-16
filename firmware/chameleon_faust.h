@@ -58,7 +58,7 @@ public:
 // Collects every slider of a Faust class as "/Box/Label" -> zone, so the patch table can
 // address parameters with the same paths the studio uses (effects-data.js `path`).
 struct ParamMap : public UI {
-    static constexpr int MAX_PARAMS = 24;
+    static constexpr int MAX_PARAMS = 40;
     static constexpr int MAX_PATH   = 64;
     struct Param { char path[MAX_PATH]; FAUSTFLOAT* zone; FAUSTFLOAT init, min, max; };
     Param params[MAX_PARAMS];

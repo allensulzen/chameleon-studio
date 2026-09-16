@@ -453,13 +453,69 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'unpaired';   // it rebooted but this computer hasn't paired the DFU device yet — the picker will handle it
   }
 
+  // Ask a running pedal who it is: "CHAMELEON <patch> <active> <fwId> <nEffects> <blob|builtin>"
+  async function queryPedal() {
+    if (!navigator.serial) return null;
+    if (!serialPort) { const ports = await navigator.serial.getPorts(); serialPort = ports.find(p => p.getInfo().usbVendorId === ST) || null; }
+    if (!serialPort) return null;
+    let text = '';
+    try {
+      await serialPort.open({ baudRate: 115200 });
+      const w = serialPort.writable.getWriter(); await w.write(new TextEncoder().encode('ID?\n')); w.releaseLock();
+      const r = serialPort.readable.getReader(); const dec = new TextDecoder(); const t0 = Date.now();
+      while (Date.now() - t0 < 1500 && !text.includes('\n')) {
+        const res = await Promise.race([r.read(), new Promise(res => setTimeout(() => res({ done: true }), 400))]);
+        if (res.value) text += dec.decode(res.value); if (res.done) break;
+      }
+      try { r.releaseLock(); } catch (e) {}
+    } catch (e) { return null; }
+    finally { try { await serialPort.close(); } catch (e) {} }
+    const m = /CHAMELEON\s+(\d+)\s+(\d+)(?:\s+(\S+)\s+(\d+)\s+(\S+))?/.exec(text);
+    return m ? { patch: +m[1], active: !!+m[2], fwId: m[3] || null, nEffects: m[4] ? +m[4] : null, source: m[5] || null } : null;
+  }
+
+  // Patch blob — the exact layout of firmware/patchblob.h (packed, little-endian, 78080 bytes).
+  const PB = { PATCHES: 4, STAGES: 7, VALUES: 40, PATH: 64, ID: 32, NAME: 8, MAGIC: 0x54504843, VERSION: 1 };
+  PB.VALUE = PB.PATH + 4; PB.STAGE = 2 + PB.ID + 2 + PB.VALUES * PB.VALUE; PB.POT = 4 + PB.PATH; PB.PATCH = 16 + PB.STAGES * PB.STAGE + 3 * PB.POT; PB.HEADER = 32; PB.SIZE = PB.HEADER + PB.PATCHES * PB.PATCH;
+  const crcTable = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  function crc32(bytes) { let c = 0xFFFFFFFF; for (let i = 0; i < bytes.length; i++) c = crcTable[(c ^ bytes[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+  function buildPatchBlob(effectIds) {
+    const buf = new ArrayBuffer(PB.SIZE), dv = new DataView(buf), u8 = new Uint8Array(buf), enc = new TextEncoder();
+    const putStr = (off, str, max) => { const b = enc.encode(str).slice(0, max - 1); u8.set(b, off); };
+    state.patches.forEach((p, pi) => {
+      const base = PB.HEADER + pi * PB.PATCH;
+      const chain = p.chain.slice(0, PB.STAGES);
+      const first = chain.find(s => s.on) || chain[0];
+      putStr(base, p.name || 'ABCD'[pi], PB.NAME);
+      u8[base + 8] = p.potsLocked ? 1 : 0; u8[base + 9] = chain.length;
+      dv.setUint16(base + 10, first ? ((hueOf(getEffectById(first.id)) % 360) + 360) % 360 : 178, true);
+      chain.forEach((s, si) => {
+        const e = getEffectById(s.id), so = base + 16 + si * PB.STAGE;
+        const idx = effectIds.indexOf(s.id);
+        dv.setUint16(so, idx < 0 ? 0xffff : idx, true); putStr(so + 2, s.id, PB.ID); u8[so + 2 + PB.ID] = s.on ? 1 : 0;
+        const vals = e.params.slice(0, PB.VALUES); u8[so + 3 + PB.ID] = vals.length;
+        vals.forEach((prm, vi) => { const vo = so + 4 + PB.ID + vi * PB.VALUE; putStr(vo, prm.path, PB.PATH); dv.setFloat32(vo + PB.PATH, s.values[prm.path] != null ? +s.values[prm.path] : prm.default, true); });
+      });
+      for (let k = 0; k < 3; k++) {
+        const a = p.pots[k], si = a ? chain.findIndex(s => s.uid === a.uid) : -1, po = base + 16 + PB.STAGES * PB.STAGE + k * PB.POT;
+        dv.setInt8(po, si); if (si >= 0) putStr(po + 4, a.path, PB.PATH);
+      }
+    });
+    dv.setUint32(0, PB.MAGIC, true); dv.setUint32(4, PB.VERSION, true); dv.setUint32(8, PB.SIZE, true);
+    dv.setUint32(12, crc32(u8.subarray(PB.HEADER)), true); dv.setUint32(16, PB.PATCHES, true);
+    return buf;
+  }
+
   // Firmware image metadata (written by tools/build-firmware.mjs --make)
   let fwInfo = null;
   async function loadFwInfo() {
     try { fwInfo = await (await fetch('firmware/chameleon.json', { cache: 'no-store' })).json(); }
     catch (e) { fwInfo = { address: 0x08000000, appType: 'BOOT_NONE', note: 'no chameleon.json — assuming an internal-flash image' }; }
     const qspi = fwInfo.address >= 0x90000000;
-    $('flash-image-info').innerHTML = `<b>${fwInfo.effects ? fwInfo.effects.length + ' effect(s): ' + fwInfo.effects.join(', ') : 'firmware/chameleon.bin'}</b> · ${fwInfo.size ? (fwInfo.size / 1024).toFixed(0) + ' KB' : ''} · ${qspi ? 'runs from QSPI via the Daisy bootloader' : 'internal flash (no bootloader needed)'}${fwInfo.built ? ' · built ' + fwInfo.built.slice(0, 10) : ''}`;
+    const chains = state.patches.map(p => `${p.name}: ${p.chain.map(s => getEffectById(s.id).name).join(' → ') || '(empty)'}`).join(' · ');
+    $('flash-image-info').innerHTML = fwInfo.patchAddress
+      ? `<b>Your four patches</b> — ${escapeHtml(chains)}<br>Firmware ${fwInfo.fwId || ''} · ${fwInfo.effects ? fwInfo.effects.length + ' effects built in' : ''} · ${(fwInfo.size / 1048576).toFixed(1)} MB${fwInfo.built ? ' · built ' + fwInfo.built.slice(0, 10) : ''} (only re-sent when the pedal's firmware is older)`
+      : `<b>${fwInfo.effects ? fwInfo.effects.length + ' effect(s): ' + fwInfo.effects.join(', ') : 'firmware/chameleon.bin'}</b> · ${fwInfo.size ? (fwInfo.size / 1024).toFixed(0) + ' KB' : ''} · ${qspi ? 'runs from QSPI via the Daisy bootloader' : 'internal flash (no bootloader needed)'}${fwInfo.built ? ' · built ' + fwInfo.built.slice(0, 10) : ''}`;
     $('btn-install-boot').hidden = !qspi;
   }
   $('btn-open-flash').addEventListener('click', loadFwInfo);
@@ -478,12 +534,39 @@ document.addEventListener('DOMContentLoaded', () => {
     await dfu.flash(bin, { address });
     return bin.byteLength;
   }
+  // Connect & flash: patches always (78 KB, a couple of seconds); the full firmware only when the pedal
+  // reports a different FW_ID than the site's build (or can't be asked because it's already in DFU).
+  async function flashPatches() {
+    const log = $('flash-status-text'), bar = $('flash-progress');
+    if (!fwInfo.patchAddress) { await flashImage('firmware/chameleon.bin', fwInfo.address || 0x08000000, 'Chameleon'); return; }
+    const blob = buildPatchBlob(fwInfo.effects || []);
+    log.textContent = 'Checking the pedal…'; bar.style.width = '0%';
+    const who = await queryPedal();
+    const needFw = !who || who.fwId !== fwInfo.fwId;
+    let bin = null;
+    if (needFw) {
+      log.textContent = `Fetching firmware (${(fwInfo.size / 1048576).toFixed(1)} MB)…`;
+      const res = await fetch('firmware/chameleon.bin', { cache: 'no-store' });
+      if (!res.ok) throw new Error('firmware/chameleon.bin is missing — run tools/build-firmware.mjs --make (see README)');
+      bin = await res.arrayBuffer();
+    }
+    if (navigator.serial) { const r = await rebootToDfu(m => { log.textContent = m; }); if (r === 'unpaired') log.textContent = 'Pedal is in update mode — pick it in the dialog (one-time on this computer)…'; }
+    log.textContent = log.textContent || 'Requesting USB device…';
+    await dfu.connect();
+    if (!dfu.isDaisyBootloader) throw new Error('This is the STM32 DFU (no QSPI). Install the Daisy bootloader first, then tap RESET and press BOOT while the LED breathes.');
+    if (bin) {
+      dfu.onProgress = (p) => { bar.style.width = `${p}%`; log.textContent = `Updating firmware (${who ? 'pedal has ' + (who.fwId || 'an older build') : 'pedal was already in update mode'}) ${(bin.byteLength / 1048576).toFixed(1)} MB… ${p}%`; };
+      await dfu.flash(bin, { address: fwInfo.address, manifest: false, progress: [0, 90] });
+    }
+    dfu.onProgress = (p) => { bar.style.width = `${p}%`; log.textContent = `Writing patches… ${p}%`; };
+    await dfu.flash(blob, { address: fwInfo.patchAddress, manifestAddress: fwInfo.address, progress: bin ? [90, 100] : [0, 100] });
+  }
   $('btn-start-flash').addEventListener('click', async () => {
     const log = $('flash-status-text'), btn = $('btn-start-flash');
     try {
       btn.disabled = true; if (!fwInfo) await loadFwInfo();
-      await flashImage('firmware/chameleon.bin', fwInfo.address || 0x08000000, 'Chameleon');
-      log.textContent = 'Done — the pedal rebooted into the new firmware.'; $('flash-progress').style.width = '100%'; setTimeout(scanDevices, 2500);
+      await flashPatches();
+      log.textContent = 'Done — the pedal rebooted with your patches.'; $('flash-progress').style.width = '100%'; setTimeout(scanDevices, 2500);
     } catch (err) { log.textContent = `⚠ ${err.message}`; } finally { btn.disabled = false; }
   });
   $('btn-install-boot').addEventListener('click', async () => {

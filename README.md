@@ -167,16 +167,21 @@ node tools/build-firmware.mjs chameleon-patches.json --make   # -> firmware/patc
 node tools/build-firmware.mjs --default --make                # the built-in starter set instead
 ```
 
-`build-firmware.mjs` compiles every effect the patches use with the native Faust compiler, writes the patch
-table (values, pot bindings, pot lock, LED hue) and builds the image for the **Daisy bootloader** (runs from the
-8 MB QSPI flash — the 128 KB internal flash only fits two or three effects). Flashing from the studio:
+`build-firmware.mjs` compiles **every effect in the catalog** (269 Faust classes, one translation unit each,
+`firmware/fx/*.cpp` + `firmware/effects.h`) into a single ~5.4 MB image for the **Daisy bootloader** (runs from
+the 8 MB QSPI flash). Patches are *data*, not code: the studio serialises the four patches into a `PatchBlob`
+(`firmware/patchblob.h`, 78 KB, CRC-32) and DFU-writes it to `0x90780000`; the firmware reads it at boot and
+falls back to `patches.h` when nothing valid is there. So nobody compiles anything to change patches — the
+firmware is rebuilt only when the catalog or the engine changes, and each build carries a random `FW_ID` that the
+studio compares with the pedal's `ID?` reply to decide whether the big image needs re-sending. Flashing from the studio:
 
 1. Once per brand-new Seed: Flash Pedal → *Install bootloader* with the Seed in STM32 DFU (hold BOOT, tap RESET,
    release), then tap RESET, press BOOT during the 2 s LED pulse and *Connect & flash* for the first image.
 2. Every time after, no buttons: the running pedal enumerates as a USB CDC serial device (0483:5740). Pair it once
    per computer by clicking the device chip, then *Connect & flash* sends `DFU\n` over Web Serial, the firmware
-   calls `System::ResetToBootloader(DAISY_INFINITE_TIMEOUT)`, the studio flashes over WebUSB and the pedal reboots.
-   `ID?` over the same port answers `CHAMELEON <patch> <active>`.
+   calls `System::ResetToBootloader(DAISY_INFINITE_TIMEOUT)`, the studio writes the patch blob (and the firmware
+   first, if the pedal's `FW_ID` differs) over WebUSB and the pedal reboots.
+   `ID?` over the same port answers `CHAMELEON <patch> <active> <fwId> <nEffects> <blob|builtin>`.
 
 `main.cpp` is the engine (control surface, PotTakeover, series chain, SDRAM pool, RGB LED on TIM3 PWM),
 `chameleon_faust.h` the tiny Faust runtime, `patches.h` the generated table. The Firmware button in the studio

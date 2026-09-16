@@ -129,7 +129,9 @@ class ChameleonDFU {
 
   /**
    * @param {ArrayBuffer} binaryData  raw .bin image
-   * @param {{address?:number, sectorSize?:number}} opts  address defaults to internal flash
+   * @param {{address?:number, sectorSize?:number, manifest?:boolean, manifestAddress?:number, progress?:[number,number]}} opts
+   *   address defaults to internal flash; manifest=false leaves the bootloader running so another image
+   *   (the patch blob) can be written in the same session; manifestAddress is where it boots from.
    */
   async flash(binaryData, opts = {}) {
     if (!this.isConnected || !this.device) throw new Error('Not connected — pair the Seed in DFU mode first.');
@@ -140,7 +142,8 @@ class ChameleonDFU {
     const region = this.regionFor(address);
     if (address >= 0x90000000 && !region) throw new Error('This bootloader has no QSPI region — the Seed is in the STM32 DFU, not the Daisy bootloader. Install the bootloader first, then reset and try again.');
     if (region && region.alt !== 0) await this.device.selectAlternateInterface(this.interfaceNumber, region.alt);
-    const progress = (p) => { if (this.onProgress) this.onProgress(Math.round(p)); };
+    const [p0, p1] = opts.progress || [0, 100];
+    const progress = (p) => { if (this.onProgress) this.onProgress(Math.round(p0 + (p1 - p0) * p / 100)); };
 
     await this.clearToIdle();
     let count = 0;
@@ -159,9 +162,10 @@ class ChameleonDFU {
       progress(15 + 80 * (i + 1) / blocks);
     }
 
+    if (opts.manifest === false) { progress(100); this.log('Written.'); return; }
     // manifest: zero-length DNLOAD from the start address makes the bootloader jump into the image
     this.log('Starting the new firmware…');
-    await this.setAddress(address);
+    await this.setAddress(opts.manifestAddress ?? address);
     try { await this.ctrlOut(ChameleonDFU.REQ.DNLOAD, 0, new ArrayBuffer(0)); await this.getStatus(); } catch (e) { /* device re-enumerates / drops off USB here — expected */ }
     progress(100);
     this.isConnected = false;
